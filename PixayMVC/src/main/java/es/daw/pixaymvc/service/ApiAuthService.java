@@ -26,20 +26,16 @@ public class ApiAuthService {
     private final ApiSessionToken apiSessionToken;
 
     public String getToken(){
-        // FORMA 1: USANDO HTTPSESSION
-//        String storedToken = (String) httpSession.getAttribute("token");
-//        if (storedToken != null){
-//            return storedToken;
-//        }
-        //FORMA 2: Usando Component de sessionScope
+
+        //Component de sessionScope
         if (apiSessionToken.getApiToken() != null){
             return apiSessionToken.getApiToken();
         }
 
         //si es nulo hago el login
         ApiLoginRequest request = new ApiLoginRequest();
-        request.setUsername(apiUsername);
-        request.setPassword(apiPassword);
+        //request.setUsername(apiUsername);
+        //request.setPassword(apiPassword);
 
         try {
             ApiLoginResponse response = webClientAuth
@@ -49,14 +45,14 @@ public class ApiAuthService {
                     .bodyToMono(ApiLoginResponse.class)
                     .block();//síncrono
 
-            if (response == null || response.getToken() == null){
-                throw new ConnectApiRestException("API login failed: no token received");
-            }
+//            if (response == null || response.getToken() == null){
+//                throw new ConnectApiRestException("API login failed: no token received");
+//            }
 
-            //httpSession.setAttribute("token", response.getToken());
-            apiSessionToken.setApiToken(response.getToken());
 
-            return response.getToken();
+            //apiSessionToken.setApiToken(response.getToken());
+
+            return "";//response.getToken();
         } catch (Exception ex){
             throw new ConnectApiRestException("Couldn't authenticate against FoodExpress API: " + ex.getMessage() + "");
         }

@@ -1,10 +1,10 @@
-package es.daw.foodexpressmvc;
+package es.daw.pixaymvc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class FoodExpressMvcApplicationTests {
+class PixayMvcApplicationTests {
 
     @Test
     void contextLoads() {
