@@ -28,9 +28,6 @@ public class User implements UserDetails {
     private String email;
 
     @Column
-    private String description;
-
-    @Column
     private Long images;
     //para que Spring Security pueda obtener los roles del usuario
     @Override

@@ -8,7 +8,6 @@ public class Image {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Lob
         private byte[] content; //archivo binario de UNA foto, TODO hacerlo LAZY para que no cargue todas a la vez
 
         @ManyToOne

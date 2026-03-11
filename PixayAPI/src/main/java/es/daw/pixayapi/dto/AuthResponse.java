@@ -1,4 +1,4 @@
-package es.daw.foodexpressapi.dto;
+package es.daw.pixayapi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

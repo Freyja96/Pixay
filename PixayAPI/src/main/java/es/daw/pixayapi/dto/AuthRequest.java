@@ -1,4 +1,4 @@
-package es.daw.foodexpressapi.dto;
+package es.daw.pixayapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

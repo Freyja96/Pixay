@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>es.daw</groupId>
-    <artifactId>FoodExpressAPI</artifactId>
+    <artifactId>PixayAPI</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>FoodExpressAPI</name>
-    <description>FoodExpressAPI</description>
+    <name>PixayAPI</name>
+    <description>PixayAPI</description>
     <url/>
     <licenses>
         <license/>

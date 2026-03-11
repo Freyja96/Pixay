@@ -1,6 +1,6 @@
-package es.daw.foodexpressapi.repository;
+package es.daw.pixayapi.repository;
 
-import es.daw.foodexpressapi.entity.User;
+import es.daw.pixayapi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

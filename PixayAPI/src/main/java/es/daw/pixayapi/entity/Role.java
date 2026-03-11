@@ -1,5 +1,6 @@
-package es.daw.foodexpressapi.entity;
+package es.daw.pixayapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,11 +20,9 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(length = 100)
-    private String description;
-
     // Relación bidireccional. Es el lado inverso (mapped)
     @OneToMany(mappedBy = "role")
+    @JsonIgnore
     private Set<User> users;
 
     public Role() {
@@ -33,8 +32,6 @@ public class Role {
     // BIDIRECCIONAL ----------
     public void addUser(User user) {
         users.add(user);
-        //user.addRole(this); // llamadas infinitas!!! cuidadín
-        //user.getRoles().add(this); // no hay llamadas cíclicas!!! // porque estoy actualizando directamente la colección
     }
     public void removeUser(User user) {
         users.remove(user);

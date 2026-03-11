@@ -1,7 +1,7 @@
-package es.daw.foodexpressapi.security;
+package es.daw.pixayapi.security;
 
-import es.daw.foodexpressapi.entity.User;
-import es.daw.foodexpressapi.repository.UserRepository;
+import es.daw.pixayapi.entity.User;
+import es.daw.pixayapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

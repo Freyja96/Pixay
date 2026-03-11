@@ -15,7 +15,7 @@ public class ApiAuthService {
     private final WebClient webClientAuth;
 
 
-    @Value("${api.auth-username}")
+    @Value("${api.credential}")
     private String apiUsername;
 
     @Value("${api.auth-password}")

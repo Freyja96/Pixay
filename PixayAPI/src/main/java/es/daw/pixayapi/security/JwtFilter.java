@@ -1,4 +1,4 @@
-package es.daw.foodexpressapi.security;
+package es.daw.pixayapi.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

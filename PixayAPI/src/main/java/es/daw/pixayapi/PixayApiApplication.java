@@ -1,4 +1,4 @@
-package es.daw.foodexpressapi;
+package es.daw.pixayapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

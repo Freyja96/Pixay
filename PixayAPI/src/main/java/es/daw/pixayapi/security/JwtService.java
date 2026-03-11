@@ -1,4 +1,4 @@
-package es.daw.foodexpressapi.security;
+package es.daw.pixayapi.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
