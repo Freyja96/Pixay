@@ -54,7 +54,7 @@ public class ApiAuthService {
 
             return "";//response.getToken();
         } catch (Exception ex){
-            throw new ConnectApiRestException("Couldn't authenticate against FoodExpress API: " + ex.getMessage() + "");
+            throw new ConnectApiRestException("Couldn't authenticate against Pixay API: " + ex.getMessage() + "");
         }
     }
 }

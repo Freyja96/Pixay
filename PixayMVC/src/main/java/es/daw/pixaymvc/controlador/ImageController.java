@@ -10,18 +10,19 @@ import java.io.IOException;
 
 @Controller
 public class ImageController {
-    @PostMapping("/upload")
+    @PostMapping("/subir-imagen")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         try {
             if (file.isEmpty()) {
                 redirectAttributes.addFlashAttribute("message", "Por favor, selecciona un archivo.");
+
                 return "redirect:/mis-imagenes";
             }
 
             // convertir el archivo a byte[]
             byte[] bytes = file.getBytes();
 
-            // TODO: Aquí llamaremos al Service que conecta con la API
+            // TODO: llamar al Service que conecta con la API
             // El service enviará estos bytes a PixayAPI
 
             redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
