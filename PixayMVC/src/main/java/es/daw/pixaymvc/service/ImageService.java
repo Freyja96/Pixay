@@ -15,7 +15,7 @@ public class ImageService {
         Image image = new Image();
 
         image.setContent(imageBytes); // Set al array de bytes
-        image.setUser_id(user); // Vincular --> usuario logueado
+        image.setUserId(user); // Vincular --> usuario logueado
         imageRepository.save(image);
     }
 }
