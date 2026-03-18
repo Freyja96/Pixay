@@ -1,13 +1,17 @@
-package es.daw.pixaymvc.entity;
+package es.daw.pixayapi.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -24,15 +28,32 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+    @Column // nullable iría false y longitud por defecto???
+    //@Column(name="FULL_NAME")
+    //private String fullname; // KK
+    private String fullName;
 
     @Column
-    private Long images;
-    //para que Spring Security pueda obtener los roles del usuario
+    private String email;
+
+    // Relación bidireccional. Usuario es el lado propietario, porque tiene la tabla intermedia
+    // fetch = FetchType.EAGER indica que los roles se cargan siempre junto con el usuario,
+    // lo cual es necesario porque Spring Security los necesita inmediatamente para construir las autoridades.
+    @ManyToOne
+    private Role role;
+
+    // --------------------- 5 MÉTODOS DE LA INTERFACE UserDetails -----------------
+
+    // Devuelve los roles convertidos en objetos GrantedAuthority
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        if (role == null) return List.of(); //evita null pointer exception
+
+        String roleName = role.getName().toUpperCase();
+        if (!roleName.startsWith("ROLE_")) {
+            roleName = "ROLE_" + roleName;
+        }
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     /**
