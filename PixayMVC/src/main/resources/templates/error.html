@@ -22,14 +22,28 @@
         }
         * {
             font-family: Poppins, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         body {
             background-color: var(--WHITE-BACKCOLOR);
+            margin: 0;
+            padding: 0;
         }
         /* Estilos para la barra de navegación */
         .navbar-pixay {
             background-color: var(--DARK-BACKCOLOR);
             padding: 10px 20px;
+            margin: 0;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+        .navbar-pixay .container-fluid {
+            margin: 0;
+            padding: 0;
         }
         .nav-link, .navbar-brand {
             color: white !important;
@@ -57,19 +71,22 @@
             object-fit: cover;
         }
         .logo {
-            max-height: 35px
+            max-height: 50px
         }
        /* Estilos página de error*/
         .textoError {
             color: var(--SECONDARY-ORANGE);
             font-weight: bold;
         }
-
+        .error-img{
+            max-height: 500px;
+            max-width: 500px
+        }
     </style>
 </head>
 <body class="bg-light d-flex flex-column justify-content-center align-items-center vh-100">
 
-<nav class="navbar navbar-pixay sticky-top">
+<nav class="navbar navbar-pixay mb-5">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand fw-bold" href="#">
 
@@ -91,10 +108,10 @@
         </div>
     </div>
 </nav>
-<div class="text-center">
+<div class="text-center mt-5 pt-5">
     <h1 class="textoError">Oops!</h1>
     <h2 class="textoError">Parece que el gato ha estado trasteando con los cables...</h2>
-    <img src="imagenes/gato-mensaje-error.png" height="512" width="512"/>
+    <img src="imagenes/gato-mensaje-error.png" class="error-img"/>
 </div>
 
 </body>
