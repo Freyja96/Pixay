@@ -24,7 +24,9 @@ CREATE TABLE IF NOT EXISTS users (
 -- private User user_id; //a quién pertenece
 CREATE TABLE IF NOT EXISTS users_images (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
     content LONGBLOB NOT NULL,
     user_id BIGINT NOT NULL,
+    category VARCHAR(50),
     FOREIGN KEY (user_id) REFERENCES users(id)
 )

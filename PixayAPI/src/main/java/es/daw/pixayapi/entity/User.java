@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @ManyToOne
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images;
+
     // --------------------- 5 MÉTODOS DE LA INTERFACE UserDetails -----------------
 
     // Devuelve los roles convertidos en objetos GrantedAuthority
