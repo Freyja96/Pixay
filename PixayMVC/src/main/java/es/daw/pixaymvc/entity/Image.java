@@ -12,7 +12,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private byte[] content; //archivo binario de UNA foto, TODO hacerlo LAZY para que no cargue todas a la vez
+    private byte[] content;
 
     @ManyToOne
     @JoinColumn(name = "user_id") //el nombre de la columna en la tabla de la BD

@@ -76,11 +76,18 @@
                     </div>
                     <div class="mb-4">
                         <select name="category" id="category"> <!-- Quiero que cargue las categorías desde la base de datos con thymeleaf-->
-                            <option  default-content value="">Selecciona una categoría</option>
-                            <option  value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
-                            <option value=""></option>
+                            <option selected disabled value="">Selecciona una categoría</option>
+                            <option th:each="cat : ${categorias}" 
+                                th:value="${cat}" 
+                                th:text="${cat}">
+                            </option>
+                        </select>
+                        <select name="subcategory" id="subcategory"> <!-- Quiero que cargue las subcategorías desde la base de datos con thymeleaf-->
+                            <option  default-content value="">Selecciona una subcategoría</option>
+                            <option th:each="sub : ${subcategorias}" 
+                                th:value="${sub}" 
+                                th:text="${sub}">
+                            </option>
                         </select>
                     </div>
 

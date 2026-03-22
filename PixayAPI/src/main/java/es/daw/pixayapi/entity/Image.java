@@ -22,6 +22,9 @@ public class Image {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(length = 50)
+    @Column(nullable = false, length = 50)
     private String category;
+
+    @Column(length = 50)
+    private String subcategory;
 }

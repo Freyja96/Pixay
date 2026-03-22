@@ -5,5 +5,6 @@ public record ImageResponse (
     String title,
     byte[] content,
     Long userId,
-    String category
+    String category,
+    String subcategory
 ) {}

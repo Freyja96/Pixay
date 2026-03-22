@@ -30,11 +30,14 @@ public class ImageService {
         return imageRepository.findByCategory(category, pageable);
     }
 
-    public Image saveImage(MultipartFile file, String title, String category, User user){
+    public Image saveImage(MultipartFile file, String title, String category, String subcategory, User user){
         try {
         Image image = new Image();
         image.setContent(file.getBytes());
         image.setTitle(title);
+        image.setCategory(category);
+        image.setSubcategory(subcategory);
+        image.setUser(user);
 
         return imageRepository.save(image);
         } catch (IOException e){

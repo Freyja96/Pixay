@@ -18,34 +18,35 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
-    //TODO REGLAS DE ACCESO A LOS ENDPOINTS POST api/imagenes/subir-imagen
-    //                                           api/imagenes/mis-imagenes
-    //                                           api/imagenes/inicio
-
     /**
      * Sube una imagen al servidor.
      * @param content
      * @param title
      * @param category
+     * @param subcategory (opcional)
      * @param user
      * @return
      */
     @PostMapping("/subir-imagen") //<-- se une a continuación de RequestMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
+    //TODO para hacer pruebas y luego ya poner el PreAuthorize
+    //@PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<ImageResponse> uploadImage(
             @RequestParam("file") MultipartFile content,
             @RequestParam("title") String title,
             @RequestParam("category") String category,
+            @RequestParam("subcategory") String subcategory,
             @AuthenticationPrincipal User user // Obtenemos el usuario del token
     ){
-        Image savedImage = imageService.saveImage(content, title, category, user);
+        Image savedImage = imageService.saveImage(content, title, category, subcategory, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(savedImage));
     }
 
     /**
-     * Muestra las imágenes del usuario autenticado.
+     * Muestra las imágenes del usuario actual.
      * @param user
+     * @param page
+     * @param size
      * @return
      */
     @GetMapping("/mis-imagenes")
@@ -65,27 +66,35 @@ public class ImageController {
 
     /**
      * Muestra las imágenes de todos los usuarios.
+     * @param page
+     * @param size
      * @return
      */
     @GetMapping// <-- página de INICIO
-    public ResponseEntity<Slice<ImageResponse>> getAllImages(
+    public ResponseEntity<Slice<ImageResponse>> getAllImages(//<-- para todas las imágenes de todos los usuarios
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
-    ){ //<-- para todas las imágenes de todos los usuarios
+    ){
         Slice<Image> slice = imageService.getAllImagesPaged(page, size);
-
         Slice<ImageResponse> responseSlice = slice
                 .map(this::convertToResponse);
 
         return ResponseEntity.ok(responseSlice);
     }
+
+    /**
+     * Convierte una imagen en una respuesta.
+     * @param entity
+     * @return
+     */
     private ImageResponse convertToResponse(Image entity) {
         return new ImageResponse(
                 entity.getId(),
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getUser().getId(),
-                entity.getCategory()
+                entity.getCategory(),
+                entity.getSubcategory()
         );
     }
 }
