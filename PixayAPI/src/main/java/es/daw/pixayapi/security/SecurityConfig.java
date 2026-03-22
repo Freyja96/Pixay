@@ -1,6 +1,7 @@
 package es.daw.pixayapi.security;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,7 +29,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-
                 /*
                     Por defecto, los navegadores bloquean las peticiones entre dominios distintos.
 
@@ -46,7 +46,7 @@ public class SecurityConfig {
                     - No permitirá que le envíen tokens en el header Authorization.
 
                     ¿Por qué OPTIONS?
-                        Cuando haces una petición POST o DELETE con Authorization, el navegador envía una preflight request con métod0 OPTIONS.
+                        Cuando haces una petición POST o DELETE con Authorization, el navegador envía una preflight request con métod OPTIONS.
                         Si no permites OPTIONS, el navegador bloquea la petición real.
                         Si no permites OPTIONS, las peticiones con token JWT nunca llegarán al backend.
                  */
@@ -79,12 +79,11 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
                 // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**","/h2-console/**").permitAll() // pública para login/register
-                        //.requestMatchers(HttpMethod.GET,"/api/productos").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/api/productos").authenticated() // jwt, da igual el rol, con que estés autenticado te deja acceder
-//                        .requestMatchers(HttpMethod.PUT,"/api/productos/**").hasRole("ADMIN") //tienes que ser rol admin para poder acceder
-                        .anyRequest().authenticated() //enviar jwt
+                        // GET de autenticación y de inicio públicos
+                        .requestMatchers("/auth/**","/h2-console/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/imagenes/inicio").permitAll()
+                        // el resto de páginas con autenticación
+                        .anyRequest().authenticated()
                 )
                 //.authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

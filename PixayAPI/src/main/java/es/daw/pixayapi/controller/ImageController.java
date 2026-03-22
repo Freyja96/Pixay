@@ -5,7 +5,6 @@ import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.service.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,8 +67,7 @@ public class ImageController {
      * Muestra las imágenes de todos los usuarios.
      * @return
      */
-    @GetMapping("/inicio")// <-- ¿la página de inicio queda bien así? /imagenes/inicio
-    @PreAuthorize("isAuthenticated()")
+    @GetMapping// <-- página de INICIO
     public ResponseEntity<Slice<ImageResponse>> getAllImages(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
