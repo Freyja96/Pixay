@@ -1,5 +1,9 @@
 package es.daw.pixaymvc.controlador;
 
+import es.daw.pixaymvc.dto.response.CustomSlice;
+import es.daw.pixaymvc.dto.response.ImageResponse;
+import es.daw.pixaymvc.service.ImageService;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +19,21 @@ import java.util.List;
 @Controller
 public class ImageController {
     private final WebClient webClientAPI;
+    private final ImageService imageService;
 
-    public ImageController(WebClient webClientAPI) {
+    public ImageController(WebClient webClientAPI, ImageService imageService) {
         this.webClientAPI = webClientAPI;
+        this.imageService = imageService;
+    }
+
+    @GetMapping({"/"})
+    public String inicio(Model model) {
+        CustomSlice<ImageResponse> slice = imageService.getAllImages(0, 12);
+
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+
+        return "inicio";
     }
 
     @GetMapping("/subir-imagen")
