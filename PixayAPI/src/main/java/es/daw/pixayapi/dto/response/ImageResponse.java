@@ -1,4 +1,4 @@
-package es.daw.pixayapi.dto.response.image;
+package es.daw.pixayapi.dto.response;
 
 public record ImageResponse (
     Long id,

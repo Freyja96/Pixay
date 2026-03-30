@@ -1,6 +1,6 @@
 package es.daw.pixayapi.controller;
 
-import es.daw.pixayapi.dto.response.image.ImageResponse;
+import es.daw.pixayapi.dto.response.ImageResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.service.ImageService;
