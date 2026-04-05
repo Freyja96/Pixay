@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
 @EnableMethodSecurity // Habilita @PreAuthorize y @PostAuthorize
@@ -50,6 +53,18 @@ public class SecurityConfig {
                         Si no permites OPTIONS, el navegador bloquea la petición real.
                         Si no permites OPTIONS, las peticiones con token JWT nunca llegarán al backend.
                  */
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    // Permitir tu frontend
+                    config.setAllowedOrigins(List.of("http://localhost:8080"));
+                    // Métodos permitidos
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    // Headers permitidos
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    // Permite enviar cookies o Authorization headers
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
 //                .cors(cors -> cors.configurationSource(request -> {
 //                    CorsConfiguration config = new CorsConfiguration();
 //                    config.setAllowedOrigins(List.of("http://localhost:8080")); // Cambia al origen de tu frontend
@@ -76,17 +91,23 @@ public class SecurityConfig {
                 // Le dice a Spring Security cómo debe manejar las sesiones HTTP
                 // En una API REST con JWT, no se usan sesiones.
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
+//                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) //TODO Descomentar luego si no funciona
+                //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
                 .authorizeHttpRequests(auth -> auth
                         // GET de autenticación y de inicio públicos
-                        .requestMatchers("/auth/**","/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/imagenes/inicio").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll() // H2 Console pública
+                        .requestMatchers("/auth/**").permitAll()       // Endpoints de autenticación públicos
+                        .requestMatchers(HttpMethod.GET, "/api/imagenes").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         // el resto de páginas con autenticación
                         .anyRequest().authenticated()
                 )
                 //.authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                 .build();
     }
 

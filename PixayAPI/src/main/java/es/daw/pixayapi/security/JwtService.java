@@ -34,7 +34,7 @@ public class JwtService {
     private String secret;
 
     @Value("${JWT_EXPIRATION}")
-    private String expiration;
+    private int expiration;
 
 
     /**
@@ -82,7 +82,7 @@ public class JwtService {
                 //.expiration(new Date(System.currentTimeMillis() +
                 // 1000 * 60 * 60)) // 1 hora
                 // |->ms  |->s |->min
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * Integer.parseInt(expiration)))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiration))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
     }

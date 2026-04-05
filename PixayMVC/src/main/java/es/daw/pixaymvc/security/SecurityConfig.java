@@ -40,15 +40,15 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
                 // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/", "/login", "/h2-console/**").permitAll() // pública para login/register
-                                .anyRequest().authenticated() //enviar jwt
+                                .requestMatchers("/", "/login", "/registro", "/h2-console/**", "/api/imagenes/**").permitAll() // pública para login/register
+                                .anyRequest().authenticated() //enviar jwt                                    ^TODO: Quitar esto mas tarde
                 )
                 .formLogin(login -> login.loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
+                        .defaultSuccessUrl("/api/imagenes", true)
                         .failureUrl("/login?error=true")
                         .permitAll())
                 .logout(logout -> logout.logoutUrl("/logout")
-                        .logoutUrl("/logout")
+//                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
