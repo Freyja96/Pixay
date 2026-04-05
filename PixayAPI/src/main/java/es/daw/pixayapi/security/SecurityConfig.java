@@ -92,17 +92,14 @@ public class SecurityConfig {
                 // En una API REST con JWT, no se usan sesiones.
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
-//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) //TODO Descomentar luego si no funciona
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) //TODO: Descomentar luego si no funciona
                 //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
                 .authorizeHttpRequests(auth -> auth
                         // GET de autenticación y de inicio públicos
-                        .requestMatchers("/h2-console/**").permitAll() // H2 Console pública
-                        .requestMatchers("/auth/**").permitAll()       // Endpoints de autenticación públicos
-                        .requestMatchers(HttpMethod.GET, "/api/imagenes").permitAll()
-                        .requestMatchers("/api/**").permitAll()
-                        // el resto de páginas con autenticación
+                        .requestMatchers("/h2-console/**", "/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll() //TODO cambiar posteriormente para mis-imagenes con autenticación
                         .anyRequest().authenticated()
                 )
                 //.authenticationProvider(authenticationProvider())

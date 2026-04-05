@@ -33,7 +33,7 @@ public class SecurityConfig {
                 /*
                 ¿Por qué NO necesitas CSRF en una aplicación web monolítica?
                     - Si usas cookies para la autenticación
-                    - Si hay formularios web
+                    - Si hay formulario web
                  */
                 //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 // Le dice a Spring Security cómo debe manejar las sesiones HTTP
