@@ -93,7 +93,7 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
 //                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")) //TODO: Descomentar luego si no funciona
-                //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
                 .authorizeHttpRequests(auth -> auth
