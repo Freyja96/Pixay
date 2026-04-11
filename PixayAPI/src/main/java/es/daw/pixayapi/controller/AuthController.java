@@ -22,23 +22,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     //necesito el repositorio:
-    private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
         try {
+            // LOG DE SEGURIDAD
+            System.out.println("Intentando autenticar a: " + request.getUsername());
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
             );
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+            System.out.println("¡Autenticación exitosa!");
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String token = jwtService.generateToken(userDetails);
 
             return ResponseEntity.ok(new AuthResponse(token));
         } catch (BadCredentialsException e) {
+            System.out.println("ERROR: Contraseña incorrecta para " + request.getUsername());
             return ResponseEntity.status(401).body("Usuario o contraseña incorrectos");
+        } catch (Exception e) {
+            System.out.println("ERROR GENÉRICO: " + e.getMessage());
+            return ResponseEntity.status(500).body(e.getMessage());
         }
     }
 }
