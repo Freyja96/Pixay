@@ -24,36 +24,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                /*
-                CSRF (Cross-Site Request Forgery) es un tipo de ataque donde un sitio malicioso puede hacer que un navegador autenticado
-                (por ejemplo, con una cookie activa) haga una petición no deseada a otro sitio en el que el usuario está logueado.
-                Es un ataque clásico en aplicaciones web basadas en sesiones y cookies.
-                Su objetivo es hacer que el navegador del usuario realice una acción sin su consentimiento aprovechando que ya tiene una sesión abierta.
-                 */
-                /*
-                ¿Por qué NO necesitas CSRF en una aplicación web monolítica?
-                    - Si usas cookies para la autenticación
-                    - Si hay formulario web
-                 */
-                //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-                // Le dice a Spring Security cómo debe manejar las sesiones HTTP
-                .headers(headers -> headers.frameOptions(frame -> frame.disable())) // permitir iframes (para H2)
-                // Esto actúa antes del controlador. Para decir qué urls son públicas, cuáles necesitan autorización, etc.
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/", "/login", "/registro", "/h2-console/**", "/api/imagenes/**").permitAll() // pública para login/register
-                                .anyRequest().authenticated() //enviar jwt                                    ^TODO: Quitar esto mas tarde
+                        .anyRequest().permitAll() // TODO cambiar más adelante, id poco a poco, no seáis cafres...
                 )
-                .formLogin(login -> login.loginPage("/login")
-                        .defaultSuccessUrl("/api/imagenes", true)
-                        .failureUrl("/login?error=true")
-                        .permitAll())
-                .logout(logout -> logout.logoutUrl("/logout")
-//                        .logoutUrl("/logout")
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
                         .permitAll())
-                .exceptionHandling(exception -> exception.accessDeniedPage("/error"))
                 .build();
     }
 

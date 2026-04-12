@@ -22,11 +22,15 @@ public class UserController {
                                 Model model) {
         try {
             String token = apiAuthService.login(username, password);
-            session.setAttribute("token", token);
-            session.setAttribute("username", username);
-
-            return "redirect:/pantallas/inicio";
-
+            if (!token.isEmpty() && token != null) {
+                session.setAttribute("token", token);
+                session.setAttribute("username", username);
+                System.out.println("Login MVC OK. Token: " + token + " Username: " + username + " guardados");
+                return "redirect:/";
+            } else {
+                model.addAttribute("error", "Credenciales incorrectas");
+                return "login";
+            }
         } catch (Exception e) {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
             return "login";
