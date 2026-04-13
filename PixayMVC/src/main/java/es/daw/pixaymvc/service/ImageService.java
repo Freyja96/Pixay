@@ -25,8 +25,10 @@ public class ImageService {
 //        image.setContent(imageBytes); // Set al array de bytes
 //        image.setUserId(user); // Vincular --> usuario logueado
 //        imageRepository.save(image);
+        String token = apiSessionToken.getApiToken();
         webClientAPI.post()
                 .uri("imagenes/subir-imagen")
+                .headers(h -> h.setBearerAuth(token))
                 .body(BodyInserters.fromMultipartData("file", file.getResource())
                         .with("title", title)
                         .with("category", category)
@@ -36,9 +38,7 @@ public class ImageService {
                 .block();
     }
 
-    public CustomSlice<ImageResponse> getAllImages(int page, int size) {
-        String token = apiSessionToken.getApiToken();
-
+    public CustomSlice<ImageResponse> getAllImages(int page, int size, String token) {
         return webClientAPI.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("imagenes")

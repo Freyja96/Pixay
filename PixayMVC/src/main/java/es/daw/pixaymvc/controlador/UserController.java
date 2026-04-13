@@ -7,14 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/perfil")
+//@RequestMapping("/perfil")//WTF por qué iba a ser de perfil?
 public class UserController {
     private final ApiAuthService apiAuthService;
 
     public UserController(ApiAuthService apiAuthService) {
         this.apiAuthService = apiAuthService;
     }
-
+    @GetMapping("/login")
+    public String mostrarLogin() {
+        return "login"; // Carga login.html
+    }
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String username,
                                 @RequestParam String password,
@@ -42,11 +45,11 @@ public class UserController {
 //        // model.addAttribute("usuario", datosDesdeAPI);
 //        return "perfil"; // Devuelve perfil.html
 //    }
-
-    @GetMapping("/{username}/mis-imagenes")
-    public String verMisImagenes(@PathVariable String username, Model model) {
-        // Llama a la API: /api/imagenes/mis-imagenes
-        // model.addAttribute("imagenes", listaDesdeAPI);
-        return "mi-perfil/mis-imagenes";
-    }
+//TODO tiene que redirigir? no tiene simplemente que mostrar el perfil?
+//    @GetMapping("/perfil/{username}/mis-imagenes"")
+//    public String verMisImagenes(@PathVariable String username, Model model) {
+//        // Llama a la API: /api/imagenes/mis-imagenes
+//        // model.addAttribute("imagenes", listaDesdeAPI);
+//        return "pantallas/mi-perfil/mis-imagenes";
+//    }
 }

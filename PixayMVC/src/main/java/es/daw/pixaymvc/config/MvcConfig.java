@@ -8,12 +8,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry){
-        registry.addViewController("/").setViewName("pantallas/inicio");
+        //registry.addViewController("/").setViewName("pantallas/inicio"); //MAAAAL, solo si no hay lógica
         //registry.addViewController("/inicio").setViewName("pantallas/inicio");
-        registry.addViewController("/login").setViewName("login");
+        //registry.addViewController("/login").setViewName("login"); //MAAAAL, solo si no hay lógica
         registry.addViewController("/registro").setViewName("registro");
         registry.addViewController("/error").setViewName("error");
-        //registry.addViewController("/perfil").setViewName("pantallas/miPerfil/mis-imagenes");
+        //registry.addViewController("/perfil").setViewName("pantallas/mi-perfil/mis-imagenes"); //MAAAAL, solo si no hay lógica
 
         //TODO no sé si sería así para mirar el perfil de otros usuarios y si no podríamos aprovechar así para el propio
         // usuario también
@@ -23,9 +23,7 @@ public class MvcConfig implements WebMvcConfigurer {
 //        registry.addViewController("{id}/editar-perfil").setViewName("mi-perfil/editar-perfil");
 //        registry.addViewController("{id}/imagenes-guardadas").setViewName("mi-perfil/imagenes-guardadas");
         //registry.addViewController("/busqueda").setViewName("busqueda");
-        registry.addViewController("/ajustes").setViewName("/pantallas/ajustes/ajustes");
+        registry.addViewController("/ajustes").setViewName("pantallas/ajustes/ajustes");
         //registry.addViewController("asistencia").setViewName("asistencia");
-
-
     }
 }
