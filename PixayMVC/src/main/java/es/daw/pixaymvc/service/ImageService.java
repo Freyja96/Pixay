@@ -20,23 +20,23 @@ public class ImageService {
     @Autowired
     private ApiSessionToken apiSessionToken;
 
-    public void saveImage(MultipartFile file, String title, String category, String subcategory) {
-//        Image image = new Image();
-//        image.setContent(imageBytes); // Set al array de bytes
-//        image.setUserId(user); // Vincular --> usuario logueado
-//        imageRepository.save(image);
-        String token = apiSessionToken.getApiToken();
-        webClientAPI.post()
-                .uri("imagenes/subir-imagen")
-                .headers(h -> h.setBearerAuth(token))
-                .body(BodyInserters.fromMultipartData("file", file.getResource())
-                        .with("title", title)
-                        .with("category", category)
-                        .with("subcategory", subcategory))
-                .retrieve()
-                .bodyToMono(ImageResponse.class)
-                .block();
-    }
+//    public void saveImage(MultipartFile file, String title, String category, String subcategory) {
+////        Image image = new Image();
+////        image.setContent(imageBytes); // Set al array de bytes
+////        image.setUserId(user); // Vincular --> usuario logueado
+////        imageRepository.save(image);
+//        String token = apiSessionToken.getApiToken();
+//        webClientAPI.post()
+//                .uri("imagenes/subir-imagen")
+//                .headers(h -> h.setBearerAuth(token))
+//                .body(BodyInserters.fromMultipartData("file", file.getResource())
+//                        .with("title", title)
+//                        .with("category", category)
+//                        .with("subcategory", subcategory))
+//                .retrieve()
+//                .bodyToMono(ImageResponse.class)
+//                .block();
+//    }
 
     public CustomSlice<ImageResponse> getAllImages(int page, int size, String token) {
         return webClientAPI.get()

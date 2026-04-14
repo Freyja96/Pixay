@@ -2,6 +2,7 @@ package es.daw.pixayapi.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,7 +20,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll() // Permitir ver fotos a todos
+                        .anyRequest().permitAll())
                 .authenticationProvider(authenticationProvider)
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 

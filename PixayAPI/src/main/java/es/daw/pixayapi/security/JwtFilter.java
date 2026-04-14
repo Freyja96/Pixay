@@ -31,7 +31,6 @@ public class JwtFilter extends OncePerRequestFilter {
             @NotNull @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 1️⃣ Excluir H2 Console del filtro JWT
         if (request.getRequestURI().startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;

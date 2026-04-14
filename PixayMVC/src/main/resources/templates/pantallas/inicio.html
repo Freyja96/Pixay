@@ -99,7 +99,7 @@
         </style>
     </head>
     <body>
-        <div th:insert="~{fragments/navbar :: header}"></div>
+        <div th:insert="~{/fragments/cabecera}"></div>
         <!-- <nav class="navbar navbar-pixay sticky-top">
             <div class="container-fluid d-flex justify-content-between align-items-center">
                 <a class="navbar-brand fw-bold" href="#">PIXAY</a>
@@ -127,8 +127,9 @@
             <div class="row" id="gallery-container">
                 <div th:each="img : ${imagenes}" class="col-6 col-md-4 col-lg-3">
                     <div class="gallery-item">
-                        <img th:src="@{'/api/imagenes/' + ${img.id} + '/contenido'}" 
-                            th:alt="${img.title}" 
+                        <!--TODO pendiente revisar la ruta para mostrar las imágenes-->
+                        <img th:src="@{'imagenes/' + ${img.id} + '/contenido'}"
+                            th:alt="${img.title}"
                             loading="lazy">
                     </div>
                 </div>
@@ -164,11 +165,11 @@
                 isLoading = true;
                 currentPage++;
 
-                fetch(`/api/imagenes?page=${currentPage}&size=12`)
+                fetch(`imagenes?page=${currentPage}&size=12`)
                     .then(response => response.json())
                     .then(data => {
                         const container = document.getElementById('gallery-container');
-                        
+
                         data.content.forEach(img => {
                             const html = `
                                 <div class="col-6 col-md-4 col-lg-3">
