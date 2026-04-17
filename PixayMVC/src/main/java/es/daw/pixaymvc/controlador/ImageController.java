@@ -38,7 +38,7 @@ public class ImageController {
         return "pantallas/inicio";
     }
 //TODO MÉTODOS PARA SUBIR IMAGENES
-//    @GetMapping("/subir-imagen")
+//    @GetMapping("/subir-imagen")//mostrar el formulario
 //    public String showUploadForm(Model model) {
 //        List<String> categorias = webClientAPI
 //                .get()
@@ -58,7 +58,7 @@ public class ImageController {
 //        model.addAttribute("subcategorias", subcategorias);
 //        return "subir-imagen";
 //    }
-//    @PostMapping("/subir-imagen")
+//    @PostMapping("/subir-imagen") //recibir y procesar el archivo -> Click en Publicar en el formulario
 //    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 //        try {
 //            if (file.isEmpty()) {
