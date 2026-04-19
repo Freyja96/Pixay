@@ -39,33 +39,37 @@ public class ImageController {
     //TODO MÉTODOS PARA SUBIR IMAGENES
     @GetMapping("/subir-imagen")//mostrar el formulario
     public String showUploadForm(Model model) {
-        List<String> categorias = webClientAPI
+        List<String> categories = webClientAPI
                 .get()
-                .uri("categorias")
+                .uri("categories")
                 .retrieve()
                 .bodyToFlux(String.class)
                 .collectList()
                 .block();
-        List<String> subcategorias = webClientAPI
+        List<String> subcategories = webClientAPI
                 .get()
-                .uri("subcategorias")
+                .uri("subcategories")
                 .retrieve()
                 .bodyToFlux(String.class)
                 .collectList()
                 .block();
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("subcategorias", subcategorias);
+        model.addAttribute("categories", categories);
+        model.addAttribute("subcategories", subcategories);
         return "pantallas/subir-imagen";
     }
     @PostMapping("/subir-imagen") //recibir y procesar el archivo -> Click en Publicar en el formulario
-    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   @RequestParam("title") String title,
+                                   @RequestParam("category") String category,
+                                   @RequestParam("subcategory") String subcategory,
+                                   RedirectAttributes redirectAttributes) {
         try {
             if (file.isEmpty()) {
                 redirectAttributes.addFlashAttribute("message", "Por favor, selecciona un archivo.");
 
                 return "redirect:/mi-perfil/mis-imagenes";
             }
-
+            imageService.saveImage(file, title, category, subcategory);
             // convertir el archivo a byte[]
             byte[] bytes = file.getBytes();
 
@@ -73,7 +77,7 @@ public class ImageController {
             // El service enviará estos bytes a PixayAPI
 
             redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
-            return "redirect:/mis-imagenes";
+            return "redirect:/mi-perfil/mis-imagenes";
 
         } catch (IOException e) {
             return "error";

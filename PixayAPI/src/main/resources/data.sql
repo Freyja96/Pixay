@@ -11,13 +11,13 @@ INSERT INTO users (id, username, password, email, role_id) VALUES (3, 'maria', '
 INSERT INTO users (id, username, password, email, role_id) VALUES (4, 'julia', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK','julia@correo.com', 2);
 --
     --TODO volver a crear tablas de catgories y subcategories
--- -- 3. CATEGORÍAS (Asegúrate de que la entidad se llame Category y la tabla categories)
--- INSERT INTO categories (id, name) VALUES (1, 'Ilustración');
--- INSERT INTO categories (id, name) VALUES (2, 'Fotografía');
--- --
--- -- -- 4. SUBCATEGORÍAS
--- INSERT INTO subcategories (id, name, category) VALUES (1, 'Retrato', 'Fotografía');
--- INSERT INTO subcategories (id, name, category) VALUES (2, 'Paisaje', 'Fotografía');
--- INSERT INTO subcategories (id, name, category) VALUES (3, 'Fotografía urbana', 'Fotografía');
--- INSERT INTO subcategories (id, name, category) VALUES (7, 'Arte conceptual', 'Ilustración');
--- INSERT INTO subcategories (id, name, category) VALUES (8, 'Pixel Art', 'Ilustración');
+-- 3. CATEGORÍAS (Asegúrate de que la entidad se llame Category y la tabla categories)
+INSERT INTO categories (id, name) VALUES (1, 'Ilustración');
+INSERT INTO categories (id, name) VALUES (2, 'Fotografía');
+--
+-- -- 4. SUBCATEGORÍAS
+INSERT INTO subcategories (id, name, category) VALUES (1, 'Retrato', 'Fotografía');
+INSERT INTO subcategories (id, name, category) VALUES (2, 'Paisaje', 'Fotografía');
+INSERT INTO subcategories (id, name, category) VALUES (3, 'Fotografía urbana', 'Fotografía');
+INSERT INTO subcategories (id, name, category) VALUES (7, 'Arte conceptual', 'Ilustración');
+INSERT INTO subcategories (id, name, category) VALUES (8, 'Pixel Art', 'Ilustración');

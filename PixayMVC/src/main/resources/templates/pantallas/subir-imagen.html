@@ -70,7 +70,7 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <h6 class="text-orange fw-bold mb-4">Subir imagen</h6>
-                <form th:action="@{/upload}" method="post" enctype="multipart/form-data" class="upload-form">
+                <form th:action="@{/subir-imagen}" method="post" enctype="multipart/form-data" class="upload-form">
                     <div class="mb-4">
                         <label class="form-label fw-medium text-navy">Introduce el título de la imagen:</label>
                         <input type="text" name="title" class="form-control custom-input" placeholder="Escribe aquí...">
@@ -78,14 +78,14 @@
                     <div class="mb-4">
                         <select name="category" id="category"> <!-- Quiero que cargue las categorías desde la base de datos con thymeleaf-->
                             <option selected disabled value="">Selecciona una categoría</option>
-                            <option th:each="cat : ${categorias}" 
+                            <option th:each="cat : ${categories}"
                                 th:value="${cat}" 
                                 th:text="${cat}">
                             </option>
                         </select>
                         <select name="subcategory" id="subcategory"> <!-- Quiero que cargue las subcategorías desde la base de datos con thymeleaf-->
-                            <option  default-content value="">Selecciona una subcategoría</option>
-                            <option th:each="sub : ${subcategorias}" 
+                            <option selected disabled value="">Selecciona una subcategoría</option>
+                            <option th:each="sub : ${subcategories}"
                                 th:value="${sub}" 
                                 th:text="${sub}">
                             </option>
