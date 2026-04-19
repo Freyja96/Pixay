@@ -1,5 +1,6 @@
 package es.daw.pixayapi.controller;
 
+import es.daw.pixayapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,14 +12,15 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class CategoryController {
-//TODO en lugar de List.of, categoryService que lo saque de la bdd
+    private final CategoryService categoryService;
+
     @GetMapping("/categories")
     public List<String> getCategorias() {
-        return List.of("Naturaleza", "Arquitectura", "Personas", "Tecnología");
+        return categoryService.getAllCategoryNames();
     }
 
     @GetMapping("/subcategories")
     public List<String> getSubcategorias() {
-        return List.of("Bosques", "Rascacielos", "Retratos", "IA");
+        return categoryService.getAllSubcategoryNames();
     }
 }

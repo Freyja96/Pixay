@@ -4,6 +4,7 @@ import es.daw.pixaymvc.dto.response.CustomSlice;
 import es.daw.pixaymvc.dto.response.ImageResponse;
 import es.daw.pixaymvc.service.ImageService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,15 +44,17 @@ public class ImageController {
                 .get()
                 .uri("categories")
                 .retrieve()
-                .bodyToFlux(String.class)
-                .collectList()
+                //.bodyToFlux(String.class)
+                //.collectList()
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
                 .block();
         List<String> subcategories = webClientAPI
                 .get()
                 .uri("subcategories")
                 .retrieve()
-                .bodyToFlux(String.class)
-                .collectList()
+//                .bodyToFlux(String.class)
+//                .collectList()
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
                 .block();
         model.addAttribute("categories", categories);
         model.addAttribute("subcategories", subcategories);
