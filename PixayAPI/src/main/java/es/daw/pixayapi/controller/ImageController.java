@@ -31,7 +31,7 @@ public class ImageController {
     //TODO para hacer pruebas y luego ya poner el PreAuthorize
     //@PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<ImageResponse> uploadImage(
-            @RequestParam("file") MultipartFile content,
+            @RequestParam("content") MultipartFile content,
             @RequestParam("title") String title,
             @RequestParam("category") String category,
             @RequestParam("subcategory") String subcategory,
