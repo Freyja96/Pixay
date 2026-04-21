@@ -1,6 +1,6 @@
 package es.daw.pixayapi.controller;
 
-import es.daw.pixayapi.dto.response.image.ImageResponse;
+import es.daw.pixayapi.dto.response.ImageResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.service.ImageService;
@@ -31,7 +31,7 @@ public class ImageController {
     //TODO para hacer pruebas y luego ya poner el PreAuthorize
     //@PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
     public ResponseEntity<ImageResponse> uploadImage(
-            @RequestParam("file") MultipartFile content,
+            @RequestParam("content") MultipartFile content,
             @RequestParam("title") String title,
             @RequestParam("category") String category,
             @RequestParam("subcategory") String subcategory,

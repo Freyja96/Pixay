@@ -8,10 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -28,25 +25,29 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column // nullable iría false y longitud por defecto???
-    //@Column(name="FULL_NAME")
-    //private String fullname; // KK
-    private String fullName;
+//comento fullName porque se supone que no íbamos a mostrar el nombre completo del usuario
+//    @Column
+//    private String fullName;
 
     @Column
     private String email;
-
     // Relación bidireccional. Usuario es el lado propietario, porque tiene la tabla intermedia
     // fetch = FetchType.EAGER indica que los roles se cargan siempre junto con el usuario,
     // lo cual es necesario porque Spring Security los necesita inmediatamente para construir las autoridades.
     @ManyToOne
     private Role role;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
+
+    @Column(length = 255)
+    private String description;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 
     // --------------------- 5 MÉTODOS DE LA INTERFACE UserDetails -----------------
-
     // Devuelve los roles convertidos en objetos GrantedAuthority
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

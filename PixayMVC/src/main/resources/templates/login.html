@@ -94,7 +94,7 @@
 </head>
 <body>
 
-<img src="imagenes/logo.png" class="login-logo"/>
+<img th:src="@{/imagenes/logo.png}" class="login-logo" alt="Pixay"/>
 <div class="container d-flex align-items-center justify-content-center vh-50">
     <div class="card" style="width: 500px;">
         <div class="card-body">
@@ -121,15 +121,18 @@
                 </div>
                 <p class="mt-3 mb-0 orange-text text-decoration-underline">¿Olvidaste la contraseña?</p>
                 <div class="d-flex justify-content-center mt-3">
-                    <button type="submit" class="btn btn-primary login-button">SUSCRÍBETE</button>
+                    <button type="submit" class="btn btn-primary login-button">INICIAR SESIÓN</button>
                 </div>
 
             </form>
+            <p class="text-center mt-3 mb-0 orange-text">
+                ¿No tienes cuenta? <a class="orange-text" th:href="@{/registro}">Regístrate</a>
+            </p>
 
-            <p class="text-center mt-3 mb-0 orange-text">¿No tienes cuenta? Regístrate</p>
+
             <p class="text-center mt-3 mb-0 text-muted">
 
-<!--                Demo users: admin / john / emma (password = 1234)-->
+            Demo users: admin / juan / maria / julia (password = admin123)
             </p>
         </div>
     </div>

@@ -14,7 +14,7 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class ImageService {
-    private ImageRepository imageRepository;
+    private final ImageRepository imageRepository;
 
     public Slice<Image> getAllImagesPaged(int page, int size){
         Pageable pageable = PageRequest.of(page, size);

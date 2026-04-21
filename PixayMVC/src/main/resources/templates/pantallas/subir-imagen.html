@@ -22,7 +22,9 @@
             /* Espaciados y medidas constantes */
             --BORDER-RADIUS-LG: 10px;
         }
-
+        .btn-primary {
+            background-color: var(--PRIMARY-BLUE) !important;
+        }
         .text-orange { color: var(--SECONDARY-ORANGE); }
         .text-navy { color: var(--DARK-BACKCOLOR); }
 
@@ -65,33 +67,36 @@
     </style>
 </head>
 <body>
-    <div class="container py-5">
+    <div th:insert="~{fragments/cabecera}"></div>
+    <div class="container mt-5 py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <h6 class="text-orange fw-bold mb-4">Subir imagen</h6>
-                <form th:action="@{/upload}" method="post" enctype="multipart/form-data" class="upload-form">
+                <form th:action="@{/subir-imagen}" method="post" enctype="multipart/form-data" class="upload-form">
                     <div class="mb-4">
                         <label class="form-label fw-medium text-navy">Introduce el título de la imagen:</label>
                         <input type="text" name="title" class="form-control custom-input" placeholder="Escribe aquí...">
                     </div>
                     <div class="mb-4">
-                        <select name="category" id="category"> <!-- Quiero que cargue las categorías desde la base de datos con thymeleaf-->
+                        <select name="category" id="category" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una categoría</option>
-                            <option th:each="cat : ${categorias}" 
+                            <option th:each="cat : ${categories}"
                                 th:value="${cat}" 
                                 th:text="${cat}">
                             </option>
                         </select>
-                        <select name="subcategory" id="subcategory"> <!-- Quiero que cargue las subcategorías desde la base de datos con thymeleaf-->
-                            <option  default-content value="">Selecciona una subcategoría</option>
-                            <option th:each="sub : ${subcategorias}" 
+                    </div>
+                    <div class="mb-4">
+                        <select name="subcategory" id="subcategory" class="form-select custom-input col-6">
+                            <option selected disabled value="">Selecciona una subcategoría</option>
+                            <option th:each="sub : ${subcategories}"
                                 th:value="${sub}" 
                                 th:text="${sub}">
                             </option>
                         </select>
                     </div>
 
-                    <div class="upload-area mb-4" onclick="document.getElementById('file').click()">
+                    <div class="upload-area mb-4" onclick="document.getElementById('content').click()">
                         <div id="default-content" class="text-center">
                             <p class="mb-2 text-navy">Añadir imagen</p>
                             <div class="image-placeholder">
@@ -114,16 +119,16 @@
                             </div>
                         </div>
                         <img id="image-preview" src="#" alt="Previsualización" class="d-none w-100 h-100" style="object-fit: cover; border-radius: 20px;">
-                        <input type="file" name="file" id="file" accept="image/*" class="d-none" onchange="previewImage(this)">
+                        <input type="file" name="content" id="content" accept="image/*" class="d-none" onchange="previewImage(this)">
                     </div>
 
                     <div id="file-name" class="text-center mb-3 small text-muted"></div>
 
-                    <!-- para mostrar que se ha subido la imagen correctamente, quiero que se muestre solo para confirmar
+                    <!-- para mostrar que se ha subido la imagen correctamente, quiero que se muestre solo para confirmar-->
                     <div th:if="${message}" class="alert alert-success border-0 shadow-sm mb-4" th:text="${message}"></div>
-                    -->
+
                     <div class="text-center">
-                        <button type="submit" class="btn btn-publish px-5">Publicar</button>
+                        <button type="submit" class="btn btn-publish px-5 btn-primary">Publicar</button>
                     </div>
                 </form>
                 
