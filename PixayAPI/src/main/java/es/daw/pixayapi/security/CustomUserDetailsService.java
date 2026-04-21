@@ -22,17 +22,19 @@ public class CustomUserDetailsService implements UserDetailsService {
 //    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("Buscando en la BD de la API al usuario: " + username);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
 
         System.out.println("Cargando usuario: " + user.getUsername());
         System.out.println("Password en BD: " + user.getPassword());
-        boolean matches = passwordEncoder.matches("admin123", user.getPassword());
-        System.out.println("¿Coincide admin123 con el hash? " + matches);
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUsername())
-                .password(user.getPassword())
-                .authorities(user.getRole().getName())
-                .build();
+//        boolean matches = passwordEncoder.matches("admin123", user.getPassword());
+//        System.out.println("¿Coincide admin123 con el hash? " + matches);
+//        return org.springframework.security.core.userdetails.User.builder()
+//                .username(user.getUsername())
+//                .password(user.getPassword())
+//                .authorities(user.getRole().getName())
+//                .build();
+        return user;
     }
 }

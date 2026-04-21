@@ -15,32 +15,37 @@ import java.util.List;
 @Getter
 @Setter
 public class User implements UserDetails {
+//id BIGINT AUTO_INCREMENT PRIMARY KEY,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//username VARCHAR(50) NOT NULL UNIQUE,
     @Column(unique = true, nullable = false, length = 30)
     private String username;
 
-    @Column(nullable = false)
+//password VARCHAR(255) NOT NULL,
+    @Column(nullable = false, length = 255)
     private String password;
 
-//comento fullName porque se supone que no íbamos a mostrar el nombre completo del usuario
-//    @Column
-//    private String fullName;
-
-    @Column
+//email VARCHAR(100) NOT NULL,
+    @Column(nullable = false, length = 100)
     private String email;
+
+//role_id BIGINT NOT NULL,
     // Relación bidireccional. Usuario es el lado propietario, porque tiene la tabla intermedia
     // fetch = FetchType.EAGER indica que los roles se cargan siempre junto con el usuario,
     // lo cual es necesario porque Spring Security los necesita inmediatamente para construir las autoridades.
     @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+//profile_picture LONGBLOB,
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] profilePicture;
 
+//description VARCHAR(255),
     @Column(length = 255)
     private String description;
 

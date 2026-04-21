@@ -37,6 +37,13 @@ public class ImageController {
             @RequestParam("subcategory") String subcategory,
             @AuthenticationPrincipal User user // Obtenemos el usuario del token
     ){
+        if (user == null) {
+            System.out.println("ERROR: El usuario llega como NULL. El Token no se ha validado correctamente.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        //pongo traza para ver si el usuario está autenticado
+        System.out.println("Usuario que intenta subir: " + user.getUsername()); //es null tiene que ser por el puto token
+
         Image savedImage = imageService.saveImage(content, title, category, subcategory, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(savedImage));
@@ -93,7 +100,7 @@ public class ImageController {
                 entity.getTitle(),
                 entity.getContent(),
                 entity.getUser().getId(),
-                entity.getCategory(),
+                entity.getCategory().getName(),
                 entity.getSubcategory()
         );
     }

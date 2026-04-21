@@ -17,7 +17,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -34,6 +33,11 @@ public class ImageController {
     public String inicio(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
         CustomSlice<ImageResponse> slice = imageService.getAllImages(0, 12, token);
+
+        System.out.println("Imágenes recibidas de la API: " + slice.getContent().size());
+        if(!slice.getContent().isEmpty()){
+            System.out.println("Título de la primera: " + slice.getContent().get(0).title());
+        }
 
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
@@ -83,7 +87,8 @@ public class ImageController {
         body.add("subcategory", subcategory);
         try {
             webClientAPI.post()
-                    .uri("/imagenes/subir-imagen")
+                    //TODO CRIS mirar a ver que no sea /imagenes/subir-imagen
+                    .uri("imagenes/subir-imagen")
                     .header("Authorization", "Bearer " + token)
                     .body(BodyInserters.fromMultipartData(body))
                     .retrieve()
@@ -95,24 +100,5 @@ public class ImageController {
             redirectAttributes.addFlashAttribute("error", "Error al conectar con la API: " + e.getMessage());
             return "redirect:/subir-imagen";
         }
-//        try {
-//            if (file.isEmpty()) {
-//                redirectAttributes.addFlashAttribute("message", "Por favor, selecciona un archivo.");
-//
-//                return "redirect:/mi-perfil/mis-imagenes";
-//            }
-//            imageService.saveImage(file, title, category, subcategory);
-//            // convertir el archivo a byte[]
-//            byte[] bytes = file.getBytes();
-//
-//            // TODO: llamar al Service que conecta con la API
-//            // El service enviará estos bytes a PixayAPI
-//
-//            redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
-//            return "redirect:/mi-perfil/mis-imagenes";
-//
-//        } catch (IOException e) {
-//            return "error";
-//        }
     }
 }

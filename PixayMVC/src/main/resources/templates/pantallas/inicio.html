@@ -128,7 +128,7 @@
         <div th:each="img : ${imagenes}" class="col-6 col-md-4 col-lg-3">
             <div class="gallery-item">
                 <!--TODO pendiente revisar la ruta para mostrar las imágenes-->
-                <img th:src="@{'imagenes/' + ${img.id} + '/contenido'}"
+                <img th:src="'data:image/jpeg;base64,' + ${img.getContentBase64()}"
                      th:alt="${img.title}"
                      loading="lazy">
             </div>
@@ -175,7 +175,7 @@
                                 <div class="col-6 col-md-4 col-lg-3">
                                     <div class="gallery-item">
                                     <!--es /api/imagenes o /imagenes?-->
-                                        <img src="/imagenes/${img.id}/contenido" alt="${img.title}" loading="lazy">
+                                        <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
                                     </div>
                                 </div>`;
                     container.insertAdjacentHTML('beforeend', html);
