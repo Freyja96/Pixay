@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS users_images (
     title VARCHAR(100),
     content LONGBLOB NOT NULL,
     user_id BIGINT NOT NULL,
-    category VARCHAR(50) NOT NULL,
+    category_id BIGINT NOT NULL,
     subcategory VARCHAR(50),
 
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (category) REFERENCES categories(name)
+    FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE IF NOT EXISTS saved_images (

@@ -17,6 +17,9 @@ public class AppConfig {
     public WebClient webClientAPI(WebClient.Builder builder) {
         return builder
                 .baseUrl(apiUrl)
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(10 * 1024 * 1024)) // 10 MB
                 .build();
     }
 
