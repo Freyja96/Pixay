@@ -43,10 +43,11 @@ CREATE TABLE IF NOT EXISTS users_images (
     content LONGBLOB NOT NULL,
     user_id BIGINT NOT NULL,
     category_id BIGINT NOT NULL,
-    subcategory VARCHAR(50),
+    subcategory_id BIGINT,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category_id) REFERENCES categories(id),
+    FOREIGN KEY (subcategory_id) REFERENCES subcategories(id)
 );
 
 CREATE TABLE IF NOT EXISTS saved_images (

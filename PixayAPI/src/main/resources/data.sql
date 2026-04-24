@@ -11,23 +11,57 @@ INSERT INTO users (id, username, password, email, role_id) VALUES (3, 'maria', '
 INSERT INTO users (id, username, password, email, role_id) VALUES (4, 'julia', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK','julia@correo.com', 2);
 
 -- 3. CATEGORÍAS (Asegúrate de que la entidad se llame Category y la tabla categories)
-INSERT INTO categories (id, name) VALUES (1, 'Ilustración');
-INSERT INTO categories (id, name) VALUES (2, 'Fotografía');
+INSERT INTO categories (id, name) VALUES (1, 'Fotografía');
+INSERT INTO categories (id, name) VALUES (2, 'Ilustración');
 
 --  4. SUBCATEGORÍAS
 -- FOTOGRAFÍA (category_id = 1)
-INSERT INTO subcategories (name, category_id) VALUES ('Retrato', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Paisaje', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Fotografía Urbana', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Macro', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Naturaleza Salvaje', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Blanco y Negro', 1);
-INSERT INTO subcategories (name, category_id) VALUES ('Arquitectura', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('Retrato', 1);            --1
+INSERT INTO subcategories (name, category_id) VALUES ('Paisaje', 1);            --2
+INSERT INTO subcategories (name, category_id) VALUES ('Fotografía Urbana', 1);  --3
+INSERT INTO subcategories (name, category_id) VALUES ('Macro', 1);              --4
+INSERT INTO subcategories (name, category_id) VALUES ('Naturaleza', 1);         --5
+INSERT INTO subcategories (name, category_id) VALUES ('Blanco y Negro', 1);     --6
+INSERT INTO subcategories (name, category_id) VALUES ('Arquitectura', 1);       --7
+INSERT INTO subcategories (name, category_id) VALUES ('Meme', 1);               --8
 -- ILUSTRACIÓN (category_id = 2)
-INSERT INTO subcategories (name, category_id) VALUES ('Arte Conceptual', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Pixel Art', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Fan Art', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Cómic / Manga', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Ilustración Digital', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Acuarela Digital', 2);
-INSERT INTO subcategories (name, category_id) VALUES ('Minimalismo', 2);
+INSERT INTO subcategories (name, category_id) VALUES ('Arte Conceptual', 2);    --1
+INSERT INTO subcategories (name, category_id) VALUES ('Pixel Art', 2);          --2
+INSERT INTO subcategories (name, category_id) VALUES ('Fan Art', 2);            --3
+INSERT INTO subcategories (name, category_id) VALUES ('Cómic / Manga', 2);      --4
+INSERT INTO subcategories (name, category_id) VALUES ('Ilustración Digital', 2);--5
+INSERT INTO subcategories (name, category_id) VALUES ('Acuarela Digital', 2);   --6
+INSERT INTO subcategories (name, category_id) VALUES ('Minimalismo', 2);        --7
+INSERT INTO subcategories (name, category_id) VALUES ('IA', 2);                 --8
+
+--IMÁGENES DE MUESTRA
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Angel Beats', 1, 2,4, FILE_READ('src/main/resources/static/inicio/angel-beats.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Criss & Cross', 1, 2, 8,FILE_READ('src/main/resources/static/inicio/CrissCross.png'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Criss&Cross', 1, 1, 1, FILE_READ('src/main/resources/static/inicio/CrissCross2.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Darker than black', 1, 2, 4, FILE_READ('src/main/resources/static/inicio/darker-than-black.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Escarabajo', 1, 2, 5,  FILE_READ('src/main/resources/static/inicio/Escarabajo.png'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Garden for you', 1, 2, 5, FILE_READ('src/main/resources/static/inicio/garden4u.png'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Life is Strange', 1, 2, 5, FILE_READ('src/main/resources/static/inicio/lis.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id,content)
+VALUES ('Life is Strange: True Colors', 1, 2, 3, FILE_READ('src/main/resources/static/inicio/lis-true-colors.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Maga', 1, 2, 1, FILE_READ('src/main/resources/static/inicio/maga.PNG'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Mariquita', 1, 1, 5, FILE_READ('src/main/resources/static/inicio/mariquita.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Meme', 1, 1, 8, FILE_READ('src/main/resources/static/inicio/meme.jpeg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Monstera', 1, 2, 5, FILE_READ('src/main/resources/static/inicio/monstera.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Pelirroja', 1, 1, 1, FILE_READ('src/main/resources/static/inicio/Pelirroja.PNG'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Pixel art', 1, 2, 2, FILE_READ('src/main/resources/static/inicio/pixel-art.jpeg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Zoro Roronoa', 1, 2, 4, FILE_READ('src/main/resources/static/inicio/Zoro-Roronoa.png'));

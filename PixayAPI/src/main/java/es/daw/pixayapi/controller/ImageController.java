@@ -101,7 +101,7 @@ public class ImageController {
                 entity.getContent(),
                 entity.getUser().getId(),
                 entity.getCategory().getName(),
-                entity.getSubcategory()
+                entity.getSubcategory() != null ? entity.getSubcategory().getName() : "" //puede ser nula
         );
     }
 }

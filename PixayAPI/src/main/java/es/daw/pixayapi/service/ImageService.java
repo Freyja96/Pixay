@@ -2,9 +2,11 @@ package es.daw.pixayapi.service;
 
 import es.daw.pixayapi.entity.Category;
 import es.daw.pixayapi.entity.Image;
+import es.daw.pixayapi.entity.Subcategory;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.repository.CategoryRepository;
 import es.daw.pixayapi.repository.ImageRepository;
+import es.daw.pixayapi.repository.SubcategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +20,7 @@ import java.io.IOException;
 public class ImageService {
     private final ImageRepository imageRepository;
     private final CategoryRepository categoryRepository;
+    private final SubcategoryRepository subcategoryRepository;
 
     public Slice<Image> getAllImagesPaged(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -33,16 +36,17 @@ public class ImageService {
         return imageRepository.findByCategory(category, pageable);
     }
 
-    public Image saveImage(MultipartFile file, String title, String categoryName, String subcategory, User user){
+    public Image saveImage(MultipartFile file, String title, String categoryName, String subcategoryName, User user){
         try {
         Category cat = categoryRepository.findByName(categoryName)
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + categoryName));
-
+        Subcategory subcat = subcategoryRepository.findByName(subcategoryName)
+                .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada: " + subcategoryName));
         Image image = new Image();
         image.setContent(file.getBytes());
         image.setTitle(title);
         image.setCategory(cat);
-        image.setSubcategory(subcategory);
+        image.setSubcategory(subcat);
         image.setUser(user);
 
         return imageRepository.save(image);

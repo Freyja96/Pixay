@@ -26,6 +26,7 @@ public class Image {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(length = 50)
-    private String subcategory;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id")
+    private Subcategory subcategory;
 }

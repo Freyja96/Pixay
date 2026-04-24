@@ -1,0 +1,29 @@
+@import "estilos.css";
+
+body {
+    background-color: var(--WHITE-BACKCOLOR);
+}
+
+/* Estilos para la galería */
+.gallery-item { border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd; }
+.gallery-item img { width: 100%; display: block; object-fit: cover; }
+
+/* Botón flotante inferior */
+.btn-upload {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--LIGHT-BLUE);
+    color: var(--SECONDARY-ORANGE);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 40px;
+    border: 4px solid #0b1d2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-decoration: none;
+}
