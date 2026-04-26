@@ -1,17 +1,22 @@
 package es.daw.pixayapi.controller;
 
 import es.daw.pixayapi.dto.response.ImageResponse;
+import es.daw.pixayapi.dto.response.SubcategoryResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/imagenes")

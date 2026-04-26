@@ -18,9 +18,9 @@ public class CategoryController {
     public List<String> getCategorias() {
         return categoryService.getAllCategoryNames();
     }
-
-    @GetMapping("/subcategories")
-    public List<String> getSubcategorias() {
-        return categoryService.getAllSubcategoryNames();
-    }
+//
+//    @GetMapping("/subcategories")
+//    public List<String> getSubcategorias() {
+//        return categoryService.getAllSubcategoryNames();
+//    }
 }

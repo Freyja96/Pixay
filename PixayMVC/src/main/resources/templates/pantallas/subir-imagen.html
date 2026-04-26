@@ -15,7 +15,7 @@
         <h6 class="text-orange fw-bold mb-4">Subir imagen</h6>
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
-                <form th:action="@{/subir-imagen}" method="post" enctype="multipart/form-data" class="upload-form">
+                <form id="uploadForm" th:action="@{/subir-imagen}" method="post" enctype="multipart/form-data" class="upload-form">
                     <div class="mb-4">
                         <label class="form-label fw-medium text-navy">Introduce el título de la imagen:</label>
                         <input type="text" name="title" class="form-control custom-input" placeholder="Escribe aquí...">
@@ -30,12 +30,20 @@
                         </select>
                     </div>
                     <div class="mb-4">
+<!--                        <select name="subcategory_id" id="subcategory_id" class="form-select custom-input col-6">-->
+<!--                            <option selected disabled value="">Selecciona una subcategoría</option>-->
+<!--                            <option th:each="sub : ${subcategories}"-->
+<!--                                th:value="${sub}"-->
+<!--                                th:text="${sub}">-->
+<!--                            </option>-->
+<!--                        </select>-->
                         <select name="subcategory_id" id="subcategory_id" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una subcategoría</option>
-                            <option th:each="sub : ${subcategories}"
-                                th:value="${sub}" 
-                                th:text="${sub}">
-                            </option>
+                            <option th:each="sub : ${subcategoriesObjects}"
+                                    th:value="${sub.name}"
+                                    th:text="${sub.name}"
+                                    th:attr="data-category=${sub.categoryName}"
+                                    style="display: none;"> </option>
                         </select>
                     </div>
 
@@ -71,21 +79,39 @@
                     <div th:if="${message}" class="alert alert-success border-0 shadow-sm mb-4" th:text="${message}"></div>
 
                     <div class="text-center">
-                        <button type="submit" class="btn btn-publish px-5 btn-primary">Publicar</button>
+                        <button type="submit" id="btnSubmit" class="btn btn-publish px-5 btn-primary">Publicar</button>
                     </div>
                 </form>
-                
             </div>
         </div>
     </div>
 </body>
 <script>
-    function previewName(input) {
-        const display = document.getElementById('file-name');
-        if (input.files && input.files[0]) {
-            display.innerHTML = "Archivo seleccionado: <strong>" + input.files[0].name + "</strong>";
-        }
-    }
+    document.getElementById('category_id').addEventListener('change', function() {
+        const selectedCat = this.value;
+        const subSelect = document.getElementById('subcategory_id');
+        const options = subSelect.querySelectorAll('option');
+
+        subSelect.value = ""; // Resetear selección
+        options.forEach(opt => {
+            if (opt.getAttribute('data-category') === selectedCat || opt.value === "") {
+                opt.style.display = 'block';
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+    });
+    document.getElementById('uploadForm').addEventListener('submit', function() {
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true; // Deshabilita el botón
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Publicando...';
+    });
+    // function previewName(input) {
+    //     const display = document.getElementById('file-name');
+    //     if (input.files && input.files[0]) {
+    //         display.innerHTML = "Archivo seleccionado: <strong>" + input.files[0].name + "</strong>";
+    //     }
+    // }
     function previewImage(input) {
     const preview = document.getElementById('image-preview');
     const defaultContent = document.getElementById('default-content');

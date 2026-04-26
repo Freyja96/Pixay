@@ -2,6 +2,7 @@ package es.daw.pixaymvc.controlador;
 
 import es.daw.pixaymvc.dto.response.CustomSlice;
 import es.daw.pixaymvc.dto.response.ImageResponse;
+import es.daw.pixaymvc.dto.response.SubcategoryResponse;
 import es.daw.pixaymvc.service.ImageService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
@@ -44,26 +45,23 @@ public class ImageController {
 
         return "pantallas/inicio";
     }
+
     @GetMapping("/subir-imagen")//mostrar el formulario
     public String showUploadForm(Model model) {
-        List<String> categories = webClientAPI
-                .get()
+        List<String> categories = webClientAPI.get()
                 .uri("categories")
                 .retrieve()
-                //.bodyToFlux(String.class)
-                //.collectList()
                 .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
                 .block();
-        List<String> subcategories = webClientAPI
-                .get()
+
+        List<SubcategoryResponse> subcategories = webClientAPI.get()
                 .uri("subcategories")
                 .retrieve()
-//                .bodyToFlux(String.class)
-//                .collectList()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
                 .block();
+
         model.addAttribute("categories", categories);
-        model.addAttribute("subcategories", subcategories);
+        model.addAttribute("subcategoriesObjects", subcategories);
         return "pantallas/subir-imagen";
     }
     //TODO MÉTODO PARA SUBIR IMAGEN
