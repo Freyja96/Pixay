@@ -65,3 +65,4 @@ INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Pixel art', 1, 2, 2, FILE_READ('src/main/resources/static/inicio/pixel-art.jpeg'));
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Zoro Roronoa', 1, 2, 4, FILE_READ('src/main/resources/static/inicio/Zoro-Roronoa.png'));
+
