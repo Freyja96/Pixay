@@ -36,20 +36,22 @@ public class ImageService {
         return imageRepository.findByCategory(category, pageable);
     }
 
-    public Image saveImage(MultipartFile file, String title, String categoryName, String subcategoryName, User user){
+    public Image saveImage(MultipartFile file, String title, String category_id, String subcategory_id, User user){
         try {
-        Category cat = categoryRepository.findByName(categoryName)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + categoryName));
-        Subcategory subcat = subcategoryRepository.findByName(subcategoryName)
-                .orElseThrow(() -> new RuntimeException("Subcategoría no encontrada: " + subcategoryName));
-        Image image = new Image();
-        image.setContent(file.getBytes());
-        image.setTitle(title);
-        image.setCategory(cat);
-        image.setSubcategory(subcat);
-        image.setUser(user);
+            Category cat = categoryRepository.findByName(category_id)
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + category_id));
+            Subcategory subcat = null;
+            if (subcategory_id != null && !subcategory_id.isEmpty()) {
+                subcat = subcategoryRepository.findByName(subcategory_id).orElse(null);
+            }
+            Image image = new Image();
+            image.setContent(file.getBytes());
+            image.setTitle(title);
+            image.setCategory(cat);
+            image.setSubcategory(subcat);
+            image.setUser(user);
 
-        return imageRepository.save(image);
+            return imageRepository.save(image);
         } catch (IOException e){
             throw new RuntimeException("Error al leer los bytes de la imagen: ", e);
         }

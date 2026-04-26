@@ -22,8 +22,8 @@ public class ImageController {
      * Sube una imagen al servidor.
      * @param content
      * @param title
-     * @param category
-     * @param subcategory (opcional)
+     * @param category_id
+     * @param subcategory_id (opcional)
      * @param user
      * @return
      */
@@ -33,8 +33,8 @@ public class ImageController {
     public ResponseEntity<ImageResponse> uploadImage(
             @RequestParam("content") MultipartFile content,
             @RequestParam("title") String title,
-            @RequestParam("category") String category,
-            @RequestParam("subcategory") String subcategory,
+            @RequestParam("category_id") String category_id,
+            @RequestParam(value = "subcategory_id", required = false) String subcategory_id,
             @AuthenticationPrincipal User user // Obtenemos el usuario del token
     ){
         if (user == null) {
@@ -44,7 +44,7 @@ public class ImageController {
         //pongo traza para ver si el usuario está autenticado
         System.out.println("Usuario que intenta subir: " + user.getUsername()); //es null tiene que ser por el puto token
 
-        Image savedImage = imageService.saveImage(content, title, category, subcategory, user);
+        Image savedImage = imageService.saveImage(content, title, category_id, subcategory_id, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(convertToResponse(savedImage));
     }
@@ -101,7 +101,7 @@ public class ImageController {
                 entity.getContent(),
                 entity.getUser().getId(),
                 entity.getCategory().getName(),
-                entity.getSubcategory() != null ? entity.getSubcategory().getName() : "" //puede ser nula
+                entity.getSubcategory() != null ? entity.getSubcategory().getName() : "Sin subcategoría" //puede ser nula
         );
     }
 }

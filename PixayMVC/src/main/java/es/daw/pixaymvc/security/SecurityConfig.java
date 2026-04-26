@@ -52,7 +52,7 @@ public class SecurityConfig {
 
     // Sin este bean, Spring no sabrá cómo inyectar AuthenticationManager en tus clases.
     // Lo usamos en AuthController
-    // No lo necesitas si todo el proceso de autenticación lo maneja Spring automáticamente, como cuando usas formLogin()
+    // No lo necesitas si el proceso de autenticación lo maneja Spring automáticamente, como la usar formLogin()
     // En una API REST con JWT, donde tú haces la autenticación manualmente y devuelves un token (como tú estás haciendo), sí lo necesitas.
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

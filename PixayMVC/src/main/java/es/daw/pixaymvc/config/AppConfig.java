@@ -19,7 +19,7 @@ public class AppConfig {
                 .baseUrl(apiUrl)
                 .codecs(configurer -> configurer
                         .defaultCodecs()
-                        .maxInMemorySize(10 * 1024 * 1024)) // 10 MB
+                        .maxInMemorySize(50 * 1024 * 1024)) // 10 MB
                 .build();
     }
 

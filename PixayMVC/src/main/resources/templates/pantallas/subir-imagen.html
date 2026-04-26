@@ -21,7 +21,7 @@
                         <input type="text" name="title" class="form-control custom-input" placeholder="Escribe aquí...">
                     </div>
                     <div class="mb-4">
-                        <select name="category" id="category" class="form-select custom-input col-6">
+                        <select name="category_id" id="category_id" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una categoría</option>
                             <option th:each="cat : ${categories}"
                                 th:value="${cat}" 
@@ -30,7 +30,7 @@
                         </select>
                     </div>
                     <div class="mb-4">
-                        <select name="subcategory" id="subcategory" class="form-select custom-input col-6">
+                        <select name="subcategory_id" id="subcategory_id" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una subcategoría</option>
                             <option th:each="sub : ${subcategories}"
                                 th:value="${sub}" 

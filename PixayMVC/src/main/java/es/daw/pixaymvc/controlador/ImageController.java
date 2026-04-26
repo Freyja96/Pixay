@@ -70,8 +70,8 @@ public class ImageController {
     @PostMapping("/subir-imagen") //recibir y procesar el archivo -> Clic en Publicar en el formulario
     public String handleFileUpload(@RequestParam("content") MultipartFile content,
                                    @RequestParam("title") String title,
-                                   @RequestParam("category") String category,
-                                   @RequestParam("subcategory") String subcategory,
+                                   @RequestParam("category_id") String category_id,
+                                   @RequestParam(value = "subcategory_id", required = false) String subcategory_id,
                                    RedirectAttributes redirectAttributes,
                                    HttpSession session
                                    //Model model
@@ -83,8 +83,8 @@ public class ImageController {
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("content", content.getResource());
         body.add("title", title);
-        body.add("category", category);
-        body.add("subcategory", subcategory);
+        body.add("category_id", category_id);
+        body.add("subcategory_id", subcategory_id);
         try {
             webClientAPI.post()
                     //TODO CRIS mirar a ver que no sea /imagenes/subir-imagen
@@ -95,7 +95,7 @@ public class ImageController {
                     .bodyToMono(ImageResponse.class)
                     .block();
             redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
-            return "redirect:/";// Redirigimos si todo va bien
+            return "redirect:/";// Redirigimos si va bien
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error al conectar con la API: " + e.getMessage());
             return "redirect:/subir-imagen";
