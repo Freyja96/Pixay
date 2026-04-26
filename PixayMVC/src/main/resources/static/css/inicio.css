@@ -5,8 +5,50 @@ body {
 }
 
 /* Estilos para la galería */
-.gallery-item { border-radius: 15px; overflow: hidden; margin-bottom: 20px; border: 1px solid #ddd; }
-.gallery-item img { width: 100%; display: block; object-fit: cover; }
+.masonry-wrapper {
+    width: 100%;
+    margin: 0 auto;
+}
+/* Configuración de las columnas */
+.masonry-container {
+    column-count: 4; /* Número de columnas en pantallas grandes */
+    column-gap: 1.25rem; /* Espacio horizontal entre columnas */
+}
+/* Elemento que contiene cada imagen */
+.masonry-item {
+    display: inline-block; /* Importante para que funcione el filtrado de columnas */
+    width: 100%;
+    margin-bottom: 1.25rem; /* Espacio vertical exacto entre imágenes */
+    break-inside: avoid;
+}
+
+/* Ajustamos el estilo que ya tenías para que encaje */
+.gallery-item {
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    margin-bottom: 0;
+}
+
+@media (max-width: 1200px) {
+    .masonry-container { column-count: 3; }
+}
+@media (max-width: 768px) {
+    .masonry-container { column-count: 2; }
+}
+@media (max-width: 480px) {
+    .masonry-container {
+        column-count: 2;
+        column-gap: 0.75rem;
+    }
+    .masonry-item { margin-bottom: 0.75rem; }
+}
+
+.gallery-item img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
 
 /* Botón flotante inferior */
 .btn-upload {

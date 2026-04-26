@@ -17,12 +17,14 @@
     <!--MIGA DE PAN-->
     <h6 class="text-orange fw-bold mb-4">Inicio</h6>
     <!--GALERÍA-->
-    <div class="row" id="gallery-container">
-        <div th:each="img : ${imagenes}" class="col-6 col-md-4 col-lg-3">
-            <div class="gallery-item">
-                <img th:src="'data:image/jpeg;base64,' + ${img.getContentBase64()}"
-                     th:alt="${img.title}"
-                     loading="lazy">
+    <div class="masonry-wrapper">
+        <div class="masonry-container" id="gallery-container">
+            <div th:each="img : ${imagenes}" class="masonry-item">
+                <div class="gallery-item">
+                    <img th:src="'data:image/jpeg;base64,' + ${img.getContentBase64()}"
+                         th:alt="${img.title}"
+                         loading="lazy">
+                </div>
             </div>
         </div>
     </div>
