@@ -10,6 +10,11 @@ INSERT INTO users (id, username, password, email, role_id) VALUES (2, 'juan', '$
 INSERT INTO users (id, username, password, email, role_id) VALUES (3, 'maria', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'maria@pixay.com', 2);
 INSERT INTO users (id, username, password, email, role_id) VALUES (4, 'julia', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK','julia@correo.com', 2);
 
+-- SEGUIDORES
+INSERT INTO followers (follower_id, following_id) VALUES
+                                                      (2, 3), (2, 4), -- juan sigue a maria y julia
+                                                      (3, 4),         -- maria sigue a julia
+                                                      (4, 2);
 -- 3. CATEGORÍAS (Asegúrate de que la entidad se llame Category y la tabla categories)
 INSERT INTO categories (id, name) VALUES (1, 'Fotografía');
 INSERT INTO categories (id, name) VALUES (2, 'Ilustración');
@@ -75,3 +80,7 @@ VALUES ('Pixel art', 1, 2, 13, FILE_READ('src/main/resources/static/inicio/pixel
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Zoro Roronoa', 1, 2, 6, FILE_READ('src/main/resources/static/inicio/Zoro-Roronoa.png'));
 
+-- Imágenes guardadas
+INSERT INTO saved_images (user_id, image_id) VALUES
+                                                 (2, 3), -- juan guarda imagen de maria
+                                                 (2, 4); -- juan guarda imagen de julia
