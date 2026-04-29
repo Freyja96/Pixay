@@ -8,11 +8,23 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL,
+    bio VARCHAR(255),
     role_id BIGINT NOT NULL,
     profile_picture LONGBLOB,
-    description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (role_id) REFERENCES roles(id)
+);
+
+CREATE TABLE IF NOT EXISTS followers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    follower_id BIGINT NOT NULL,
+    following_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (follower_id) REFERENCES users(id),
+    FOREIGN KEY (following_id) REFERENCES users(id),
+    UNIQUE (follower_id, following_id),
+    CHECK (follower_id != following_id)
 );
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -44,6 +56,7 @@ CREATE TABLE IF NOT EXISTS users_images (
     user_id BIGINT NOT NULL,
     category_id BIGINT NOT NULL,
     subcategory_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (category_id) REFERENCES categories(id),
@@ -60,13 +73,30 @@ CREATE TABLE IF NOT EXISTS saved_images (
     FOREIGN KEY (image_id) REFERENCES users_images(id)
 );
 
-CREATE TABLE IF NOT EXISTS user_follows (
-    follower_id BIGINT NOT NULL, -- El que da "seguir"
-    following_id BIGINT NOT NULL, -- El que es seguido
-    followed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+-- Conversaciones
+CREATE TABLE IF NOT EXISTS conversations (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
 
-    PRIMARY KEY (follower_id, following_id),
-    FOREIGN KEY (follower_id) REFERENCES users(id),
-    FOREIGN KEY (following_id) REFERENCES users(id),
-    CONSTRAINT self_follow_check CHECK (follower_id <> following_id)
+-- Minimo 2 participantes en una conversación
+CREATE TABLE IF NOT EXISTS conversation_participants(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    conversation_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE (conversation_id, user_id) --> Una conversación pertenece a una persona en espcífico
+);
+
+CREATE TABLE messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    message_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    content VARCHAR(500) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (message_id) REFERENCES messages(id),
+    FOREIGN KEY (sender_id) REFERENCES users(id),
+    UNIQUE (message_id, sender_id) --> Una conversación pertenece a una persona en espcífico
 );
