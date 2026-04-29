@@ -39,6 +39,7 @@ public class ImageService {
     }
 
     public CustomSlice<ImageResponse> getAllImages(int page, int size, String token) {
+        System.out.println("Solicitando a la API: Página " + page + " con tamaño " + size);
         return webClientAPI.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("imagenes")

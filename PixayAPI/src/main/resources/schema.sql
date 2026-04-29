@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 CREATE TABLE IF NOT EXISTS subcategories (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(50) NOT NULL,
     --category VARCHAR(50) NOT NULL, --mejor ponerlo por id
     category_id BIGINT NOT NULL,
 

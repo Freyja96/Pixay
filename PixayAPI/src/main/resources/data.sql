@@ -16,32 +16,32 @@ INSERT INTO categories (id, name) VALUES (2, 'Ilustración');
 
 --  4. SUBCATEGORÍAS
 -- FOTOGRAFÍA (category_id = 1)
-INSERT INTO subcategories (name, category_id) VALUES ('Arquitectura', 1);       --1
-INSERT INTO subcategories (name, category_id) VALUES ('Blanco y Negro', 1);     --2
-INSERT INTO subcategories (name, category_id) VALUES ('Cine', 1);               --3
-INSERT INTO subcategories (name, category_id) VALUES ('Fotografía Urbana', 1);  --4
-INSERT INTO subcategories (name, category_id) VALUES ('IA', 1);                 --5
-INSERT INTO subcategories (name, category_id) VALUES ('Macro', 1);              --6
-INSERT INTO subcategories (name, category_id) VALUES ('Meme', 1);               --7
-INSERT INTO subcategories (name, category_id) VALUES ('Moda', 1);               --8
-INSERT INTO subcategories (name, category_id) VALUES ('Naturaleza', 1);         --9
-INSERT INTO subcategories (name, category_id) VALUES ('Paisaje', 1);            --10
-INSERT INTO subcategories (name, category_id) VALUES ('Retrato', 1);            --11
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Arquitectura', 1);       --1
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Blanco y Negro', 1);     --2
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Cine', 1);               --3
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Fotografía Urbana', 1);  --4
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('IA', 1);                 --5
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Macro', 1);              --6
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Meme', 1);               --7
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Moda', 1);               --8
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Naturaleza', 1);         --9
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Paisaje', 1);            --10
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Retrato', 1);            --11
 -- ILUSTRACIÓN (category_id = 2)
-INSERT INTO subcategories (name, category_id) VALUES ('Acuarela Digital', 2);   --1
-INSERT INTO subcategories (name, category_id) VALUES ('Arte Conceptual', 2);    --2
-INSERT INTO subcategories (name, category_id) VALUES ('Boceto', 2);             --3
-INSERT INTO subcategories (name, category_id) VALUES ('Bodegón', 2);            --4
-INSERT INTO subcategories (name, category_id) VALUES ('Caricatura', 2);         --5
-INSERT INTO subcategories (name, category_id) VALUES ('Cómic / Manga', 2);      --6
-INSERT INTO subcategories (name, category_id) VALUES ('Fan Art', 2);            --7
-INSERT INTO subcategories (name, category_id) VALUES ('IA', 2);                 --8
-INSERT INTO subcategories (name, category_id) VALUES ('Ilustración Digital', 2);--9
-INSERT INTO subcategories (name, category_id) VALUES ('Minimalismo', 2);        --10
-INSERT INTO subcategories (name, category_id) VALUES ('Naturaleza', 1);         --11
-INSERT INTO subcategories (name, category_id) VALUES ('Paisaje', 2);            --12
-INSERT INTO subcategories (name, category_id) VALUES ('Pixel Art', 2);          --13
-INSERT INTO subcategories (name, category_id) VALUES ('Retrato', 2);            --14
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Acuarela Digital', 2);   --1
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Arte Conceptual', 2);    --2
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Boceto', 2);             --3
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Bodegón', 2);            --4
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Caricatura', 2);         --5
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Cómic / Manga', 2);      --6
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Fan Art', 2);            --7
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('IA', 2);                 --8
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Ilustración Digital', 2);--9
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Minimalismo', 2);        --10
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Naturaleza', 2);         --11
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Paisaje', 2);            --12
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Pixel Art', 2);          --13
+MERGE INTO subcategories (name, category_id) KEY(name, category_id) VALUES ('Retrato', 2);            --14
 
 --IMÁGENES DE MUESTRA
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
@@ -74,4 +74,23 @@ INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Pixel art', 1, 2, 13, FILE_READ('src/main/resources/static/inicio/pixel-art.jpeg'));
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Zoro Roronoa', 1, 2, 6, FILE_READ('src/main/resources/static/inicio/Zoro-Roronoa.png'));
-
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Bleach', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Bleach_gang.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Bleach', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/bleach_rukia_ichigo.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Ceruledge', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Ceruledge.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Dragonair', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Dragonair.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Hoenn', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Hoenn.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Vegeta', 2, 2, 6,FILE_READ('src/main/resources/static/inicio/Majin_Vegeta.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Mark Grayson', 2, 2,6, FILE_READ('src/main/resources/static/inicio/mark_grayson.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Power Ultrakill', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Power_Ultrakill.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Scizor', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Scizor.jpg'));
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Totoro hora de aventuras', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Totoro_hora_aventuras.jpg'));

@@ -66,7 +66,7 @@ public class ImageController {
     public ResponseEntity<Slice<ImageResponse>> getMyImages(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "12") int size
             ){ //<-- para las imágenes del usuario actual
         Slice<Image> slice = imageService.getImagesByUser(user, page, size);
 
@@ -85,7 +85,7 @@ public class ImageController {
     @GetMapping// <-- página de INICIO
     public ResponseEntity<Slice<ImageResponse>> getAllImages(//<-- para todas las imágenes de todos los usuarios
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "12") int size
     ){
         Slice<Image> slice = imageService.getAllImagesPaged(page, size);
         Slice<ImageResponse> responseSlice = slice
