@@ -19,12 +19,12 @@ public class CategoryController {
         this.subcategoryRepository = subcategoryRepository;
     }
 
-    @GetMapping("/categorias")
+    @GetMapping("/categories")
     public List<String> getCategories() {
         return categoryRepository.findAll().stream().map(Category::getName).toList();
     }
 
-    @GetMapping("/subcategorias")
+    @GetMapping("/subcategories")
     public List<String> getSubcategories() {
         return subcategoryRepository.findAll().stream().map(Subcategory::getName).toList();
     }

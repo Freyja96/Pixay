@@ -23,27 +23,21 @@
                     <div class="mb-4">
                         <select name="category_id" id="category_id" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una categoría</option>
-                            <option th:each="cat : ${categories}"
-                                th:value="${cat}" 
-                                th:text="${cat}">
+                            <option th:each="cat : ${categoriesObjects}"
+                                    th:value="${cat.id}"
+                                    th:text="${cat.name}">
                             </option>
                         </select>
                     </div>
                     <div class="mb-4">
-<!--                        <select name="subcategory_id" id="subcategory_id" class="form-select custom-input col-6">-->
-<!--                            <option selected disabled value="">Selecciona una subcategoría</option>-->
-<!--                            <option th:each="sub : ${subcategories}"-->
-<!--                                th:value="${sub}"-->
-<!--                                th:text="${sub}">-->
-<!--                            </option>-->
-<!--                        </select>-->
                         <select name="subcategory_id" id="subcategory_id" class="form-select custom-input col-6">
                             <option selected disabled value="">Selecciona una subcategoría</option>
                             <option th:each="sub : ${subcategoriesObjects}"
-                                    th:value="${sub.name}"
+                                    th:value="${sub.id}"
                                     th:text="${sub.name}"
-                                    th:attr="data-category=${sub.categoryName}"
-                                    style="display: none;"> </option>
+                                    th:attr="data-category-id=${sub.categoryId}"
+                                    style="display: none;">
+                            </option>
                         </select>
                     </div>
 
@@ -88,13 +82,13 @@
 </body>
 <script>
     document.getElementById('category_id').addEventListener('change', function() {
-        const selectedCat = this.value;
+        const selectedCatId = this.value;
         const subSelect = document.getElementById('subcategory_id');
         const options = subSelect.querySelectorAll('option');
 
         subSelect.value = ""; // Resetear selección
         options.forEach(opt => {
-            if (opt.getAttribute('data-category') === selectedCat || opt.value === "") {
+            if (opt.getAttribute('data-category-id') === selectedCatId || opt.value === "") {
                 opt.style.display = 'block';
             } else {
                 opt.style.display = 'none';

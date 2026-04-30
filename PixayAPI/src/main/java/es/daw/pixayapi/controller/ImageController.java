@@ -1,35 +1,33 @@
 package es.daw.pixayapi.controller;
 
 import es.daw.pixayapi.dto.response.ImageResponse;
-import es.daw.pixayapi.dto.response.SubcategoryResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.service.ImageService;
+import es.daw.pixayapi.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.ui.Model;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/imagenes")
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageService imageService;
+    private final UserService userService;
     /**
      * Sube una imagen al servidor.
      * @param content
      * @param title
      * @param category_id
      * @param subcategory_id (opcional)
-     * @param user
+     * @param userDetails
      * @return
      */
     @PostMapping("/subir-imagen") //<-- se une a continuación de RequestMapping
@@ -40,14 +38,18 @@ public class ImageController {
             @RequestParam("title") String title,
             @RequestParam("category_id") String category_id,
             @RequestParam(value = "subcategory_id", required = false) String subcategory_id,
-            @AuthenticationPrincipal User user // Obtenemos el usuario del token
+            @AuthenticationPrincipal UserDetails userDetails // Obtenemos el usuario del token
     ){
-        if (user == null) {
+        if (userDetails == null) {
             System.out.println("ERROR: El usuario llega como NULL. El Token no se ha validado correctamente.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         //pongo traza para ver si el usuario está autenticado
-        System.out.println("Usuario que intenta subir: " + user.getUsername()); //es null tiene que ser por el puto token
+        System.out.println("Usuario que intenta subir: " + userDetails.getUsername());
+
+        if (userDetails == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+        User user = userService.findByUsername(userDetails.getUsername());
 
         Image savedImage = imageService.saveImage(content, title, category_id, subcategory_id, user);
 

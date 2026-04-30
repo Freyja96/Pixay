@@ -38,11 +38,12 @@ public class ImageService {
 
     public Image saveImage(MultipartFile file, String title, String category_id, String subcategory_id, User user){
         try {
-            Category cat = categoryRepository.findByName(category_id)
-                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + category_id));
+            Category cat = categoryRepository.findById(Long.parseLong(category_id))
+                    .orElseThrow(() -> new RuntimeException("Categoría no encontrada ID: " + category_id));
+
             Subcategory subcat = null;
             if (subcategory_id != null && !subcategory_id.isEmpty()) {
-                subcat = subcategoryRepository.findByName(subcategory_id).orElse(null);
+                subcat = subcategoryRepository.findById(Long.parseLong(subcategory_id)).orElse(null);
             }
             Image image = new Image();
             image.setContent(file.getBytes());

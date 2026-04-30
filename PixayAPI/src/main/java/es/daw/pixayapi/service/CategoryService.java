@@ -15,15 +15,11 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
 
-    public List<String> getAllCategoryNames() {
-        return categoryRepository.findAll().stream()
-                .map(Category::getName)
-                .collect(Collectors.toList());
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
-    public List<String> getAllSubcategoryNames() {
-        return subcategoryRepository.findAll().stream()
-                .map(Subcategory::getName)
-                .collect(Collectors.toList());
+    public List<Subcategory> findAllSubcategories() {
+        return subcategoryRepository.findAll();
     }
 }

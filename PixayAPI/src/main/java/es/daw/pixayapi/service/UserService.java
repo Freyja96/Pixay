@@ -12,6 +12,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder; // Inyectas el Bean de SecurityConfig
 
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + username));
+    }
+
     public void registrarUsuario(User user) {
         //Recibe contraseña plana
         String passwordPlana = user.getPassword();

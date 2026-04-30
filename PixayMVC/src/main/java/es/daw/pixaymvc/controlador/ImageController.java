@@ -1,11 +1,13 @@
 package es.daw.pixaymvc.controlador;
 
+import es.daw.pixaymvc.dto.response.CategoryResponse;
 import es.daw.pixaymvc.dto.response.CustomSlice;
 import es.daw.pixaymvc.dto.response.ImageResponse;
 import es.daw.pixaymvc.dto.response.SubcategoryResponse;
 import es.daw.pixaymvc.service.ImageService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -49,10 +51,10 @@ public class ImageController {
 
     @GetMapping("/subir-imagen")//mostrar el formulario
     public String showUploadForm(Model model) {
-        List<String> categories = webClientAPI.get()
+        List<CategoryResponse> categories = webClientAPI.get()
                 .uri("categories")
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                .bodyToMono(new ParameterizedTypeReference<List<CategoryResponse>>() {})
                 .block();
 
         List<SubcategoryResponse> subcategories = webClientAPI.get()
@@ -61,8 +63,9 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
                 .block();
 
-        model.addAttribute("categories", categories);
+        model.addAttribute("categoriesObjects", categories);
         model.addAttribute("subcategoriesObjects", subcategories);
+
         return "pantallas/subir-imagen";
     }
 
@@ -76,25 +79,31 @@ public class ImageController {
                                    //Model model
     ) {
         String token = (String) session.getAttribute("token");
-        if (token == null) {
-            return "redirect:/login"; // Si no hay token, no puede subir nada
-        }
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("content", content.getResource());
-        body.add("title", title);
-        body.add("category_id", category_id);
-        body.add("subcategory_id", subcategory_id);
+        if (token == null) return "redirect:/login"; // Si no hay token, no puede subir nada
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("content", content.getResource());
+        builder.part("title", title);
+        builder.part("category_id", category_id);
+        if (subcategory_id != null) builder.part("subcategory_id", subcategory_id);
+
+        //MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("content", content.getResource());
+//        body.add("title", title);
+//        body.add("category_id", category_id);
+//        body.add("subcategory_id", subcategory_id);
         try {
             webClientAPI.post()
                     .uri("imagenes/subir-imagen")
                     .header("Authorization", "Bearer " + token)
-                    .body(BodyInserters.fromMultipartData(body))
+                    .body(BodyInserters.fromMultipartData(builder.build()))
                     .retrieve()
                     .bodyToMono(ImageResponse.class)
                     .block();
             redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
             return "redirect:/";// Redirigimos si va bien
         } catch (Exception e) {
+            System.out.println("Error subiendo: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error al conectar con la API: " + e.getMessage());
             return "redirect:/subir-imagen";
         }

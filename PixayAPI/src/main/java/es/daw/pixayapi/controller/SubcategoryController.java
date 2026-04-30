@@ -2,7 +2,9 @@ package es.daw.pixayapi.controller;
 
 import es.daw.pixayapi.dto.response.SubcategoryResponse;
 import es.daw.pixayapi.repository.SubcategoryRepository;
+import es.daw.pixayapi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,15 +15,16 @@ import java.util.List;
 @RequestMapping("/api/subcategories")
 @RequiredArgsConstructor
 public class SubcategoryController {
-    private final SubcategoryRepository subcategoryRepository;
+    private final CategoryService categoryService;
     @GetMapping
-    public List<SubcategoryResponse> getAll() {
-        return subcategoryRepository.findAll().stream()
-                .map(s -> new SubcategoryResponse(
-                        s.getId(),
-                        s.getName(),
-                        s.getCategory().getName()
+    public ResponseEntity<List<SubcategoryResponse>> getSubcategorias() {
+        List<SubcategoryResponse> response = categoryService.findAllSubcategories().stream()
+                .map(sub -> new SubcategoryResponse(
+                        sub.getId(),
+                        sub.getName(),
+                        sub.getCategory().getId()
                 ))
                 .toList();
+        return ResponseEntity.ok(response);
     }
 }
