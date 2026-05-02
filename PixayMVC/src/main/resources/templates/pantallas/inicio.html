@@ -21,9 +21,11 @@
         <div class="masonry-container" id="gallery-container">
             <div th:each="img : ${imagenes}" class="masonry-item">
                 <div class="gallery-item">
+                    <a th:href="@{/imagen/{id}(id=${img.id})}">
                     <img th:src="'data:image/jpeg;base64,' + ${img.getContentBase64()}"
                          th:alt="${img.title}"
                          loading="lazy">
+                    </a>
                 </div>
             </div>
         </div>
@@ -78,7 +80,9 @@
                             const html = `
                         <div class="masonry-item">
                             <div class="gallery-item">
-                                <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                <a href="/imagen/${img.id}">
+                                    <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                    </a>
                             </div>
                         </div>`;
                             container.insertAdjacentHTML('beforeend', html);

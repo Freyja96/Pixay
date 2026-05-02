@@ -133,7 +133,9 @@
                             const html = `
                         <div class="masonry-item">
                             <div class="gallery-item">
-                                <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                <a href="/imagen/${img.id}">
+                                    <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                </a>
                             </div>
                         </div>`;
                             container.insertAdjacentHTML('beforeend', html);

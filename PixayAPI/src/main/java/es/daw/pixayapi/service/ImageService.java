@@ -34,7 +34,10 @@ public class ImageService {
     public Slice<Image> getImagesByCategory(String category, Pageable pageable){
         return imageRepository.findByCategory(category, pageable);
     }
-
+    public Image getImageById(Long id) {
+        return imageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Imagen no encontrada con ID: " + id));
+    }
     public Image saveImage(MultipartFile file, String title, String category_id, String subcategory_id, User user){
         try {
             Category cat = categoryRepository.findById(Long.parseLong(category_id))

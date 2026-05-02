@@ -39,5 +39,15 @@ public class ImageService {
                 .block();
     }
 
+    public ImageResponse getImageById(Long id, String token) {
+        return webClientAPI.get()
+                .uri("imagenes/" + id)
+                .headers(headers -> {
+                    if (token != null) headers.setBearerAuth(token);
+                })
+                .retrieve()
+                .bodyToMono(ImageResponse.class)
+                .block();
+    }
     //getAllImagesFromUser
 }

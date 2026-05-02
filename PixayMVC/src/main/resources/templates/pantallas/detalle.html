@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${imagen.title} + ' - Pixay'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos de Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+    <style>
+        .post-container { max-width: 600px; margin: 0 auto; }
+        .author-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
+        .img-main { width: 100%; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .icon-bar { display: flex; gap: 20px; font-size: 1.5rem; padding: 10px 5px; }
+        .icon-bar i { cursor: pointer; color: #000; }
+        .icon-bar i:hover { color: #555; }
+        .author-name { font-size: 1.8rem; font-weight: 500; margin-left: 15px; }
+        .image-title { font-size: 1.1rem; color: #1a2b3c; margin: 15px 0; }
+    </style>
+</head>
+<body>
+<div th:insert="~{/fragments/cabecera}"></div>
+
+<div class="container mt-4 mb-5">
+    <div class="post-container">
+
+        <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto por ahora-->
+        <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
+            <img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/logo.png'}"
+                 class="author-img" alt="Avatar">
+            <span class="author-name" th:text="${autor.username}">Paula</span>
+        </div>
+
+        <!-- SECCIÓN 2: TÍTULO -->
+        <div class="image-title">
+            <p th:text="${imagen.title}"></p>
+        </div>
+
+        <!-- SECCIÓN 3: IMAGEN PRINCIPAL -->
+        <div class="text-center">
+            <img th:src="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
+                 class="img-main" th:alt="${imagen.title}">
+        </div>
+
+        <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
+        <div class="icon-bar">
+            <!-- Guardar -->
+            <i class="bi bi-bookmark"></i>
+            <!-- Descargar -->
+            <a th:href="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
+               th:download="${imagen.title} + '.jpg'" style="color: inherit;">
+                <i class="bi bi-arrow-down"></i>
+            </a>
+            <!-- Reacción -->
+            <i class="bi bi-emoji-smile"></i>
+            <!-- Compartir / Reply -->
+            <i class="bi bi-reply"></i>
+        </div>
+
+<!--        &lt;!&ndash; Opcional: Tags de categorías  &ndash;&gt;-->
+<!--        <div class="mt-2 text-muted small">-->
+<!--            <span class="badge bg-light text-dark" th:text="${imagen.categoryName}">Categoría</span>-->
+<!--            <span class="badge bg-light text-dark"-->
+<!--                  th:if="${imagen.subcategoryName != 'Sin subcategoría'}"-->
+<!--                  th:text="${imagen.subcategoryName}">Subcategoría</span>-->
+<!--        </div>-->
+
+    </div>
+</div>
+
+<div th:insert="~{/fragments/footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

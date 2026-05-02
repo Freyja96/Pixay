@@ -78,7 +78,11 @@ public class ImageController {
 
         return ResponseEntity.ok(responseSlice);
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ImageResponse> getImageById(@PathVariable Long id) {
+        Image image = imageService.getImageById(id);
+        return ResponseEntity.ok(convertToResponse(image));
+    }
     /**
      * Muestra las imágenes del usuario por ID
      * @param id

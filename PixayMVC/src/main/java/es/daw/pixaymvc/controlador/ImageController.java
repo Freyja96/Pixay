@@ -249,4 +249,23 @@ public class ImageController {
 
         return "pantallas/mi-perfil/mis-imagenes";
     }
+    @GetMapping("/imagen/{id}")
+    public String verDetalleImagen(@PathVariable Long id, HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+
+        // Obtenemos la imagen de la API
+        ImageResponse imagen = imageService.getImageById(id, token);
+
+        // Opcional: Podrías obtener también los datos del autor para mostrar su nombre
+        UserProfileResponse autor = webClientAPI.get()
+                .uri("usuarios/" + imagen.userId())
+                .retrieve()
+                .bodyToMono(UserProfileResponse.class)
+                .block();
+
+        model.addAttribute("imagen", imagen);
+        model.addAttribute("autor", autor);
+
+        return "pantallas/detalle"; // Crearemos este HTML ahora
+    }
 }
