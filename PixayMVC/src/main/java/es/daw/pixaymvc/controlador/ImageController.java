@@ -79,11 +79,6 @@ public class ImageController {
         builder.part("category_id", category_id);
         if (subcategory_id != null) builder.part("subcategory_id", subcategory_id);
 
-        //MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//        body.add("content", content.getResource());
-//        body.add("title", title);
-//        body.add("category_id", category_id);
-//        body.add("subcategory_id", subcategory_id);
         try {
             webClientAPI.post()
                     .uri("imagenes/subir-imagen")
@@ -165,6 +160,43 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
     }
+    @GetMapping("/mi-perfil/guardadas")
+    public String misImagenesGuardadas(HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return "redirect:/login";
+
+        UserProfileResponse profile = webClientAPI.get()
+                .uri("usuarios/me").headers(h -> h.setBearerAuth(token))
+                .retrieve().bodyToMono(UserProfileResponse.class).block();
+
+        CustomSlice<ImageResponse> slice = webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder.path("imagenes/guardadas")
+                        .queryParam("page", 0).queryParam("size", 12).build())
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
+
+        model.addAttribute("usuario", profile);
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+        model.addAttribute("seccion", "guardadas"); // <--- IMPORTANTE
+
+        return "pantallas/mi-perfil/mis-imagenes";
+    }
+
+    // Endpoint para el scroll de guardadas
+    @GetMapping("/mi-perfil/guardadas/scroll")
+    @ResponseBody
+    public CustomSlice<ImageResponse> getSavedScroll(
+            @RequestParam int page, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        return webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder.path("imagenes/guardadas")
+                        .queryParam("page", page).queryParam("size", 12).build())
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
+    }
 
     @GetMapping("/usuario/{id}")
     public String verPerfilAjeno(@PathVariable Long id, HttpSession session, Model model) {
@@ -192,6 +224,28 @@ public class ImageController {
         model.addAttribute("usuario", profile);
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
+
+        return "pantallas/mi-perfil/mis-imagenes";
+    }
+
+    @GetMapping("/usuario/{id}/guardadas")
+    public String verGuardadasAjeno(@PathVariable Long id, HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+
+        UserProfileResponse profile = webClientAPI.get()
+                .uri("usuarios/" + id).headers(h -> { if(token!=null) h.setBearerAuth(token); })
+                .retrieve().bodyToMono(UserProfileResponse.class).block();
+
+        CustomSlice<ImageResponse> slice = webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder.path("imagenes/usuario/" + id + "/guardadas").build())
+                .headers(h -> { if(token!=null) h.setBearerAuth(token); })
+                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
+
+        model.addAttribute("usuario", profile);
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+        model.addAttribute("seccion", "guardadas"); // Para que el botón se vea azul
 
         return "pantallas/mi-perfil/mis-imagenes";
     }

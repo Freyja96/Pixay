@@ -1,11 +1,9 @@
 package es.daw.pixayapi.service;
 
-import es.daw.pixayapi.entity.Category;
-import es.daw.pixayapi.entity.Image;
-import es.daw.pixayapi.entity.Subcategory;
-import es.daw.pixayapi.entity.User;
+import es.daw.pixayapi.entity.*;
 import es.daw.pixayapi.repository.CategoryRepository;
 import es.daw.pixayapi.repository.ImageRepository;
+import es.daw.pixayapi.repository.SavedImageRepository;
 import es.daw.pixayapi.repository.SubcategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +19,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final CategoryRepository categoryRepository;
     private final SubcategoryRepository subcategoryRepository;
+    private final SavedImageRepository savedImageRepository;
 
     public Slice<Image> getAllImagesPaged(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -56,5 +55,12 @@ public class ImageService {
         } catch (IOException e){
             throw new RuntimeException("Error al leer los bytes de la imagen: ", e);
         }
+    }
+
+    public Slice<Image> getSavedImagesByUser(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<SavedImage> savedSlice = savedImageRepository.findByUser(user, pageable);
+
+        return savedSlice.map(SavedImage::getImage);
     }
 }

@@ -117,6 +117,30 @@ public class ImageController {
         return ResponseEntity.ok(responseSlice);
     }
 
+    @GetMapping("/guardadas")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Slice<ImageResponse>> getSavedImages(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Slice<Image> slice = imageService.getSavedImagesByUser(user, page, size);
+        return ResponseEntity.ok(slice.map(this::convertToResponse));
+    }
+
+    // En la API
+    @GetMapping("/usuario/{id}/guardadas")
+    public ResponseEntity<Slice<ImageResponse>> getSavedImagesByUserId(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        User user = userService.findById(id);
+        Slice<Image> slice = imageService.getSavedImagesByUser(user, page, size);
+        return ResponseEntity.ok(slice.map(this::convertToResponse));
+    }
+
     /**
      * Convierte una imagen en una respuesta.
      * @param entity

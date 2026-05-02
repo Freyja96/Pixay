@@ -94,3 +94,23 @@ INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Scizor', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Scizor.jpg'));
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Totoro hora de aventuras', 2, 2, 6, FILE_READ('src/main/resources/static/inicio/Totoro_hora_aventuras.jpg'));
+
+
+--IMÁGENES GUARDADAS POR LOS USUARIOS
+INSERT INTO saved_images (user_id, image_id) VALUES (3, 1);
+INSERT INTO saved_images (user_id, image_id) VALUES (3, 2);
+INSERT INTO saved_images (user_id, image_id) VALUES (3, 3);
+INSERT INTO saved_images (user_id, image_id) VALUES (3, 4);
+INSERT INTO saved_images (user_id, image_id) VALUES (1, 16);
+INSERT INTO saved_images (user_id, image_id) VALUES (1, 17);
+INSERT INTO saved_images (user_id, image_id) VALUES (1, 18);
+INSERT INTO saved_images (user_id, image_id) VALUES (1, 19);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 1);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 2);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 3);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 4);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 5);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 6);
+INSERT INTO saved_images (user_id, image_id) VALUES (2, 7);
+
+

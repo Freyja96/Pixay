@@ -52,16 +52,18 @@
         <div class="col-12 mb-4">
             <div class="row g-0 border-bottom">
                 <div class="col-6">
-                    <button class="btn btn-primary w-100 py-3 fw-bold" 
-                            style="border-radius: 10px 10px 0 0; border: none;">
+                    <a th:href="${usuario.id == session.usuarioIdLogueado ? '/mi-perfil/mis-imagenes' : '/usuario/' + usuario.id}"
+                       class="btn w-100 py-3 fw-bold"
+                       th:classappend="${seccion == 'guardadas' ? 'btn-outline-secondary border-0' : 'btn-primary'}">
                         Mis imágenes
-                    </button>
+                    </a>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-outline-secondary w-100 py-3 fw-bold border-0" 
-                            style="color: var(--DARK-CASE);">
+                    <a th:href="${usuario.id == session.usuarioIdLogueado ? '/mi-perfil/guardadas' : '/usuario/' + usuario.id + '/guardadas'}"
+                       class="btn w-100 py-3 fw-bold"
+                       th:classappend="${seccion == 'guardadas' ? 'btn-primary' : 'btn-outline-secondary border-0'}">
                         Imágenes guardadas
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -92,6 +94,7 @@
     document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 0;
         let isLoading = false;
+        const seccion = [[${seccion}]];
         const userId = [[${usuario.id}]];
         const sentinel = document.getElementById('loading-sentinel');
         const container = document.getElementById('gallery-container');
@@ -114,7 +117,12 @@
             isLoading = true;
             const nextPage = currentPage + 1;
 
-            fetch(`/mi-perfil/mis-imagenes/scroll?userId=${userId}&page=${nextPage}&size=12`)
+            //url según la sección
+            let url = (seccion === 'guardadas')
+                ? `/mi-perfil/guardadas/scroll?userId=${userId}&page=${nextPage}`
+                : `/mi-perfil/mis-imagenes/scroll?userId=${userId}&page=${nextPage}`;
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fotos recibidas: " + data.content.length);

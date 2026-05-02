@@ -7,5 +7,5 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SavedImageRepository extends JpaRepository<SavedImage, Long> {
-    Slice<SavedImage> findByUserOrderBySavedAtDesc(User user, Pageable pageable);
+    Slice<SavedImage> findByUser(User user, Pageable pageable);
 }
