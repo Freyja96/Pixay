@@ -57,6 +57,7 @@ public class ImageController {
     }
 
     /**
+     * /**
      * Muestra las imágenes del usuario actual.
      * @param user
      * @param page
@@ -78,6 +79,26 @@ public class ImageController {
         return ResponseEntity.ok(responseSlice);
     }
 
+    /**
+     * Muestra las imágenes del usuario por ID
+     * @param id
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<Slice<ImageResponse>> getImagesByUserId(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ){
+        User user = userService.findById(id);
+
+        Slice<Image> slice = imageService.getImagesByUser(user, page, size);
+        Slice<ImageResponse> responseSlice = slice.map(this::convertToResponse);
+
+        return ResponseEntity.ok(responseSlice);
+    }
     /**
      * Muestra las imágenes de todos los usuarios.
      * @param page

@@ -1,17 +1,12 @@
 package es.daw.pixaymvc.controlador;
 
-import es.daw.pixaymvc.dto.response.CategoryResponse;
-import es.daw.pixaymvc.dto.response.CustomSlice;
-import es.daw.pixaymvc.dto.response.ImageResponse;
-import es.daw.pixaymvc.dto.response.SubcategoryResponse;
+import es.daw.pixaymvc.dto.response.*;
 import es.daw.pixaymvc.service.ImageService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -119,5 +114,58 @@ public class ImageController {
         String token = (String) session.getAttribute("token");
 
         return imageService.getAllImages(page, size, token);
+    }
+
+    @GetMapping("/mi-perfil/mis-imagenes")
+    public String misImagenes(HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return "redirect:/login";
+
+        UserProfileResponse profile = webClientAPI.get()
+                .uri("usuarios/me")
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve()
+                .bodyToMono(UserProfileResponse.class)
+                .block();
+
+        CustomSlice<ImageResponse> slice = webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("imagenes/usuario/" + profile.id())
+                        .queryParam("page", 0)
+                        .queryParam("size", 12)
+                        .build())
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
+
+        model.addAttribute("usuario", profile);
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+
+        return "pantallas/mi-perfil/mis-imagenes";
+    }
+
+    // Este es el endpoint que usará el FETCH del JavaScript
+    @GetMapping("/mi-perfil/mis-imagenes/scroll")
+    @ResponseBody
+    public CustomSlice<ImageResponse> getMisImagenesScroll(
+            @RequestParam Long userId, // Le pasamos el ID del usuario por parámetro
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            HttpSession session) {
+
+        String token = (String) session.getAttribute("token");
+
+        return webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("imagenes/usuario/" + userId)
+                        .queryParam("page", page)
+                        .queryParam("size", size)
+                        .build())
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
     }
 }

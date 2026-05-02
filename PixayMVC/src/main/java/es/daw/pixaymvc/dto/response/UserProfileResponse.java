@@ -1,4 +1,4 @@
-package es.daw.pixayapi.dto.response;
+package es.daw.pixaymvc.dto.response;
 
 public record UserProfileResponse(
         Long id,
