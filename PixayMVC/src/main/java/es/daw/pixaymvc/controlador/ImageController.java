@@ -7,10 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -167,5 +164,35 @@ public class ImageController {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
+    }
+
+    @GetMapping("/usuario/{id}")
+    public String verPerfilAjeno(@PathVariable Long id, HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+        // token opcional, por si queremos que los perfiles sean públicos
+
+        UserProfileResponse profile = webClientAPI.get()
+                .uri("usuarios/" + id) // El nuevo endpoint que acabamos de crear
+                .headers(h -> { if(token != null) h.setBearerAuth(token); })
+                .retrieve()
+                .bodyToMono(UserProfileResponse.class)
+                .block();
+
+        CustomSlice<ImageResponse> slice = webClientAPI.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("imagenes/usuario/" + id)
+                        .queryParam("page", 0)
+                        .queryParam("size", 12)
+                        .build())
+                .headers(h -> { if(token != null) h.setBearerAuth(token); })
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+                .block();
+
+        model.addAttribute("usuario", profile);
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+
+        return "pantallas/mi-perfil/mis-imagenes";
     }
 }
