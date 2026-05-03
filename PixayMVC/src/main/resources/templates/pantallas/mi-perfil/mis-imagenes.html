@@ -7,6 +7,10 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Masonry y imagesLoaded -->
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+    <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
+    <!-- Estilos personalizados -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
 </head>
@@ -52,16 +56,18 @@
         <div class="col-12 mb-4">
             <div class="row g-0 border-bottom">
                 <div class="col-6">
-                    <a th:href="${usuario.id == session.usuarioIdLogueado ? '/mi-perfil/mis-imagenes' : '/usuario/' + usuario.id}"
+                    <a th:href="${session.usuarioIdLogueado != null && usuario.id == session.usuarioIdLogueado ? '/mi-perfil/mis-imagenes' : '/usuario/' + usuario.id}"
                        class="btn w-100 py-3 fw-bold"
-                       th:classappend="${seccion == 'guardadas' ? 'btn-outline-secondary border-0' : 'btn-primary'}">
+                       th:classappend="${seccion != 'guardadas' ? 'btn-primary' : 'btn-outline-secondary border-0'}"
+                       style="border-radius: 10px 10px 0 0;">
                         Mis imágenes
                     </a>
                 </div>
                 <div class="col-6">
-                    <a th:href="${usuario.id == session.usuarioIdLogueado ? '/mi-perfil/guardadas' : '/usuario/' + usuario.id + '/guardadas'}"
+                    <a th:href="${session.usuarioIdLogueado != null && usuario.id == session.usuarioIdLogueado ? '/mi-perfil/guardadas' : '/usuario/' + usuario.id + '/guardadas'}"
                        class="btn w-100 py-3 fw-bold"
-                       th:classappend="${seccion == 'guardadas' ? 'btn-primary' : 'btn-outline-secondary border-0'}">
+                       th:classappend="${seccion == 'guardadas' ? 'btn-primary' : 'btn-outline-secondary border-0'}"
+                       style="border-radius: 10px 10px 0 0;">
                         Imágenes guardadas
                     </a>
                 </div>
@@ -90,26 +96,29 @@
 </div>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS propio -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 0;
         let isLoading = false;
-        const seccion = [[${seccion}]];
-        const userId = [[${usuario.id}]];
-        const sentinel = document.getElementById('loading-sentinel');
         const container = document.getElementById('gallery-container');
+
+        let msnry = new Masonry(container, {
+            itemSelector: '.masonry-item',
+            columnWidth: '.masonry-item',
+            percentPosition: true,
+            transitionDuration: '0.2s'
+        });
+
+        imagesLoaded(container, () => msnry.layout());
 
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && !isLoading) {
-                console.log("¡Sentinel detectado!");
                 loadMoreImages();
             }
-        }, {
-            root: null,
-            threshold: 0.01,
-            rootMargin: '200px'
-        });
+        }, { rootMargin: '200px' });
 
+        const sentinel = document.getElementById('loading-sentinel');
         if (sentinel) observer.observe(sentinel);
 
         function loadMoreImages() {
@@ -117,32 +126,30 @@
             isLoading = true;
             const nextPage = currentPage + 1;
 
-            //url según la sección
-            let url = (seccion === 'guardadas')
-                ? `/mi-perfil/guardadas/scroll?userId=${userId}&page=${nextPage}`
-                : `/mi-perfil/mis-imagenes/scroll?userId=${userId}&page=${nextPage}`;
-
-            fetch(url)
+            fetch(`/imagenes?page=${nextPage}&size=12`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("Fotos recibidas: " + data.content.length);
-
                     if (data.content.length > 0) {
                         currentPage = nextPage;
+
+                        const newItems = [];
                         data.content.forEach(img => {
-                            const html = `
-                        <div class="masonry-item">
+                            const div = document.createElement('div');
+                            div.className = 'masonry-item';
+                            div.innerHTML = `
                             <div class="gallery-item">
-                                <a href="/imagen/${img.id}">
-                                    <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
-                                </a>
-                            </div>
-                        </div>`;
-                            container.insertAdjacentHTML('beforeend', html);
+                                <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                            </div>`;
+                            container.appendChild(div);
+                            newItems.push(div);
+                        });
+
+                        imagesLoaded(container, () => {
+                            msnry.appended(newItems);
+                            msnry.layout();
                         });
                     }
 
-                    // Ajusta 'data.last' según lo que devuelva tu Spring Page
                     if (data.last || data.content.length === 0) {
                         observer.unobserve(sentinel);
                         sentinel.style.display = 'none';
@@ -150,7 +157,7 @@
                     isLoading = false;
                 })
                 .catch(err => {
-                    console.error("Error en el fetch:", err);
+                    console.error(err);
                     isLoading = false;
                 });
         }

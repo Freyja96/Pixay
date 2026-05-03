@@ -1,23 +1,28 @@
 package es.daw.pixaymvc.controlador;
 
+import es.daw.pixaymvc.dto.response.UserProfileResponse; // Asegúrate de importar tu Record
 import es.daw.pixaymvc.service.ApiAuthService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Controller
-//@RequestMapping("/perfil")//WTF por qué iba a ser de perfil?
 public class UserController {
     private final ApiAuthService apiAuthService;
+    private final WebClient webClientAPI; // Añadimos WebClient
 
-    public UserController(ApiAuthService apiAuthService) {
+    public UserController(ApiAuthService apiAuthService, WebClient webClientAPI) {
         this.apiAuthService = apiAuthService;
+        this.webClientAPI = webClientAPI;
     }
+
     @GetMapping("/login")
     public String mostrarLogin() {
-        return "login"; // Carga login.html
+        return "login";
     }
+
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String username,
                                 @RequestParam String password,
@@ -25,10 +30,23 @@ public class UserController {
                                 Model model) {
         try {
             String token = apiAuthService.login(username, password);
-            if (!token.isEmpty() && token != null) {
+
+            if (token != null && !token.isEmpty()) {
                 session.setAttribute("token", token);
                 session.setAttribute("username", username);
-                System.out.println("Login MVC OK. Token: " + token + " Username: " + username + " guardados");
+
+                UserProfileResponse profile = webClientAPI.get()
+                        .uri("usuarios/me")
+                        .headers(h -> h.setBearerAuth(token))
+                        .retrieve()
+                        .bodyToMono(UserProfileResponse.class)
+                        .block();
+
+                if (profile != null) {
+                    session.setAttribute("usuarioIdLogueado", profile.id());
+                    System.out.println("Login MVC OK. ID guardado en sesión: " + profile.id());
+                }
+
                 return "redirect:/";
             } else {
                 model.addAttribute("error", "Credenciales incorrectas");
@@ -39,17 +57,4 @@ public class UserController {
             return "login";
         }
     }
-//    @GetMapping("/{username}")
-//    public String verPerfil(@PathVariable String username, Model model) {
-//        // llama a la API con WebClient para pedir los datos de 'username'
-//        // model.addAttribute("usuario", datosDesdeAPI);
-//        return "perfil"; // Devuelve perfil.html
-//    }
-//TODO tiene que redirigir? no tiene simplemente que mostrar el perfil?
-//    @GetMapping("/perfil/{username}/mis-imagenes"")
-//    public String verMisImagenes(@PathVariable String username, Model model) {
-//        // Llama a la API: /api/imagenes/mis-imagenes
-//        // model.addAttribute("imagenes", listaDesdeAPI);
-//        return "pantallas/mi-perfil/mis-imagenes";
-//    }
 }
