@@ -31,8 +31,8 @@ public class ImageController {
      * @return
      */
     @PostMapping("/subir-imagen") //<-- se une a continuación de RequestMapping
-    //TODO CRIS para hacer pruebas y luego ya poner el PreAuthorize
-    //@PreAuthorize("hasAnyRole('ADMIN', 'ARTIST')")
+    //TODO CRIS: cuando Doris tenga el footer bien montado. Poner el PreAuthorize
+    //@PreAuthorize("isAuthenticated()")
     public ResponseEntity<ImageResponse> uploadImage(
             @RequestParam("content") MultipartFile content,
             @RequestParam("title") String title,

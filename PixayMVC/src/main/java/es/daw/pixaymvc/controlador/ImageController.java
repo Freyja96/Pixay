@@ -179,7 +179,7 @@ public class ImageController {
         model.addAttribute("usuario", profile);
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
-        model.addAttribute("seccion", "guardadas"); // <--- IMPORTANTE
+        model.addAttribute("seccion", "guardadas");
 
         return "pantallas/mi-perfil/mis-imagenes";
     }
@@ -204,7 +204,7 @@ public class ImageController {
         // token opcional, por si queremos que los perfiles sean públicos
 
         UserProfileResponse profile = webClientAPI.get()
-                .uri("usuarios/" + id) // El nuevo endpoint que acabamos de crear
+                .uri("usuarios/" + id)
                 .headers(h -> { if(token != null) h.setBearerAuth(token); })
                 .retrieve()
                 .bodyToMono(UserProfileResponse.class)

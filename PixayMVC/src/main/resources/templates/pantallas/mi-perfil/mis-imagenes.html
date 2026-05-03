@@ -103,67 +103,84 @@
     document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 0;
         let isLoading = false;
+        const userId = [[${usuario.id}]];
+        const seccion = [[${seccion}]]; // guardadas o propias
         const container = document.getElementById('gallery-container');
+        const sentinel = document.getElementById('loading-sentinel');
 
         let msnry = new Masonry(container, {
-            itemSelector: '.masonry-item',
-            columnWidth: '.masonry-item',
-            percentPosition: true,
-            transitionDuration: '0.2s'
-        });
-
-        imagesLoaded(container, () => msnry.layout());
-
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !isLoading) {
-                loadMoreImages();
-            }
-        }, { rootMargin: '200px' });
-
-        const sentinel = document.getElementById('loading-sentinel');
-        if (sentinel) observer.observe(sentinel);
-
-        function loadMoreImages() {
-            if (isLoading) return;
-            isLoading = true;
-            const nextPage = currentPage + 1;
-
-            fetch(`/imagenes?page=${nextPage}&size=12`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.content.length > 0) {
-                        currentPage = nextPage;
-
-                        const newItems = [];
-                        data.content.forEach(img => {
-                            const div = document.createElement('div');
-                            div.className = 'masonry-item';
-                            div.innerHTML = `
-                            <div class="gallery-item">
-                                <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
-                            </div>`;
-                            container.appendChild(div);
-                            newItems.push(div);
-                        });
-
-                        imagesLoaded(container, () => {
-                            msnry.appended(newItems);
-                            msnry.layout();
-                        });
-                    }
-
-                    if (data.last || data.content.length === 0) {
-                        observer.unobserve(sentinel);
-                        sentinel.style.display = 'none';
-                    }
-                    isLoading = false;
-                })
-                .catch(err => {
-                    console.error(err);
-                    isLoading = false;
-                });
-        }
+        itemSelector: '.masonry-item',
+        columnWidth: '.masonry-item',
+        percentPosition: true,
+        transitionDuration: '0.2s'
     });
+
+    imagesLoaded(container, () => msnry.layout());
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+            console.log("¡Sentinel detectado! Cargando más...");
+            loadMoreImages();
+        }
+    }, {
+        root: null,
+        threshold: 0.1,
+        rootMargin: '200px'
+    });
+
+    if (sentinel) observer.observe(sentinel);
+
+    // cargar más imágenes
+    function loadMoreImages() {
+        if (isLoading) return;
+        isLoading = true;
+        const nextPage = currentPage + 1;
+
+        let url = (seccion === 'guardadas')
+        ? `/mi-perfil/guardadas/scroll?userId=${userId}&page=${nextPage}&size=12`
+        : `/mi-perfil/mis-imagenes/scroll?userId=${userId}&page=${nextPage}&size=12`;
+
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fotos recibidas: " + data.content.length);
+
+            if (data.content.length > 0) {
+                currentPage = nextPage;
+                const newItems = [];
+
+                data.content.forEach(img => {
+                    const div = document.createElement('div');
+                    div.className = 'masonry-item';
+                    div.innerHTML = `
+                                    <div class="gallery-item">
+                                        <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                    </div>`;
+
+                    container.appendChild(div);
+                    newItems.push(div);
+                });
+
+                imagesLoaded(container, () => {
+                    msnry.appended(newItems);
+                    msnry.layout();
+                });
+            }
+
+            if (!data.hasNext || data.content.length === 0) {
+                observer.unobserve(sentinel);
+                sentinel.style.display = 'none';
+                console.log("No hay más arte que cargar.");
+            }
+
+            isLoading = false;
+        })
+        .catch(err => {
+            console.error("Error en el scroll:", err);
+            isLoading = false;
+        });
+    }
+});
 </script>
 </body>
 </html>
