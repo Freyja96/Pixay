@@ -268,4 +268,27 @@ public class ImageController {
 
         return "pantallas/detalle"; // Crearemos este HTML ahora
     }
+    @GetMapping("/busqueda")
+    public String mostrarBusqueda(Model model, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        List<CategoryResponse> categories = webClientAPI.get()
+                .uri("categories")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CategoryResponse>>() {})
+                .block();
+        List<SubcategoryResponse> subcategories = webClientAPI.get()
+                .uri("subcategories")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
+                .block();
+
+        CustomSlice<ImageResponse> slice = imageService.getAllImages(0, 12, token);
+
+        model.addAttribute("categoriesObjects", categories);
+        model.addAttribute("subcategoriesObjects", subcategories);
+        model.addAttribute("imagenes", slice.getContent());
+        model.addAttribute("hasNext", slice.isHasNext());
+
+        return "pantallas/busqueda";
+    }
 }
