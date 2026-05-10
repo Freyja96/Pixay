@@ -9,6 +9,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConnectApiRestException.class)
     public String handleConnectApiRestException(ConnectApiRestException e, Model model){
         model.addAttribute("errorMessage", e.getMessage());
-        return "api-error";
+        return "pantallas/error";
+    }
+    @ExceptionHandler(Exception.class)
+    public String handleAllExceptions(Exception e, Model model) {
+        model.addAttribute("errorMessage", "Ha ocurrido un error inesperado: " + e.getMessage());
+        return "pantallas/error";
     }
 }
+

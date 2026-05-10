@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/login")
     public String mostrarLogin() {
-        return "login";
+        return "pantallas/login";
     }
 
     @PostMapping("/login")
@@ -50,11 +50,11 @@ public class UserController {
                 return "redirect:/";
             } else {
                 model.addAttribute("error", "Credenciales incorrectas");
-                return "login";
+                return "pantallas/login";
             }
         } catch (Exception e) {
             model.addAttribute("error", "Usuario o contraseña incorrectos");
-            return "login";
+            return "pantallas/login";
         }
     }
 }

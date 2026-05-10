@@ -142,7 +142,7 @@ public class ImageController {
     @GetMapping("/mi-perfil/mis-imagenes/scroll")
     @ResponseBody
     public CustomSlice<ImageResponse> getMisImagenesScroll(
-            @RequestParam Long userId, // Le pasamos el ID del usuario por parámetro
+            @RequestParam Long userId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             HttpSession session) {
@@ -256,7 +256,7 @@ public class ImageController {
         // Obtenemos la imagen de la API
         ImageResponse imagen = imageService.getImageById(id, token);
 
-        // Opcional: Podrías obtener también los datos del autor para mostrar su nombre
+
         UserProfileResponse autor = webClientAPI.get()
                 .uri("usuarios/" + imagen.userId())
                 .retrieve()
@@ -266,7 +266,7 @@ public class ImageController {
         model.addAttribute("imagen", imagen);
         model.addAttribute("autor", autor);
 
-        return "pantallas/detalle"; // Crearemos este HTML ahora
+        return "pantallas/detalle";
     }
     @GetMapping("/busqueda")
     public String mostrarBusqueda(Model model, HttpSession session) {

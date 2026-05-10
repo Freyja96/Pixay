@@ -16,18 +16,47 @@
         .icon-bar i:hover { color: #555; }
         .author-name { font-size: 1.8rem; font-weight: 500; margin-left: 15px; }
         .image-title { font-size: 1.1rem; color: #1a2b3c; margin: 15px 0; }
+
+        .chat-input-container {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            padding: 10px 0;
+        }
+        .input-wrapper {
+            flex-grow: 1;
+        }
+
+        .chat-input {
+            background-color: #f1f1f1 !important;
+            border: none !important;
+            border-radius: 20px !important;
+            padding: 10px 20px !important;
+        }
+
+        .btn-send {
+            background: none;
+            border: none;
+            color: var(--PRIMARY-BLUE);
+            font-size: 2.5rem;
+            padding: 0;
+            margin-left: 10px;
+            line-height: 1;
+        }
+
+        .cursor-pointer { cursor: pointer; }
     </style>
 </head>
 <body>
 <div th:insert="~{/fragments/cabecera}"></div>
 
-<div class="container mt-4 mb-5">
+<div class="container mt-5 mb-5">
     <div class="post-container">
 
         <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto por ahora-->
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
-            <img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/logo.png'}"
-                 class="author-img" alt="Avatar">
+            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/logo.png'}"
+                 class="author-img" alt="Avatar"></a>
             <span class="author-name" th:text="${autor.username}">Paula</span>
         </div>
 
@@ -57,6 +86,7 @@
             <i class="bi bi-reply"></i>
         </div>
 
+
 <!--        &lt;!&ndash; Opcional: Tags de categorías  &ndash;&gt;-->
 <!--        <div class="mt-2 text-muted small">-->
 <!--            <span class="badge bg-light text-dark" th:text="${imagen.categoryName}">Categoría</span>-->
@@ -64,7 +94,16 @@
 <!--                  th:if="${imagen.subcategoryName != 'Sin subcategoría'}"-->
 <!--                  th:text="${imagen.subcategoryName}">Subcategoría</span>-->
 <!--        </div>-->
-
+        <div class="chat-input-container">
+            <i class="bi bi-emoji-smile-fill fs-3 me-2 cursor-pointer"></i>
+            <div class="input-wrapper">
+                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="form-control chat-input">
+            </div>
+            <button class="btn-send">
+                <i class="bi bi-arrow-right-circle-fill"></i>
+            </button>
+        </div>
+    </div>
     </div>
 </div>
 
@@ -72,5 +111,7 @@
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
 </html>
