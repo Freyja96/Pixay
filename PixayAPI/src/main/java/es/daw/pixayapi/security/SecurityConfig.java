@@ -3,6 +3,7 @@ package es.daw.pixayapi.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,7 +31,9 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/imagenes/**").permitAll() // Permitir ver fotos a todos
+                        //TODO CRIS: A PROBAR
+//                        .requestMatchers(HttpMethod.GET, "/api/usuarios/{id}").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/imagenes/usuario/**").permitAll()
                         .anyRequest().permitAll())
                         //TODO luego cambiar por:
                         //.requestMatchers("/auth/**", "/h2-console/**").permitAll()

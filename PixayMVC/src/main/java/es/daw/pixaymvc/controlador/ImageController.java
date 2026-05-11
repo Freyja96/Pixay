@@ -25,6 +25,12 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    /**
+     * Mostrar inicio
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/")
     public String inicio(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -41,7 +47,12 @@ public class ImageController {
         return "pantallas/inicio";
     }
 
-    @GetMapping("/subir-imagen")//mostrar el formulario
+    /**
+     * mostrar el formulario de subida de imagen
+     * @param model
+     * @return
+     */
+    @GetMapping("/subir-imagen")
     public String showUploadForm(Model model) {
         List<CategoryResponse> categories = webClientAPI.get()
                 .uri("categories")
@@ -61,7 +72,17 @@ public class ImageController {
         return "pantallas/subir-imagen";
     }
 
-    @PostMapping("/subir-imagen") //Clic en Publicar en el formulario, subir imagen y redirigir a inicio
+    /**
+     * Clic en Publicar en el formulario, subir imagen y redirigir a inicio. Si no hay token, no puede subir nada.
+     * @param content
+     * @param title
+     * @param category_id
+     * @param subcategory_id
+     * @param redirectAttributes
+     * @param session
+     * @return
+     */
+    @PostMapping("/subir-imagen")
     public String handleFileUpload(@RequestParam("content") MultipartFile content,
                                    @RequestParam("title") String title,
                                    @RequestParam("category_id") String category_id,
@@ -71,7 +92,7 @@ public class ImageController {
                                    //Model model
     ) {
         String token = (String) session.getAttribute("token");
-        if (token == null) return "redirect:/login"; // Si no hay token, no puede subir nada
+        if (token == null) return "redirect:/login";
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("content", content.getResource());
@@ -88,7 +109,7 @@ public class ImageController {
                     .bodyToMono(ImageResponse.class)
                     .block();
             redirectAttributes.addFlashAttribute("message", "¡Imagen subida con éxito!");
-            return "redirect:/";// Redirigimos si va bien
+            return "redirect:/";
         } catch (Exception e) {
             System.out.println("Error subiendo: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error al conectar con la API: " + e.getMessage());
@@ -96,8 +117,15 @@ public class ImageController {
         }
     }
 
+    /**
+     * Devuelve datos en formato JSON de las imágenes que se han subido.
+     * @param page
+     * @param size
+     * @param session
+     * @return
+     */
     @GetMapping("/imagenes")
-    @ResponseBody // <-- devuelve datos en formato JSON
+    @ResponseBody
     public CustomSlice<ImageResponse> getImagenesScroll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
@@ -108,6 +136,12 @@ public class ImageController {
         return imageService.getAllImages(page, size, token);
     }
 
+    /**
+     * Muestra las imágenes del perfil del usuario actual. Si no hay token, redirige a login.
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/mi-perfil/mis-imagenes")
     public String misImagenes(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -138,7 +172,14 @@ public class ImageController {
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
-    // Este es el endpoint que usará el FETCH del JavaScript
+    /**
+     * Scroll de las imágenes del perfil del usuario actual. Es el endpoint que usará el FETCH del JavaScript
+     * @param userId
+     * @param page
+     * @param size
+     * @param session
+     * @return
+     */
     @GetMapping("/mi-perfil/mis-imagenes/scroll")
     @ResponseBody
     public CustomSlice<ImageResponse> getMisImagenesScroll(
@@ -160,6 +201,13 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
     }
+
+    /**
+     * Para mostrar las imágenes guardadas del usuario actual. Si no hay token, redirige a login.
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/mi-perfil/guardadas")
     public String misImagenesGuardadas(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -184,7 +232,12 @@ public class ImageController {
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
-    // Endpoint para el scroll de guardadas
+    /**
+     * Endpoint para el scroll de guardadas
+     * @param page
+     * @param session
+     * @return
+     */
     @GetMapping("/mi-perfil/guardadas/scroll")
     @ResponseBody
     public CustomSlice<ImageResponse> getSavedScroll(
@@ -198,6 +251,15 @@ public class ImageController {
                 .block();
     }
 
+    /**
+     * Mostrar el perfil de otro usuario por ID, con sus imágenes.
+     * Si el perfil es público, se muestra aunque no haya token.
+     * Si no es público, se muestra solo si hay token.
+     * @param id
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/usuario/{id}")
     public String verPerfilAjeno(@PathVariable Long id, HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -228,6 +290,13 @@ public class ImageController {
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
+    /**
+     * Mostrar las imágenes guardadas de otro usuario por ID.
+     * @param id
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/usuario/{id}/guardadas")
     public String verGuardadasAjeno(@PathVariable Long id, HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -249,13 +318,19 @@ public class ImageController {
 
         return "pantallas/mi-perfil/mis-imagenes";
     }
+
+    /**
+     * Mostrar el detalle de una imagen por ID. Incluye chat.
+     * @param id
+     * @param session
+     * @param model
+     * @return
+     */
     @GetMapping("/imagen/{id}")
     public String verDetalleImagen(@PathVariable Long id, HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
 
-        // Obtenemos la imagen de la API
         ImageResponse imagen = imageService.getImageById(id, token);
-
 
         UserProfileResponse autor = webClientAPI.get()
                 .uri("usuarios/" + imagen.userId())
@@ -268,9 +343,36 @@ public class ImageController {
 
         return "pantallas/detalle";
     }
+
+    /**
+     * Mostrar los resultados de la búsqueda por título. Si no hay query, muestra todas las imágenes.
+     * @param query
+     * @param model
+     * @param session
+     * @return
+     */
     @GetMapping("/busqueda")
-    public String mostrarBusqueda(Model model, HttpSession session) {
+    public String mostrarBusqueda(@RequestParam(required = false) String query,
+                                  @RequestParam(required = false) Long categoryId,
+                                  @RequestParam(required = false) Long subId,
+                                  Model model,
+                                  HttpSession session
+    ) {
         String token = (String) session.getAttribute("token");
+
+        CustomSlice<ImageResponse> slice = webClientAPI.get()
+                .uri(uriBuilder -> {
+                    uriBuilder.path("imagenes/buscar")
+                            .queryParam("page", 0).queryParam("size", 12);
+                    if (query != null) uriBuilder.queryParam("query", query);
+                    if (categoryId != null) uriBuilder.queryParam("categoryId", categoryId);
+                    if (subId != null) uriBuilder.queryParam("subId", subId); // <--- Enviamos subcategoría
+                    return uriBuilder.build();
+                })
+                .headers(h -> { if(token != null) h.setBearerAuth(token); })
+                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
+
+        //Categorías y subcategorías en el sidebar:
         List<CategoryResponse> categories = webClientAPI.get()
                 .uri("categories")
                 .retrieve()
@@ -282,13 +384,54 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
                 .block();
 
-        CustomSlice<ImageResponse> slice = imageService.getAllImages(0, 12, token);
+        if (query != null && !query.isEmpty()) {
+            slice = webClientAPI.get()
+                    .uri(uriBuilder -> uriBuilder.path("imagenes/buscar")
+                            .queryParam("query", query)
+                            .queryParam("page", 0).queryParam("size", 12).build())
+                    .headers(h -> { if(token!=null) h.setBearerAuth(token); })
+                    .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
+        } else {
+            slice = imageService.getAllImages(0, 12, token);
+        }
 
+        model.addAttribute("query", query);
+        model.addAttribute("selectedCatId", categoryId);
         model.addAttribute("categoriesObjects", categories);
         model.addAttribute("subcategoriesObjects", subcategories);
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
 
         return "pantallas/busqueda";
+    }
+
+    /**
+     * Scroll de la pantalla de búsqueda. Es el endpoint que usará el FETCH del JavaScript
+     * @param query
+     * @param page
+     * @param session
+     * @return
+     */
+    @GetMapping("/busqueda/scroll")
+    @ResponseBody
+    public CustomSlice<ImageResponse> getBusquedaScroll(
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long subcategoryId,
+            @RequestParam int page, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+
+        String path = (query != null && !query.isEmpty()) ? "imagenes/buscar" : "imagenes";
+
+        return webClientAPI.get()
+                .uri(uriBuilder -> {
+                    uriBuilder.path(path).queryParam("page", page).queryParam("size", 12);
+                    if(query != null) uriBuilder.queryParam("query", query);
+                    if(categoryId != null) uriBuilder.queryParam("categoryId", categoryId);
+                    if(subcategoryId != null) uriBuilder.queryParam("subcategoryId", subcategoryId);
+                    return uriBuilder.build();
+                })
+                .headers(h -> { if(token!=null) h.setBearerAuth(token); })
+                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
     }
 }

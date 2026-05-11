@@ -29,7 +29,7 @@
             <div th:each="cat : ${categoriesObjects}">
                 <h5 class="category-title" th:text="${cat.name}">Fotografía</h5>
                 <ul class="subcategory-list">
-                    <!-- Solo mostramos las subcategorías cuyo categoryId coincida con el id de la categoría actual -->
+                    <!-- Solo mostramos las subcategorías cuyo categoryId coincida con el ID de la categoría actual -->
                     <li class="subcategory-item" th:each="sub : ${subcategoriesObjects}" th:if="${sub.categoryId == cat.id}">
                         <a th:href="@{/busqueda(subId=${sub.id})}" th:text="${sub.name}">Subcategoría</a>
                     </li>
@@ -38,7 +38,15 @@
         </div>
         <!-- CONTENIDO PRINCIPAL -->
         <div class="col-md-9 col-lg-10 py-5 px-4">
-            <div class="masonry-wrapper">
+            <!--no se encuentran resultados-->
+            <div th:if="${#lists.isEmpty(imagenes)}" class="text-center py-5">
+                <i class="bi bi-search" style="font-size: 4rem; color: var(--LIGHT-CASE);"></i>
+                <h3 class="mt-3 text-navy">No se han encontrado resultados</h3>
+                <p class="text-muted">Prueba con otras palabras o categorías.</p>
+                <a th:href="@{/busqueda}" class="btn btn-primary mt-3">Ver todo el arte</a>
+            </div>
+            <!--se encuentran resultados-->
+            <div th:if="${!#lists.isEmpty(imagenes)}" class="masonry-wrapper">
                 <div class="masonry-container" id="gallery-container">
                     <div th:each="img : ${imagenes}" class="masonry-item">
                         <div class="gallery-item">
@@ -66,6 +74,11 @@
     document.addEventListener("DOMContentLoaded", () => {
         let currentPage = 0;
         let isLoading = false;
+
+        const query = [[${query}]];
+        const catId = [[${selectedCatId}]];
+        const subId = [[${selectedSubId}]];
+
         const container = document.getElementById('gallery-container');
         const sentinel = document.getElementById('loading-sentinel');
 
@@ -93,8 +106,13 @@
             isLoading = true;
             const nextPage = currentPage + 1;
 
+            let url = `/busqueda/scroll?page=${nextPage}`;
+            if (query) url += `&query=${encodeURIComponent(query)}`;
+            if (catId) url += `&catId=${catId}`;
+            if (subId) url += `&subId=${subId}`;
+
             // Fetch a la galería general
-            fetch(`/imagenes?page=${nextPage}&size=12`)
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.content.length > 0) {

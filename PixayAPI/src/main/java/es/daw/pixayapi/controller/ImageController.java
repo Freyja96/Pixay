@@ -3,10 +3,14 @@ package es.daw.pixayapi.controller;
 import es.daw.pixayapi.dto.response.ImageResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.User;
+import es.daw.pixayapi.repository.ImageRepository;
 import es.daw.pixayapi.service.ImageService;
 import es.daw.pixayapi.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
+    private final ImageRepository imageRepository;
+
     /**
      * Sube una imagen al servidor.
      * @param content
@@ -121,6 +127,13 @@ public class ImageController {
         return ResponseEntity.ok(responseSlice);
     }
 
+    /**
+     * mostrar las imágenes guardadas por el usuario actual.
+     * @param userDetails
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping("/guardadas")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Slice<ImageResponse>> getSavedImages(
@@ -133,7 +146,13 @@ public class ImageController {
         return ResponseEntity.ok(slice.map(this::convertToResponse));
     }
 
-    // En la API
+    /**
+     * Imágenes guardadas del usuario por ID.
+     * @param id
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping("/usuario/{id}/guardadas")
     public ResponseEntity<Slice<ImageResponse>> getSavedImagesByUserId(
             @PathVariable Long id,
@@ -143,6 +162,36 @@ public class ImageController {
         User user = userService.findById(id);
         Slice<Image> slice = imageService.getSavedImagesByUser(user, page, size);
         return ResponseEntity.ok(slice.map(this::convertToResponse));
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<Slice<ImageResponse>> searchImages(
+            @RequestParam String query,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long subId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        //si hay subcategoría y título:
+        if (subId != null) {
+            if (query != null && !query.isEmpty()){
+                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndSubcategoryId(query, subId, pageable).map(this::convertToResponse));
+            }
+            return ResponseEntity.ok(imageRepository.findBySubcategoryId(subId, pageable).map(this::convertToResponse));
+        }
+        //si hay categoría y título:
+        if (categoryId != null) {
+            if (query != null && !query.isEmpty())
+                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndCategoryId(query, categoryId, pageable).map(this::convertToResponse));
+            return ResponseEntity.ok(imageRepository.findByCategoryId(categoryId, pageable).map(this::convertToResponse));
+        }
+        //si solo hay título:
+        if (query != null && !query.isEmpty()) {
+            return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCase(query, pageable).map(this::convertToResponse));
+        }
+        //si no hay nada:
+        return ResponseEntity.ok(imageService.getAllImagesPaged(page, size).map(this::convertToResponse));
     }
 
     /**
