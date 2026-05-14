@@ -20,7 +20,7 @@ public class GlobalControllerAdvice {
         this.webClientAPI = webClientAPI;
     }
 
-    // Este método hace que "headerCategories" esté disponible en TODAS las plantillas
+    // hace que "headerCategories" esté disponible en TODAS las plantillas
     @ModelAttribute("headerCategories")
     public List<CategoryResponse> getHeaderCategories() {
         try {

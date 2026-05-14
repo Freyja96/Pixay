@@ -15,9 +15,9 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     Slice<Image> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     //para buscar imágenes cuyo título contenga la cadena de texto dada ignorando mayúsculas/minúsculas, filtrando por categoría
-    Slice<Image> findByTitleContainingIgnoreCaseAndCategoryId(String title, Long categoryId, Pageable pageable);
-    Slice<Image> findByTitleContainingIgnoreCaseAndSubcategoryId(String title, Long subcategoryId, Pageable pageable);
+    Slice<Image> findByTitleContainingIgnoreCaseAndCategory_Id(String title, Long categoryId, Pageable pageable);
+    Slice<Image> findByTitleContainingIgnoreCaseAndSubcategory_Id(String title, Long subcategoryId, Pageable pageable);
 
-    Slice<Image> findByCategoryId(Long categoryId, Pageable pageable);
-    Slice<Image> findBySubcategoryId(Long subcategoryId, Pageable pageable);
+    Slice<Image> findByCategory_Id(Long categoryId, Pageable pageable);
+    Slice<Image> findBySubcategory_Id(Long subcategoryId, Pageable pageable);
 }

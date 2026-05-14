@@ -27,11 +27,21 @@
         <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 sidebar-search">
             <div th:each="cat : ${categoriesObjects}">
-                <h5 class="category-title" th:text="${cat.name}">Fotografía</h5>
+                <a th:href="@{/busqueda(categoryId=${cat.id})}" style="text-decoration: none;">
+                    <h5 class="category-title"
+                        th:text="${cat.name}"
+                        th:style="${cat.id == selectedCategoryId} ? 'color: var(--SECONDARY-ORANGE)' : ''">
+                        Fotografía
+                    </h5>
+                </a>
                 <ul class="subcategory-list">
                     <!-- Solo mostramos las subcategorías cuyo categoryId coincida con el ID de la categoría actual -->
                     <li class="subcategory-item" th:each="sub : ${subcategoriesObjects}" th:if="${sub.categoryId == cat.id}">
-                        <a th:href="@{/busqueda(subId=${sub.id})}" th:text="${sub.name}">Subcategoría</a>
+                        <a th:href="@{/busqueda(subcategoryId=${sub.id})}"
+                           th:text="${sub.name}"
+                           th:classappend="${sub.id == selectedSubcategoryId} ? 'subcategory-active' : ''">
+                                Subcategoría
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -76,8 +86,8 @@
         let isLoading = false;
 
         const query = [[${query}]];
-        const catId = [[${selectedCatId}]];
-        const subId = [[${selectedSubId}]];
+        const categoryId = [[${selectedCategoryId}]];
+        const subcategoryId = [[${selectedSubcategoryId}]];
 
         const container = document.getElementById('gallery-container');
         const sentinel = document.getElementById('loading-sentinel');
@@ -108,8 +118,8 @@
 
             let url = `/busqueda/scroll?page=${nextPage}`;
             if (query) url += `&query=${encodeURIComponent(query)}`;
-            if (catId) url += `&catId=${catId}`;
-            if (subId) url += `&subId=${subId}`;
+            if (categoryId) url += `&categoryId=${categoryId}`;
+            if (subcategoryId) url += `&subcategoryId=${subcategoryId}`;
 
             // Fetch a la galería general
             fetch(url)

@@ -54,21 +54,7 @@ public class ImageController {
      */
     @GetMapping("/subir-imagen")
     public String showUploadForm(Model model) {
-        List<CategoryResponse> categories = webClientAPI.get()
-                .uri("categories")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<CategoryResponse>>() {})
-                .block();
-
-        List<SubcategoryResponse> subcategories = webClientAPI.get()
-                .uri("subcategories")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
-                .block();
-
-        model.addAttribute("categoriesObjects", categories);
-        model.addAttribute("subcategoriesObjects", subcategories);
-
+        cargarSidebar(model);
         return "pantallas/subir-imagen";
     }
 
@@ -354,7 +340,7 @@ public class ImageController {
     @GetMapping("/busqueda")
     public String mostrarBusqueda(@RequestParam(required = false) String query,
                                   @RequestParam(required = false) Long categoryId,
-                                  @RequestParam(required = false) Long subId,
+                                  @RequestParam(required = false) Long subcategoryId,
                                   Model model,
                                   HttpSession session
     ) {
@@ -363,45 +349,55 @@ public class ImageController {
         CustomSlice<ImageResponse> slice = webClientAPI.get()
                 .uri(uriBuilder -> {
                     uriBuilder.path("imagenes/buscar")
-                            .queryParam("page", 0).queryParam("size", 12);
-                    if (query != null) uriBuilder.queryParam("query", query);
+                            .queryParam("page", 0)
+                            .queryParam("size", 12);
+                    if (query != null && !query.isEmpty()) uriBuilder.queryParam("query", query);
                     if (categoryId != null) uriBuilder.queryParam("categoryId", categoryId);
-                    if (subId != null) uriBuilder.queryParam("subId", subId); // <--- Enviamos subcategoría
+                    if (subcategoryId != null) uriBuilder.queryParam("subcategoryId", subcategoryId);
                     return uriBuilder.build();
                 })
-                .headers(h -> { if(token != null) h.setBearerAuth(token); })
-                .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
-
-        //Categorías y subcategorías en el sidebar:
-        List<CategoryResponse> categories = webClientAPI.get()
-                .uri("categories")
+                .headers(h -> { if (token != null) h.setBearerAuth(token); })
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<CategoryResponse>>() {})
-                .block();
-        List<SubcategoryResponse> subcategories = webClientAPI.get()
-                .uri("subcategories")
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
+                .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
 
-        if (query != null && !query.isEmpty()) {
-            slice = webClientAPI.get()
-                    .uri(uriBuilder -> uriBuilder.path("imagenes/buscar")
-                            .queryParam("query", query)
-                            .queryParam("page", 0).queryParam("size", 12).build())
-                    .headers(h -> { if(token!=null) h.setBearerAuth(token); })
-                    .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
-        } else {
-            slice = imageService.getAllImages(0, 12, token);
-        }
+//        if (query != null && !query.isEmpty()) {
+//            slice = webClientAPI.get()
+//                    .uri(uriBuilder -> {
+//                        uriBuilder.path("imagenes/buscar")
+//                                .queryParam("page", 0)
+//                                .queryParam("size", 12)
+//                                .queryParam("query", query);
+//                        if (categoryId != null) uriBuilder.queryParam("categoryId", categoryId);
+//                        return uriBuilder.build();
+//                    })
+//                    .headers(h -> { if(token != null) h.setBearerAuth(token); })
+//                    .retrieve()
+//                    .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+//                    .block();
+//        } else if (categoryId != null) {
+//            // Búsqueda solo por categoría
+//            slice = webClientAPI.get()
+//                    .uri(uriBuilder -> uriBuilder.path("imagenes/buscar")
+//                            .queryParam("categoryId", categoryId)
+//                            .queryParam("page", 0).queryParam("size", 12).build())
+//                    .headers(h -> { if(token != null) h.setBearerAuth(token); })
+//                    .retrieve()
+//                    .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
+//                    .block();
+//        } else {
+//            slice = imageService.getAllImages(0, 12, token);
+//        }
+
 
         model.addAttribute("query", query);
-        model.addAttribute("selectedCatId", categoryId);
-        model.addAttribute("categoriesObjects", categories);
-        model.addAttribute("subcategoriesObjects", subcategories);
+        model.addAttribute("selectedCategoryId", categoryId);
+        model.addAttribute("selectedSubcategoryId", subcategoryId);
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
 
+        //Categorías y subcategorías en el sidebar:
+        cargarSidebar(model);
         return "pantallas/busqueda";
     }
 
@@ -433,5 +429,21 @@ public class ImageController {
                 })
                 .headers(h -> { if(token!=null) h.setBearerAuth(token); })
                 .retrieve().bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {}).block();
+    }
+    private void cargarSidebar(Model model) {
+        List<CategoryResponse> categories = webClientAPI.get()
+                .uri("categories")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CategoryResponse>>() {})
+                .block();
+
+        List<SubcategoryResponse> subcategories = webClientAPI.get()
+                .uri("subcategories")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<SubcategoryResponse>>() {})
+                .block();
+
+        model.addAttribute("categoriesObjects", categories);
+        model.addAttribute("subcategoriesObjects", subcategories);
     }
 }

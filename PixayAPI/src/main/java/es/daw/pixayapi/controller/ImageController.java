@@ -128,7 +128,7 @@ public class ImageController {
     }
 
     /**
-     * mostrar las imágenes guardadas por el usuario actual.
+     * Mostrar las imágenes guardadas por el usuario actual.
      * @param userDetails
      * @param page
      * @param size
@@ -166,31 +166,30 @@ public class ImageController {
 
     @GetMapping("/buscar")
     public ResponseEntity<Slice<ImageResponse>> searchImages(
-            @RequestParam String query,
+            @RequestParam(required = false) String query,
             @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) Long subId,
+            @RequestParam(required = false) Long subcategoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        //si hay subcategoría y título:
-        if (subId != null) {
-            if (query != null && !query.isEmpty()){
-                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndSubcategoryId(query, subId, pageable).map(this::convertToResponse));
-            }
-            return ResponseEntity.ok(imageRepository.findBySubcategoryId(subId, pageable).map(this::convertToResponse));
+
+        String q = (query == null) ? "" : query;
+        // Lógica de filtros (Prioridad: Subcategoría > Categoría > Texto)
+        if (subcategoryId != null) {
+            if (!q.isEmpty()) return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndSubcategory_Id(q, subcategoryId, pageable).map(this::convertToResponse));
+            return ResponseEntity.ok(imageRepository.findBySubcategory_Id(subcategoryId, pageable).map(this::convertToResponse));
         }
-        //si hay categoría y título:
+
         if (categoryId != null) {
-            if (query != null && !query.isEmpty())
-                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndCategoryId(query, categoryId, pageable).map(this::convertToResponse));
-            return ResponseEntity.ok(imageRepository.findByCategoryId(categoryId, pageable).map(this::convertToResponse));
+            if (!q.isEmpty()) return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndCategory_Id(q, categoryId, pageable).map(this::convertToResponse));
+            return ResponseEntity.ok(imageRepository.findByCategory_Id(categoryId, pageable).map(this::convertToResponse));
         }
-        //si solo hay título:
-        if (query != null && !query.isEmpty()) {
-            return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCase(query, pageable).map(this::convertToResponse));
+
+        if (!q.isEmpty()) {
+            return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCase(q, pageable).map(this::convertToResponse));
         }
-        //si no hay nada:
+
         return ResponseEntity.ok(imageService.getAllImagesPaged(page, size).map(this::convertToResponse));
     }
 

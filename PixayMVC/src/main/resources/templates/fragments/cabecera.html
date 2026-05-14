@@ -18,28 +18,28 @@
                     <img  class="logo" th:src="@{/imagenes/logo.png}" alt="logo">
                 </div>
             </div>
-            <div class="col-3 me-2 mt-2 ">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="Menu1"  data-bs-toggle="dropdown" >
-                        [[${selectedCategoryName != null ? selectedCategoryName : 'Todas las categorías'}]]
-                    </button>
-                    <ul class="dropdown-menu Menu1" aria-labelledby="menu1">
-                        <li><a class="dropdown-item" th:href="@{/busqueda}">Todas las categorías</a></li>
-                        <li th:each="cat : ${headerCategories}">
-                            <a class="dropdown-item" th:href="@{/busqueda(catId=${cat.id})}" th:text="${cat.name}"></a>
-                        </li>
-                    </ul>
+            <div class="col-8 d-flex justify-content-center mt-2 ">
+                <div class="search-group d-flex w-100">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="Menu1"  data-bs-toggle="dropdown" >
+                            [[${selectedCategoryName != null ? selectedCategoryName : 'Todas las categorías'}]]
+                        </button>
+                        <ul class="dropdown-menu Menu1" aria-labelledby="menu1">
+                            <li><a class="dropdown-item" th:href="@{/busqueda}">Todas las categorías</a></li>
+                            <li th:each="cat : ${headerCategories}">
+                                <a class="dropdown-item" th:href="@{/busqueda(categoryId=${cat.id})}" th:text="${cat.name}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class="d-flex flex-grow-1 bg-white align-items-center pr-2" th:action="@{/busqueda}" method="get">
+                        <input name="query" class="form-control search-input me-2 w-100"
+                               type="text" placeholder="Buscar..."
+                               th:value="${query}">
+                        <button type="submit" class="search-icon-btn">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </form>
                 </div>
-            </div>
-            <div class="col-5 mt-2 ">
-                <form class="d-flex search-bar-container" th:action="@{/busqueda}" method="get">
-                    <input name="query" class="form-control search-input me-2 w-100"
-                           type="text" placeholder="Buscar..."
-                           th:value="${query}">
-                    <button type="submit" class="search-icon-btn">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
             </div>
             <div class="col-1 d-flex align-items-center justify-content-center">
                 <div class="notification-container">

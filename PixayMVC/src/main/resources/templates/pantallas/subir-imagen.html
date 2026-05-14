@@ -82,13 +82,13 @@
 </body>
 <script>
     document.getElementById('category_id').addEventListener('change', function() {
-        const selectedCatId = this.value;
+        const selectedCategoryId = this.value;
         const subSelect = document.getElementById('subcategory_id');
         const options = subSelect.querySelectorAll('option');
 
         subSelect.value = ""; // Resetear selección
         options.forEach(opt => {
-            if (opt.getAttribute('data-category-id') === selectedCatId || opt.value === "") {
+            if (opt.getAttribute('data-category-id') === selectedCategoryId || opt.value === "") {
                 opt.style.display = 'block';
             } else {
                 opt.style.display = 'none';
