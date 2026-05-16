@@ -49,7 +49,7 @@ INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Angel Beats', 1, 2, 17, FILE_READ('src/main/resources/static/inicio/angel-beats.jpg')); -- 17: Cómic/Manga
 
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
-VALUES ('Criss & Cross', 1, 1, 11, FILE_READ('src/main/resources/static/inicio/CrissCross.png')); -- 11: Retrato (Foto)
+VALUES ('Criss & Cross', 1, 2, 5, FILE_READ('src/main/resources/static/inicio/CrissCross.png')); -- 11: Retrato (Foto)
 
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Criss&Cross', 1, 1, 11, FILE_READ('src/main/resources/static/inicio/CrissCross2.jpg')); -- 11: Retrato (Foto)
@@ -121,6 +121,9 @@ VALUES ('Scizor', 2, 2, 17, FILE_READ('src/main/resources/static/inicio/Scizor.j
 INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
 VALUES ('Totoro hora de aventuras', 2, 2, 17, FILE_READ('src/main/resources/static/inicio/Totoro_hora_aventuras.jpg'));
 
+--USER 3 (Maria)
+INSERT INTO users_images (title, user_id, category_id, subcategory_id, content)
+VALUES ('Doris', 3, 1, 11, FILE_READ('src/main/resources/static/inicio/Doris.JPG'));
 -- select title, c.name, s.name from users_images i
 --                                       inner join categories c on i.category_id = c.id
 --                                       inner join subcategories s on i.subcategory_id = s.id;

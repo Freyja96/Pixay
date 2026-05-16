@@ -14,9 +14,6 @@
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/inicio.css}">
     <link rel="stylesheet" th:href="@{/css/busqueda.css}">
-    <style>
-
-    </style>
 </head>
 <body>
 <!--CABECERA-->
@@ -27,7 +24,7 @@
         <!-- SIDEBAR -->
         <div class="col-md-3 col-lg-2 sidebar-search">
             <div th:each="cat : ${categoriesObjects}">
-                <a th:href="@{/busqueda(categoryId=${cat.id})}" style="text-decoration: none;">
+                <a th:href="@{/busqueda(categoryId=${cat.id}, query=${query})}" style="text-decoration: none;">
                     <h5 class="category-title"
                         th:text="${cat.name}"
                         th:style="${cat.id == selectedCategoryId} ? 'color: var(--SECONDARY-ORANGE)' : ''">
@@ -37,7 +34,7 @@
                 <ul class="subcategory-list">
                     <!-- Solo mostramos las subcategorías cuyo categoryId coincida con el ID de la categoría actual -->
                     <li class="subcategory-item" th:each="sub : ${subcategoriesObjects}" th:if="${sub.categoryId == cat.id}">
-                        <a th:href="@{/busqueda(subcategoryId=${sub.id})}"
+                        <a th:href="@{/busqueda(subcategoryId=${sub.id}, query=${query})}"
                            th:text="${sub.name}"
                            th:classappend="${sub.id == selectedSubcategoryId} ? 'subcategory-active' : ''">
                                 Subcategoría
@@ -50,7 +47,7 @@
         <div class="col-md-9 col-lg-10 py-5 px-4">
             <!--no se encuentran resultados-->
             <div th:if="${#lists.isEmpty(imagenes)}" class="text-center py-5">
-                <i class="bi bi-search" style="font-size: 4rem; color: var(--LIGHT-CASE);"></i>
+                <img th:src="@{/imagenes/gato-busqueda-no-encontrada.png}" class="no-encontrada-img" alt="búsqueda no encontrada"/>
                 <h3 class="mt-3 text-navy">No se han encontrado resultados</h3>
                 <p class="text-muted">Prueba con otras palabras o categorías.</p>
                 <a th:href="@{/busqueda}" class="btn btn-primary mt-3">Ver todo el arte</a>
@@ -82,6 +79,11 @@
 <!--JS PROPIO-->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
+        if (typeof bootstrap !== 'undefined') {
+            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+            const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+        }
+
         let currentPage = 0;
         let isLoading = false;
 
@@ -102,7 +104,6 @@
 
         imagesLoaded(container, () => msnry.layout());
 
-        // Observer
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting && !isLoading) {
                 loadMoreImages();

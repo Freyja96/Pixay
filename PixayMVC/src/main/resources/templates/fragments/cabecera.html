@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Pixay - Cabecera</title>
     <!-- Bootstrap 5 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <!-- Estilos personalizados -->
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
@@ -12,7 +12,7 @@
 </head>
 <body >
     <div class="h-50 container-fluid ">
-        <nav class="fondo row p-2 navbar navbar-expand-sm fixed-top">
+        <nav class="fondo-header row p-2 navbar navbar-expand-sm fixed-top">
             <div class="col-2">
                 <div class=" ps-2">
                     <img  class="logo" th:src="@{/imagenes/logo.png}" alt="logo">
@@ -21,17 +21,23 @@
             <div class="col-8 d-flex justify-content-center mt-2 ">
                 <div class="search-group d-flex w-100">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="Menu1"  data-bs-toggle="dropdown" >
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button" id="Menu1"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
                             [[${selectedCategoryName != null ? selectedCategoryName : 'Todas las categorías'}]]
                         </button>
-                        <ul class="dropdown-menu Menu1" aria-labelledby="menu1">
+                        <ul class="dropdown-menu" aria-labelledby="Menu1">
                             <li><a class="dropdown-item" th:href="@{/busqueda}">Todas las categorías</a></li>
                             <li th:each="cat : ${headerCategories}">
                                 <a class="dropdown-item" th:href="@{/busqueda(categoryId=${cat.id})}" th:text="${cat.name}"></a>
                             </li>
                         </ul>
                     </div>
-                    <form class="d-flex flex-grow-1 bg-white align-items-center pr-2" th:action="@{/busqueda}" method="get">
+                    <form class="d-flex flex-grow-1" th:action="@{/busqueda}" method="get">
+                        <input type="hidden" name="categoryId" th:value="${selectedCategoryId}">
+                        <input type="hidden" name="subcategoryId" th:value="${selectedSubcategoryId}">
+
                         <input name="query" class="form-control search-input me-2 w-100"
                                type="text" placeholder="Buscar..."
                                th:value="${query}">
@@ -58,8 +64,20 @@
             </div>
         </nav>
     </div>
+    <script>
+        (function() {
+            const initDropdown = () => {
+                const el = document.getElementById('Menu1');
+                if (el && typeof bootstrap !== 'undefined') {
+                    new bootstrap.Dropdown(el);
+                    console.log("Dropdown de la cabecera inicializado manualmente");
+                }
+            };
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+            window.addEventListener('load', initDropdown);
+            document.addEventListener('DOMContentLoaded', initDropdown);
+            setTimeout(initDropdown, 500);
+        })();
+    </script>
 </body>
 </html>
