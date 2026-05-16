@@ -1,9 +1,15 @@
 @import "estilos.css";
 
+.no-encontrada-img{
+    max-height: 500px;
+    max-width: 500px
+}
+
 .sidebar-search {
     background-color: var(--LIGHT-BLUE);
     min-height: 100vh;
     padding: 30px 20px;
+    z-index: 1;
 }
 .category-title {
     color: var(--DARK-BACKCOLOR);

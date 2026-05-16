@@ -1,39 +1,44 @@
 @import "estilos.css";
 
-.fondo {
-    background-color: var(--DARK-BACKCOLOR) !important; /* #001D33 */
-    z-index: 1030; /* Asegura que esté por encima de la galería */
+.fondo-header {
+    background-color: var(--DARK-BACKCOLOR) !important;
+    z-index: 2000 !important;
+    position: fixed;
+    top: 0;
+    width: 100%;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-.logo{
-    height:50px;
-    width:95px;
+.logo {
+    height: 50px;
+    width: 95px;
 }
+
+/* GRUPO DE BÚSQUEDA (Dropdown + Input) */
 .search-group {
     background: white;
     border: 1px solid #ddd;
     border-radius: 12px;
-    overflow: hidden;
     height: 42px;
     display: flex;
     width: 100%;
     max-width: 700px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
 }
-
 .search-group .dropdown .btn {
     border: none !important;
     border-right: 1px solid #ddd !important;
-    border-radius: 0 !important;
+    border-radius: 12px 0 0 12px !important;
     background-color: #f8f9fa !important;
     color: var(--DARK-BACKCOLOR) !important;
     height: 100%;
-    padding: 0 20px;
+    padding: 0 15px;
     font-size: 0.9rem;
-    font-weight: 500;
 }
-
+.dropdown-menu {
+    z-index: 3000 !important;
+    margin-top: 5px !important;
+}
 .search-group .search-input {
     border: none !important;
     box-shadow: none !important;
@@ -41,117 +46,22 @@
     padding-left: 15px;
     flex-grow: 1;
 }
-
 .search-icon-btn {
     background: white;
     border: none;
     padding-right: 15px;
+    border-radius: 0 12px 12px 0 !important;
     height: 100%;
-    display: flex;
-    align-items: center;
-}
-.search-group .form-control {
-    border: none !important;
-}
-
-.btn-category {
-    background-color: #f8f9fa !important;
-    border: none !important;
-    border-right: 1px solid #ddd !important;
-    border-radius: 0 !important;
-    padding: 8px 15px;
-    height: 100%;
-}
-
-.search-form {
-    flex-grow: 1;
-    align-items: center;
-    padding: 0 10px;
-}
-
-.search-bar-container {
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    padding: 2px 10px;
-    align-items: center;
-    width: 100%;
-}
-
-.search-input {
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.search-icon-btn {
-    background: none;
-    border: none;
-    padding: 0;
     cursor: pointer;
 }
-
 .bi-search {
     color: var(--SECONDARY-ORANGE);
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-.sidebar-search {
-    background-color: var(--LIGHT-BLUE); /* El azul de tu :root */
-    min-height: calc(100vh - 70px);
-    padding: 40px 25px;
-    border-right: 1px solid rgba(0,0,0,0.05);
+    font-size: 1.3rem;
 }
 
-.category-title {
-    color: var(--DARK-BACKCOLOR);
-    font-weight: 800;
-    text-transform: none;
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-}
-.subcategory-list {
-    list-style: none;
-    padding-left: 15px;
-    margin-bottom: 25px;
-}
-.subcategory-item a {
-    color: var(--DARK-BACKCOLOR);
-    opacity: 0.8;
-    text-decoration: none;
-    font-size: 0.95rem;
-    display: block;
-    padding: 4px 0;
-    transition: all 0.2s;
-}
-.subcategory-item a:hover {
-    color: var(--SECONDARY-ORANGE);
-    opacity: 1;
-    padding-left: 5px;
-}
-/* para resaltar la subcategoría seleccionada */
-.subcategory-active {
-    color: var(--SECONDARY-ORANGE) !important;
-    font-weight: bold;
-    opacity: 1 !important;
-}
-
-/* Estilos para la campana de notificaciones*/
-.notification-container {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-}
-.bell-icon {
-    font-size: 2rem;
-    color: var(--PRIMARY-BLUE);
-}
+.notification-container { position: relative; display: inline-block; cursor: pointer; }
+.bell-icon { font-size: 2rem; color: var(--PRIMARY-BLUE); }
 .notification-dot {
-    position: absolute;
-    top: 5px;
-    right: 2px;
-    width: 12px;
-    height: 12px;
-    background-color: var(--SECONDARY-ORANGE);
-    border-radius: 50%;
-    border: 2px solid var(--DARK-BACKCOLOR);
+    position: absolute; top: 5px; right: 2px; width: 12px; height: 12px;
+    background-color: var(--SECONDARY-ORANGE); border-radius: 50%; border: 2px solid var(--DARK-BACKCOLOR);
 }

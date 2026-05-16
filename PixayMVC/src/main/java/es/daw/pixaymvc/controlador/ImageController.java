@@ -44,6 +44,11 @@ public class ImageController {
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/inicio";
     }
 

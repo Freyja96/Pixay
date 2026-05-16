@@ -35,8 +35,8 @@
             </div>
         </div>
     </div>
-    <!--SCROLL INFINITO CON SPINNER-->
-    <div id="loading-sentinel" class="text-center"><!-- th:if="${hasNext}">-->
+    <!-- SENTINEL PARA SCROLL -->
+    <div id="loading-sentinel" class="text-center mt-4" th:if="${hasNext}">
         <div class="spinner-border text-info" role="status"></div>
         <p class="text-muted">Cargando más arte...</p>
     </div>
@@ -46,8 +46,12 @@
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- JS propio -->
-<script>
+<script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
+        if (typeof bootstrap !== 'undefined') {
+            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+            const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+        }
         let currentPage = 0;
         let isLoading = false;
         const container = document.getElementById('gallery-container');
