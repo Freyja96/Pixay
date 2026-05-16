@@ -1,0 +1,16 @@
+.fondo {
+    background-color:#001D33;
+}
+/* Ajuste para que el contenido no quede debajo del footer fixed */
+body {
+    padding-bottom: 70px;
+}
+.footer-icon:hover {
+    opacity: 0.8;
+}
+.footer-custom {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

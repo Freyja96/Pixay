@@ -1,0 +1,25 @@
+.fondo{
+    background-color: #f7f7f7;
+}
+
+.cajas {
+    background-color: #33484B40;
+}
+
+.btn-naranja{
+    background-color: #f48201;
+}
+.espaciadoFlecha {
+    display: inline-flex;
+    margin-left: 100px;
+    justify-content: center;
+    align-items: center;
+}
+.titulos {
+    font-family:"Calibri";
+    font-size:42px;
+    margin-left: 0px;
+}
+.collapse {
+    width: 100%;
+}
