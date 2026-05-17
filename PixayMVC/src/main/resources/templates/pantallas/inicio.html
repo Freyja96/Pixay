@@ -48,31 +48,13 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
-        if (typeof bootstrap !== 'undefined') {
-            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-            const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
-        }
+        const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+        const dropdownList = [...dropdownElementList].map(el => new bootstrap.Dropdown(el));
+
         let currentPage = 0;
         let isLoading = false;
         const container = document.getElementById('gallery-container');
-
-        let msnry = new Masonry(container, {
-            itemSelector: '.masonry-item',
-            columnWidth: '.masonry-item',
-            percentPosition: true,
-            transitionDuration: '0.2s'
-        });
-
-        imagesLoaded(container, () => msnry.layout());
-
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting && !isLoading) {
-                loadMoreImages();
-            }
-        }, { rootMargin: '200px' });
-
         const sentinel = document.getElementById('loading-sentinel');
-        if (sentinel) observer.observe(sentinel);
 
         function loadMoreImages() {
             if (isLoading) return;
@@ -84,36 +66,47 @@
                 .then(data => {
                     if (data.content.length > 0) {
                         currentPage = nextPage;
-
                         const newItems = [];
                         data.content.forEach(img => {
                             const div = document.createElement('div');
                             div.className = 'masonry-item';
-                            div.innerHTML = `
-                            <div class="gallery-item">
-                                <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                            div.innerHTML = `<div class="gallery-item">
+                                <a href="/imagen/${img.id}">
+                                    <img src="data:image/jpeg;base64,${img.contentBase64}" alt="${img.title}" loading="lazy">
+                                </a>
                             </div>`;
                             container.appendChild(div);
                             newItems.push(div);
                         });
-
                         imagesLoaded(container, () => {
                             msnry.appended(newItems);
                             msnry.layout();
                         });
                     }
-
-                    if (data.last || data.content.length === 0) {
+                    if (!data.hasNext) {
                         observer.unobserve(sentinel);
                         sentinel.style.display = 'none';
                     }
                     isLoading = false;
                 })
-                .catch(err => {
-                    console.error(err);
-                    isLoading = false;
-                });
+                .catch(err => { isLoading = false; });
         }
+
+        let msnry = new Masonry(container, {
+            itemSelector: '.masonry-item',
+            columnWidth: '.masonry-item',
+            percentPosition: true,
+            transitionDuration: '0.2s'
+        });
+        imagesLoaded(container, () => msnry.layout());
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !isLoading) {
+                loadMoreImages();
+            }
+        }, { rootMargin: '200px' });
+
+        if (sentinel) observer.observe(sentinel);
     });
 </script>
 </body>

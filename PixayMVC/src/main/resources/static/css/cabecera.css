@@ -23,7 +23,7 @@
     display: flex;
     width: 100%;
     max-width: 700px;
-    position: relative;
+    overflow: visible !important;
 }
 .search-group .dropdown .btn {
     border: none !important;
@@ -34,10 +34,6 @@
     height: 100%;
     padding: 0 15px;
     font-size: 0.9rem;
-}
-.dropdown-menu {
-    z-index: 3000 !important;
-    margin-top: 5px !important;
 }
 .search-group .search-input {
     border: none !important;
@@ -64,4 +60,8 @@
 .notification-dot {
     position: absolute; top: 5px; right: 2px; width: 12px; height: 12px;
     background-color: var(--SECONDARY-ORANGE); border-radius: 50%; border: 2px solid var(--DARK-BACKCOLOR);
+}
+
+.dropdown-menu {
+    z-index: 9999 !important;
 }
