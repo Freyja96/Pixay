@@ -12,10 +12,12 @@
 </head>
 <body >
     <div class="h-50 container-fluid ">
-        <nav class="fondo-header row p-2 navbar navbar-expand-sm fixed-top">
+        <nav class="fondo-header row p-2 navbar navbar-expand-sm fixed-top" th:fragment="cabecera">
             <div class="col-2">
                 <div class=" ps-2">
-                    <img  class="logo" th:src="@{/imagenes/logo.png}" alt="logo">
+                    <a th:href="@{/}">
+                        <img  class="logo" th:src="@{/imagenes/logo.png}" alt="logo">
+                    </a>
                 </div>
             </div>
             <div class="col-8 d-flex justify-content-center mt-2 ">
@@ -54,11 +56,10 @@
                 </div>
             </div>
             <div class="col-2">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="#">
-                        <!--Aquí va una imagen-->
-                        <img src="" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
-                        <!--TODO DORIS: aquí tiene que ir el nombre del usuario-->
+                <div class="container-fluid d-flex justify-contetn-end align-items-center">
+                    <a class="navbar-brand d-flex align-itmes-center gap-2" th:href="@{/mi-perfil/mis-imagenes}">
+                        <span class="text-white small" th:text="${session.username}">Usuario</span>
+                        <img th:src="${session.avatar != null ? session.avatar : 'img/defaukt-avatar.png'}" alt="Avatar Logo" style="width:40px;height:40px;" class="rounded-pill object-fit-cover">
                     </a>
                 </div>
             </div>
