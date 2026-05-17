@@ -3,35 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Ajustes</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <style>
-        .fondo{
-            background-color: #f7f7f7;
-        }
-
-        .cajas {
-            background-color: #33484B40;
-        }
-
-        .btn-naranja{
-            background-color: #f48201;
-        }
-        .espaciadoFlecha {
-            display: inline-flex;
-            margin-left: 100px;
-            justify-content: center;
-            align-items: center;
-        }
-        .titulos {
-            font-family:"Calibri";
-            font-size:42px;
-            margin-left: 0px;
-        }
-        .collapse {
-            width: 100%;
-        }
-
-    </style>
+    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/ajustes.css}">
 </head>
 <body class="container-md fondo">
     <header class="bg-dark">
@@ -43,7 +16,7 @@
         <div class="row mt-5">
             <div class="col-md-6">
                 <div>
-                    <img src="../../imagenes/fotoAjustes.png" class="img-fluid w-70" alt="Imagen Ajustes">
+                    <img th:src="@{/imagenes/fotoAjustes.png}" class="img-fluid w-70" alt="Imagen Ajustes">
                 </div>
             </div>
             <div class="col-md-6 mt-5 pt-3">
@@ -213,6 +186,6 @@
     </div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
