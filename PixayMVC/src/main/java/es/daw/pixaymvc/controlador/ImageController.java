@@ -357,6 +357,11 @@ public class ImageController {
         model.addAttribute("imagen", imagen);
         model.addAttribute("autor", autor);
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/detalle";
     }
 
