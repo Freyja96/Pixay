@@ -160,6 +160,11 @@ public class ImageController {
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
@@ -219,6 +224,11 @@ public class ImageController {
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
         model.addAttribute("seccion", "guardadas");
+
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
 
         return "pantallas/mi-perfil/mis-imagenes";
     }
@@ -316,6 +326,11 @@ public class ImageController {
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
         model.addAttribute("seccion", "guardadas"); // Para que el botón se vea azul
+
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
 
         return "pantallas/mi-perfil/mis-imagenes";
     }

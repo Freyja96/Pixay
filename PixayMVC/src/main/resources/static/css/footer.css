@@ -1,18 +1,22 @@
 @import "estilos.css";
 
-body {
-    padding-bottom: 70px;
-}
-.fondo {
+.fondo-footer {
     background-color: var(--DARK-BACKCOLOR) !important;
     z-index: 2000 !important;
     position: fixed;
-    top: 0;
+    bottom: 0;
     width: 100%;
+    padding-bottom: 70px;
 }
 
-.footer-icon:hover {
-    opacity: 0.8;
+.footer-icon {
+    background-color: var(--DARK-BACKCOLOR) !important;
+}
+.footer-icon svg {
+    fill: var(--SECONDARY-ORANGE) !important;
+}
+.footer-icon:hover svg{
+    fill: var(--LIGHT-BLUE) !important;
 }
 .footer-custom {
     height: 60px;

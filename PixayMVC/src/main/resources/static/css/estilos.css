@@ -1,3 +1,6 @@
+@import "cabecera.css";
+@import "footer.css";
+
 :root {
     /* Colores corporativos de Pixay */
     --WHITE-BACKCOLOR: #F7F7F7;
