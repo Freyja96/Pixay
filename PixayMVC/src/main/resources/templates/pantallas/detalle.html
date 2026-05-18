@@ -55,7 +55,7 @@
 
         <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto por ahora-->
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
-            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/logo.png'}"
+            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
                  class="author-img" alt="Avatar"></a>
             <span class="author-name" th:text="${autor.username}">Paula</span>
         </div>

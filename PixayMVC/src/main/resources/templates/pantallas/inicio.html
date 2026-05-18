@@ -48,11 +48,20 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
-        const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-        const dropdownList = [...dropdownElementList].map(el => new bootstrap.Dropdown(el));
-
+        if (window.bootstrap) {
+            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+            dropdownElementList.forEach(el => {
+                new bootstrap.Dropdown(el);
+            });
+            console.log("Sistema de menús activado");
+        }
         let currentPage = 0;
         let isLoading = false;
+
+        const query = [[${query}]] || "";
+        const categoryId = [[${selectedCategoryId}]];
+        const subcategoryId = [[${selectedSubcategoryId}]];
+
         const container = document.getElementById('gallery-container');
         const sentinel = document.getElementById('loading-sentinel');
 
