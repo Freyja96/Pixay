@@ -49,6 +49,7 @@ public class User implements UserDetails {
     @Column(length = 255)
     private String description;
 
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
 

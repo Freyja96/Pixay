@@ -12,7 +12,7 @@ public class MvcConfig implements WebMvcConfigurer {
         //registry.addViewController("/inicio").setViewName("pantallas/inicio");
         //registry.addViewController("/login").setViewName("login"); //MAAAAL, solo si no hay lógica
         registry.addViewController("/registro").setViewName("/pantallas/registro");
-        registry.addViewController("/error").setViewName("pantallas/error");
+        //registry.addViewController("/error").setViewName("pantallas/error");
         //registry.addViewController("/perfil").setViewName("pantallas/mi-perfil/mis-imagenes"); //MAAAAL, solo si no hay lógica
 
         //TODO no sé si sería así para mirar el perfil de otros usuarios y si no podríamos aprovechar así para el propio
