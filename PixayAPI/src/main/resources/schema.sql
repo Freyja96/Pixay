@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     role_id BIGINT NOT NULL,
     profile_picture LONGBLOB,
     description VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (role_id) REFERENCES roles(id)
 );

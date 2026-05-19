@@ -46,7 +46,7 @@ public class User implements UserDetails {
     private byte[] profilePicture;
 
 //description VARCHAR(255),
-    @Column(length = 255)
+    @Column(length = 255, name = "description")
     private String description;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
