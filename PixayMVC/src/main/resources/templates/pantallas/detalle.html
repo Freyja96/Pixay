@@ -48,14 +48,21 @@
 
         <!-- SECCIÓN 6: INPUT -->
         <div class="chat-input-container position-relative">
+            <!-- Lista de emojis -->
             <div id="emoji-picker" class="pixay-emoji-picker shadow">
                 <div class="emoji-grid">
                     <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/gemagato.png}" data-code=":gema:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/gema-gato.png}" data-code=":gema:" class="emoji-item">
                     <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/enfado-gato.png}" data-code=":enfado-gato:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/risa-gato.png}" data-code=":risa-gato:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/triste-gato.png}" data-code=":triste-gato:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/pulgar-gato.png}" data-code=":pulgar-gato:" class="emoji-item">
                 </div>
             </div>
+            <!-- Botón de emoji -->
             <i class="bi bi-emoji-smile-fill fs-3 me-2 cursor-pointer" id="btn-emoji" style="color: #000;"></i>
+
             <div class="input-wrapper">
                 <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="form-control chat-input">
             </div>
@@ -88,12 +95,15 @@
     const username = /*[[${session.username}]]*/ 'Anónimo';
     const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/logo.png';
 
+
     const emojiMap = {
-        ':pixay:': /*[[@{/imagenes/logo.png}]]*/ '',
-        ':cat:': /*[[@{/imagenes/gato-mensaje-error.png}]]*/ '',
-        ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
-        ':gema:': /*[[@{/imagenes/emojis/gemagato.png}]]*/ '',
-        ':rosa:': /*[[@{/imagenes/emojis/rosa-gato.png}]]*/ ''
+        ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '/imagenes/emojis/cowboy-gato.png',
+        ':gema:':   /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '/imagenes/emojis/gemagato.png',
+        ':rosa:':   /*[[@{/imagenes/emojis/rosa-gato.png}]]*/   '/imagenes/emojis/rosa-gato.png',
+        ':enfado-gato:': /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '/imagenes/emojis/enfado-gato.png',
+        ':risa-gato:': /*[[@{/imagenes/emojis/risa-gato.png}]]*/ '/imagenes/emojis/risa-gato.png',
+        ':triste-gato:': /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '/imagenes/emojis/triste-gato.png',
+        ':pulgar-gato:': /*[[@{/imagenes/emojis/pulgar-gato.png}]]*/ '/imagenes/emojis/pulgar-gato.png'
     };
 
     const chatContainer = document.getElementById('chat-messages');
@@ -102,11 +112,15 @@
     const btnEmoji = document.getElementById('btn-emoji');
 
     function parseEmojis(text) {
-        let parsed = text || "";
+        if (!text) return "";
+        let parsedText = text;
         Object.keys(emojiMap).forEach(code => {
-            parsed = parsed.split(code).join(`<img src="${emojiMap[code]}" class="emoji-in-text">`);
+            const imgPath = emojiMap[code];
+            const imgHtml = `<img src="${imgPath}" class="emoji-in-text" style="width:22px; height:22px; vertical-align:middle;">`;
+            // Reemplaza todas las ocurrencias del código por la imagen
+            parsedText = parsedText.split(code).join(imgHtml);
         });
-        return parsed;
+        return parsedText;
     }
 
     function appendMessage(data) {
@@ -129,7 +143,7 @@
         socket.emit('nuevoMensaje', { idProducto: imageId, username: username, avatar: userAvatar, contenido: text });
         input.value = '';
     };
-
+    // Para mostrar el menu de emojis
     btnEmoji.addEventListener('click', (e) => {
         e.stopPropagation();
         const display = window.getComputedStyle(emojiPicker).display;
@@ -143,7 +157,8 @@
             input.focus();
         };
     });
-    document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
+    document.addEventListener('click', () => {
+        emojiPicker.style.display = 'none'; });
     /*]]>*/
 </script>
 </body>
