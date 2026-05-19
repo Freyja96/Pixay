@@ -79,11 +79,13 @@
 <!--JS PROPIO-->
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", () => {
-        if (typeof bootstrap !== 'undefined') {
+        if (window.bootstrap) {
             const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-            const dropdownList = [...dropdownElementList].map(dropdownToggleEl => new bootstrap.Dropdown(dropdownToggleEl));
+            dropdownElementList.forEach(el => {
+                new bootstrap.Dropdown(el);
+            });
+            console.log("Sistema de menús activado");
         }
-
         let currentPage = 0;
         let isLoading = false;
 

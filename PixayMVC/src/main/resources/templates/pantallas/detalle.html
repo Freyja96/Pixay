@@ -4,66 +4,24 @@
     <meta charset="UTF-8">
     <title th:text="${imagen.title} + ' - Pixay'"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/estilos.css}">
-    <style>
-        .post-container { max-width: 600px; margin: 0 auto; }
-        .author-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; }
-        .img-main { width: 100%; border-radius: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .icon-bar { display: flex; gap: 20px; font-size: 1.5rem; padding: 10px 5px; }
-        .icon-bar i { cursor: pointer; color: #000; }
-        .icon-bar i:hover { color: #555; }
-        .author-name { font-size: 1.8rem; font-weight: 500; margin-left: 15px; }
-        .image-title { font-size: 1.1rem; color: #1a2b3c; margin: 15px 0; }
-
-        .chat-input-container {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            padding: 10px 0;
-        }
-        .input-wrapper {
-            flex-grow: 1;
-        }
-
-        .chat-input {
-            background-color: #f1f1f1 !important;
-            border: none !important;
-            border-radius: 20px !important;
-            padding: 10px 20px !important;
-        }
-
-        .btn-send {
-            background: none;
-            border: none;
-            color: var(--PRIMARY-BLUE);
-            font-size: 2.5rem;
-            padding: 0;
-            margin-left: 10px;
-            line-height: 1;
-        }
-
-        .cursor-pointer { cursor: pointer; }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/detalle.css}">
 </head>
 <body>
 <div th:insert="~{/fragments/cabecera}"></div>
 
-<div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5 pt-5">
     <div class="post-container">
 
         <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto por ahora-->
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
-            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/logo.png'}"
+            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
                  class="author-img" alt="Avatar"></a>
             <span class="author-name" th:text="${autor.username}">Paula</span>
         </div>
 
-        <!-- SECCIÓN 2: TÍTULO -->
-        <div class="image-title">
-            <p th:text="${imagen.title}"></p>
-        </div>
+        <p class="image-title fw-bold" th:text="${imagen.title}"></p>
 
         <!-- SECCIÓN 3: IMAGEN PRINCIPAL -->
         <div class="text-center">
@@ -73,45 +31,120 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
-            <!-- Guardar -->
             <i class="bi bi-bookmark"></i>
             <!-- Descargar -->
             <a th:href="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                th:download="${imagen.title} + '.jpg'" style="color: inherit;">
                 <i class="bi bi-arrow-down"></i>
             </a>
-            <!-- Reacción -->
             <i class="bi bi-emoji-smile"></i>
-            <!-- Compartir / Reply -->
             <i class="bi bi-reply"></i>
         </div>
 
+        <!-- SECCIÓN 5: CHAT -->
+        <div id="chat-messages">
+            <!-- Los mensajes se cargan por JS -->
+        </div>
 
-<!--        &lt;!&ndash; Opcional: Tags de categorías  &ndash;&gt;-->
-<!--        <div class="mt-2 text-muted small">-->
-<!--            <span class="badge bg-light text-dark" th:text="${imagen.categoryName}">Categoría</span>-->
-<!--            <span class="badge bg-light text-dark"-->
-<!--                  th:if="${imagen.subcategoryName != 'Sin subcategoría'}"-->
-<!--                  th:text="${imagen.subcategoryName}">Subcategoría</span>-->
-<!--        </div>-->
-        <div class="chat-input-container">
-            <i class="bi bi-emoji-smile-fill fs-3 me-2 cursor-pointer"></i>
+        <!-- SECCIÓN 6: INPUT -->
+        <div class="chat-input-container position-relative">
+            <div id="emoji-picker" class="pixay-emoji-picker shadow">
+                <div class="emoji-grid">
+                    <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/gemagato.png}" data-code=":gema:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item">
+                </div>
+            </div>
+            <i class="bi bi-emoji-smile-fill fs-3 me-2 cursor-pointer" id="btn-emoji" style="color: #000;"></i>
             <div class="input-wrapper">
                 <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="form-control chat-input">
             </div>
-            <button class="btn-send">
+            <button class="btn-send-blue" id="btn-send">
                 <i class="bi bi-arrow-right-circle-fill"></i>
             </button>
         </div>
-    </div>
     </div>
 </div>
 
 <div th:insert="~{/fragments/footer}"></div>
 
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- JS propio -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    document.addEventListener("DOMContentLoaded", () => {
+        if (window.bootstrap) {
+            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
+            dropdownElementList.forEach(el => {
+                new bootstrap.Dropdown(el);
+            });
+            console.log("Sistema de menús activado en Detalle");
+        }
+    });
+    const socket = io('http://localhost:3000');
+    const imageId = /*[[${imagen.id}]]*/ 0;
+    const username = /*[[${session.username}]]*/ 'Anónimo';
+    const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/logo.png';
 
+    const emojiMap = {
+        ':pixay:': /*[[@{/imagenes/logo.png}]]*/ '',
+        ':cat:': /*[[@{/imagenes/gato-mensaje-error.png}]]*/ '',
+        ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
+        ':gema:': /*[[@{/imagenes/emojis/gemagato.png}]]*/ '',
+        ':rosa:': /*[[@{/imagenes/emojis/rosa-gato.png}]]*/ ''
+    };
 
+    const chatContainer = document.getElementById('chat-messages');
+    const input = document.getElementById('chat-input');
+    const emojiPicker = document.getElementById('emoji-picker');
+    const btnEmoji = document.getElementById('btn-emoji');
+
+    function parseEmojis(text) {
+        let parsed = text || "";
+        Object.keys(emojiMap).forEach(code => {
+            parsed = parsed.split(code).join(`<img src="${emojiMap[code]}" class="emoji-in-text">`);
+        });
+        return parsed;
+    }
+
+    function appendMessage(data) {
+        if(!data.contenido) return;
+        const isMe = data.username === username;
+        const row = document.createElement('div');
+        row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
+        const avatar = isMe ? '' : `<img src="${data.avatar || '/imagenes/logo.png'}" class="chat-avatar">`;
+        row.innerHTML = `${avatar}<div class="bubble-container"><span class="msg-user-name">${isMe ? 'Tú' : data.username}</span><div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(data.contenido)}</div></div>`;
+        chatContainer.appendChild(row);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    socket.emit('joinImageRoom', imageId);
+    socket.on('mensajeRecibido', (data) => appendMessage(data));
+
+    document.getElementById('btn-send').onclick = () => {
+        const text = input.value.trim();
+        if (!text) return;
+        socket.emit('nuevoMensaje', { idProducto: imageId, username: username, avatar: userAvatar, contenido: text });
+        input.value = '';
+    };
+
+    btnEmoji.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const display = window.getComputedStyle(emojiPicker).display;
+        emojiPicker.style.display = (display === 'none') ? 'block' : 'none';
+    });
+
+    document.querySelectorAll('.emoji-item').forEach(img => {
+        img.onclick = () => {
+            input.value += ` ${img.getAttribute('data-code')} `;
+            emojiPicker.style.display = 'none';
+            input.focus();
+        };
+    });
+    document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
+    /*]]>*/
+</script>
 </body>
 </html>

@@ -71,3 +71,13 @@ CREATE TABLE IF NOT EXISTS user_follows (
     FOREIGN KEY (following_id) REFERENCES users(id),
     CONSTRAINT self_follow_check CHECK (follower_id <> following_id)
 );
+--
+-- CREATE TABLE IF NOT EXISTS image_comments (
+--                                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
+--                                               content TEXT NOT NULL,
+--                                               user_id BIGINT NOT NULL,
+--                                               image_id BIGINT NOT NULL,
+--                                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--                                               FOREIGN KEY (user_id) REFERENCES users(id),
+--                                               FOREIGN KEY (image_id) REFERENCES users_images(id)
+-- );

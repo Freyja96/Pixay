@@ -1,5 +1,8 @@
 @import "estilos.css";
 
+@media (max-width: 1200px) { .masonry-item { width: 33.33%; } }
+@media (max-width: 768px) { .masonry-item { width: 50%; } }
+
 body {
     background-color: var(--WHITE-BACKCOLOR);
 }
@@ -35,10 +38,6 @@ body {
     border: 1px solid #ddd;
     margin-bottom: 0;
 }
-
-@media (max-width: 1200px) { .masonry-item { width: 33.33%; } }
-@media (max-width: 768px) { .masonry-item { width: 50%; } }
-
 .gallery-item img {
     width: 100%;
     display: block;

@@ -160,6 +160,11 @@ public class ImageController {
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
@@ -220,6 +225,11 @@ public class ImageController {
         model.addAttribute("hasNext", slice.isHasNext());
         model.addAttribute("seccion", "guardadas");
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
@@ -252,7 +262,12 @@ public class ImageController {
      * @return
      */
     @GetMapping("/usuario/{id}")
-    public String verPerfilAjeno(@PathVariable Long id, HttpSession session, Model model) {
+    public String verPerfilAjeno(@RequestParam(required = false) String query,
+                                 @RequestParam(required = false) Long categoryId,
+                                 @RequestParam(required = false) Long subcategoryId,
+                                 @PathVariable Long id,
+                                 HttpSession session,
+                                 Model model) {
         String token = (String) session.getAttribute("token");
         // token opcional, por si queremos que los perfiles sean públicos
 
@@ -273,6 +288,11 @@ public class ImageController {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
+
+        model.addAttribute("query", query != null ? query : "");
+        model.addAttribute("selectedCategoryId", categoryId);
+        model.addAttribute("selectedSubcategoryId", subcategoryId);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
 
         model.addAttribute("usuario", profile);
         model.addAttribute("imagenes", slice.getContent());
@@ -307,6 +327,11 @@ public class ImageController {
         model.addAttribute("hasNext", slice.isHasNext());
         model.addAttribute("seccion", "guardadas"); // Para que el botón se vea azul
 
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
+
         return "pantallas/mi-perfil/mis-imagenes";
     }
 
@@ -331,6 +356,11 @@ public class ImageController {
 
         model.addAttribute("imagen", imagen);
         model.addAttribute("autor", autor);
+
+        model.addAttribute("query", "");
+        model.addAttribute("selectedCategoryId", null);
+        model.addAttribute("selectedSubcategoryId", null);
+        model.addAttribute("selectedCategoryName", "Todas las categorías");
 
         return "pantallas/detalle";
     }
@@ -366,40 +396,20 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
                 .block();
 
-//        if (query != null && !query.isEmpty()) {
-//            slice = webClientAPI.get()
-//                    .uri(uriBuilder -> {
-//                        uriBuilder.path("imagenes/buscar")
-//                                .queryParam("page", 0)
-//                                .queryParam("size", 12)
-//                                .queryParam("query", query);
-//                        if (categoryId != null) uriBuilder.queryParam("categoryId", categoryId);
-//                        return uriBuilder.build();
-//                    })
-//                    .headers(h -> { if(token != null) h.setBearerAuth(token); })
-//                    .retrieve()
-//                    .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
-//                    .block();
-//        } else if (categoryId != null) {
-//            // Búsqueda solo por categoría
-//            slice = webClientAPI.get()
-//                    .uri(uriBuilder -> uriBuilder.path("imagenes/buscar")
-//                            .queryParam("categoryId", categoryId)
-//                            .queryParam("page", 0).queryParam("size", 12).build())
-//                    .headers(h -> { if(token != null) h.setBearerAuth(token); })
-//                    .retrieve()
-//                    .bodyToMono(new ParameterizedTypeReference<CustomSlice<ImageResponse>>() {})
-//                    .block();
-//        } else {
-//            slice = imageService.getAllImages(0, 12, token);
-//        }
-
-
-        model.addAttribute("query", query);
+        model.addAttribute("query", query != null ? query : "");
         model.addAttribute("selectedCategoryId", categoryId);
         model.addAttribute("selectedSubcategoryId", subcategoryId);
+
         model.addAttribute("imagenes", slice.getContent());
         model.addAttribute("hasNext", slice.isHasNext());
+
+        String catName = "Todas las categorías";
+        if (categoryId != null) {
+            // Obtenemos las categorías de nuevo o las filtramos de la lista que ya pides en cargarSidebar
+            // Para simplificar, si el ID es 1 es Fotografía, si es 2 Ilustración (según tu data.sql)
+            catName = (categoryId == 1) ? "Fotografía" : (categoryId == 2 ? "Ilustración" : "Todas las categorías");
+        }
+        model.addAttribute("selectedCategoryName", catName);
 
         //Categorías y subcategorías en el sidebar:
         cargarSidebar(model);
