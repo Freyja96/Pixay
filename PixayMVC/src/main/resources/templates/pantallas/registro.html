@@ -16,8 +16,7 @@
         <div class="card-body">
             <h3 class="card-title text-center mb-4 login-title">Registro</h3>
 
-
-
+            <div th:if="${error}" class="alert alert-danger border-0 shadow-sm mb-4" th:text="${error}"></div>
             <form th:action="@{/registro}" method="post">
                 <div class="mb-3">
                     <label for="username" class="form-label">Usuario</label>
