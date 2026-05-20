@@ -57,4 +57,31 @@ public class UserController {
             return "pantallas/login";
         }
     }
+
+    @GetMapping("/mi-perfil/editar-perfil")
+    public String editarPerfil(HttpSession session, Model model) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return "redirect:/login";
+
+        try {
+
+            UserProfileResponse profile = webClientAPI.get()
+                    .uri("usuarios/me")
+                    .headers(h -> h.setBearerAuth(token))
+                    .retrieve()
+                    .bodyToMono(UserProfileResponse.class)
+                    .block(); 
+
+
+            model.addAttribute("usuario", profile);
+
+        } catch (Exception e) {
+
+            return "redirect:/login";
+        }
+
+        return "pantallas/mi-perfil/editar-perfil";
+    }
+
+
 }
