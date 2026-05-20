@@ -31,14 +31,15 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
-            <i class="bi bi-bookmark"></i>
+            <i class="bi bi-bookmark" title="Guardar"></i>
             <!-- Descargar -->
+
             <a th:href="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                th:download="${imagen.title} + '.jpg'" style="color: inherit;">
-                <i class="bi bi-arrow-down"></i>
+                <i class="bi bi-arrow-down" title="Descargar"></i>
             </a>
-            <i class="bi bi-emoji-smile"></i>
-            <i class="bi bi-reply"></i>
+            <i class="bi bi-emoji-smile" title="Reaccionar"></i>
+            <i class="bi bi-reply" title="Responder"></i>
         </div>
 
         <!-- SECCIÓN 5: CHAT -->
@@ -51,13 +52,13 @@
             <!-- Lista de emojis -->
             <div id="emoji-picker" class="pixay-emoji-picker shadow">
                 <div class="emoji-grid">
-                    <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/gema-gato.png}" data-code=":gema:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/enfado-gato.png}" data-code=":enfado-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/risa-gato.png}" data-code=":risa-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/triste-gato.png}" data-code=":triste-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/pulgar-gato.png}" data-code=":pulgar-gato:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item" title="Cowboy">
+                    <img th:src="@{/imagenes/emojis/gema-gato.png}" data-code=":gema:" class="emoji-item" title="Gema">
+                    <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item" title="Rosa">
+                    <img th:src="@{/imagenes/emojis/enfado-gato.png}" data-code=":enfado:" class="emoji-item" title="Enfado">
+                    <img th:src="@{/imagenes/emojis/risa-gato.png}" data-code=":risa:" class="emoji-item" title="Risa">
+                    <img th:src="@{/imagenes/emojis/triste-gato.png}" data-code=":triste:" class="emoji-item" title="Triste">
+                    <img th:src="@{/imagenes/emojis/pulgar-gato.png}" data-code=":pulgar:" class="emoji-item" title="Pulgar">
                 </div>
             </div>
             <!-- Botón de emoji -->
