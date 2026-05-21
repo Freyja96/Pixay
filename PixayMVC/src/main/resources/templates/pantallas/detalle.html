@@ -31,14 +31,15 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
-            <i class="bi bi-bookmark"></i>
+            <i class="bi bi-bookmark" title="Guardar"></i>
             <!-- Descargar -->
+
             <a th:href="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                th:download="${imagen.title} + '.jpg'" style="color: inherit;">
-                <i class="bi bi-arrow-down"></i>
+                <i class="bi bi-arrow-down" title="Descargar"></i>
             </a>
-            <i class="bi bi-emoji-smile"></i>
-            <i class="bi bi-reply"></i>
+            <i class="bi bi-emoji-smile" title="Reaccionar"></i>
+            <i class="bi bi-reply" title="Responder"></i>
         </div>
 
         <!-- SECCIÓN 5: CHAT -->
@@ -51,13 +52,14 @@
             <!-- Lista de emojis -->
             <div id="emoji-picker" class="pixay-emoji-picker shadow">
                 <div class="emoji-grid">
-                    <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/gema-gato.png}" data-code=":gema:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/enfado-gato.png}" data-code=":enfado-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/risa-gato.png}" data-code=":risa-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/triste-gato.png}" data-code=":triste-gato:" class="emoji-item">
-                    <img th:src="@{/imagenes/emojis/pulgar-gato.png}" data-code=":pulgar-gato:" class="emoji-item">
+                    <img th:src="@{/imagenes/emojis/cowboy-gato.png}" data-code=":cowboy:" class="emoji-item" title="Cowboy">
+                    <img th:src="@{/imagenes/emojis/gema-gato.png}" data-code=":gema:" class="emoji-item" title="Gema">
+                    <img th:src="@{/imagenes/emojis/rosa-gato.png}" data-code=":rosa:" class="emoji-item" title="Rosa">
+                    <img th:src="@{/imagenes/emojis/enfado-gato.png}" data-code=":enfado:" class="emoji-item" title="Enfado">
+                    <img th:src="@{/imagenes/emojis/risa-gato.png}" data-code=":risa:" class="emoji-item" title="Risa">
+                    <img th:src="@{/imagenes/emojis/triste-gato.png}" data-code=":triste:" class="emoji-item" title="Triste">
+                    <img th:src="@{/imagenes/emojis/like-gato.png}" data-code=":like:" class="emoji-item" title="Like">
+                    <img th:src="@{/imagenes/emojis/dislike-gato.png}" data-code=":dislike:" class="emoji-item" title="Dislike">
                 </div>
             </div>
             <!-- Botón de emoji -->
@@ -81,69 +83,104 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    document.addEventListener("DOMContentLoaded", () => {
-        if (window.bootstrap) {
-            const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-            dropdownElementList.forEach(el => {
-                new bootstrap.Dropdown(el);
-            });
-            console.log("Sistema de menús activado en Detalle");
-        }
-    });
+    // 1. Configuración inicial
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
     const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/logo.png';
-
-
-    const emojiMap = {
-        ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '/imagenes/emojis/cowboy-gato.png',
-        ':gema:':   /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '/imagenes/emojis/gemagato.png',
-        ':rosa:':   /*[[@{/imagenes/emojis/rosa-gato.png}]]*/   '/imagenes/emojis/rosa-gato.png',
-        ':enfado-gato:': /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '/imagenes/emojis/enfado-gato.png',
-        ':risa-gato:': /*[[@{/imagenes/emojis/risa-gato.png}]]*/ '/imagenes/emojis/risa-gato.png',
-        ':triste-gato:': /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '/imagenes/emojis/triste-gato.png',
-        ':pulgar-gato:': /*[[@{/imagenes/emojis/pulgar-gato.png}]]*/ '/imagenes/emojis/pulgar-gato.png'
-    };
 
     const chatContainer = document.getElementById('chat-messages');
     const input = document.getElementById('chat-input');
     const emojiPicker = document.getElementById('emoji-picker');
     const btnEmoji = document.getElementById('btn-emoji');
 
+    // 2. Mapeo de Emojis (Asegúrate de que el data-code del HTML coincida con estas claves)
+    const emojiMap = {
+        ':cowboy:':     /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
+        ':gema:':       /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '',
+        ':rosa:':       /*[[@{/imagenes/emojis/rosa-gato.png}]]*/   '',
+        ':enfado:':     /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '',
+        ':risa:':       /*[[@{/imagenes/emojis/risa-gato.png}]]*/   '',
+        ':triste:':     /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '',
+        ':like:':       /*[[@{/imagenes/emojis/like-gato.png}]]*/ '',
+        ':dislike:':    /*[[@{/imagenes/emojis/dislike-gato.png}]]*/ '',
+    };
+
+    // 3. Funciones de ayuda
     function parseEmojis(text) {
         if (!text) return "";
         let parsedText = text;
         Object.keys(emojiMap).forEach(code => {
-            const imgPath = emojiMap[code];
-            const imgHtml = `<img src="${imgPath}" class="emoji-in-text" style="width:22px; height:22px; vertical-align:middle;">`;
-            // Reemplaza todas las ocurrencias del código por la imagen
+            const imgHtml = `<img src="${emojiMap[code]}" class="emoji-in-text" style="width:22px; height:22px; vertical-align:middle;">`;
             parsedText = parsedText.split(code).join(imgHtml);
         });
         return parsedText;
     }
 
     function appendMessage(data) {
-        if(!data.contenido) return;
+        // Aceptamos tanto .contenido (socket) como .content (base de datos)
+        const textoReal = data.contenido || data.content;
+        if(!textoReal) return;
+
         const isMe = data.username === username;
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
-        const avatar = isMe ? '' : `<img src="${data.avatar || '/imagenes/logo.png'}" class="chat-avatar">`;
-        row.innerHTML = `${avatar}<div class="bubble-container"><span class="msg-user-name">${isMe ? 'Tú' : data.username}</span><div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(data.contenido)}</div></div>`;
+
+        const avatarUrl = data.avatar || '/imagenes/logo.png';
+        const avatarHtml = isMe ? '' : `<img src="${avatarUrl}" class="chat-avatar">`;
+
+        row.innerHTML = `
+            ${avatarHtml}
+            <div class="bubble-container">
+                <span class="msg-user-name">${isMe ? 'Tú' : data.username}</span>
+                <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div>
+            </div>
+        `;
         chatContainer.appendChild(row);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
+    // 4. Lógica de inicio y eventos
     socket.emit('joinImageRoom', imageId);
     socket.on('mensajeRecibido', (data) => appendMessage(data));
 
-    document.getElementById('btn-send').onclick = () => {
+    // Cargar mensajes previos (IMPORTANTE: Después de definir appendMessage)
+    const mensajesIniciales = /*[[${comentarios}]]*/ [];
+    if (mensajesIniciales) {
+        mensajesIniciales.forEach(msg => appendMessage(msg));
+    }
+
+    // 5. ENVIAR MENSAJE
+    document.getElementById('btn-send').onclick = async () => {
         const text = input.value.trim();
         if (!text) return;
-        socket.emit('nuevoMensaje', { idProducto: imageId, username: username, avatar: userAvatar, contenido: text });
+
+        const payload = {
+            idProducto: imageId,
+            username: username,
+            avatar: userAvatar,
+            contenido: text
+        };
+
+        // Enviamos al socket para tiempo real
+        socket.emit('nuevoMensaje', payload);
+
+        // Limpiamos la barra INMEDIATAMENTE para mejorar la experiencia
         input.value = '';
+
+        // Guardamos en BD a través del controlador MVC (puente)
+        try {
+            await fetch(`/imagen/${imageId}/comentario`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: text })
+            });
+        } catch (e) {
+            console.error("Error guardando el mensaje:", e);
+        }
     };
-    // Para mostrar el menu de emojis
+
+    // 6. MENÚ DE EMOJIS
     btnEmoji.addEventListener('click', (e) => {
         e.stopPropagation();
         const display = window.getComputedStyle(emojiPicker).display;
@@ -151,14 +188,15 @@
     });
 
     document.querySelectorAll('.emoji-item').forEach(img => {
-        img.onclick = () => {
+        img.onclick = (e) => {
+            e.stopPropagation();
             input.value += ` ${img.getAttribute('data-code')} `;
-            emojiPicker.style.display = 'none';
             input.focus();
         };
     });
-    document.addEventListener('click', () => {
-        emojiPicker.style.display = 'none'; });
+
+    document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
+    input.onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('btn-send').click(); };
     /*]]>*/
 </script>
 </body>

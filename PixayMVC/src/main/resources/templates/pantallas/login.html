@@ -29,25 +29,6 @@
             background-color: var(--DARK-BACKCOLOR);
         }
 
-        /* Botón flotante inferior */
-        .btn-upload {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--LIGHT-BLUE);
-            color: #f6a963;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            font-size: 40px;
-            border: 4px solid #0b1d2a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            text-decoration: none;
-        }
         .login-title{
             color: var(--PRIMARY-BLUE);
             font-weight: bold;
@@ -61,6 +42,7 @@
         }
         .card {
             background-color: var(--DARK-BACKCOLOR);
+            width: 500px;
         }
         .card-body {
             background-color: var(--DARK-BACKCOLOR);
@@ -98,15 +80,17 @@
 
 <img th:src="@{/imagenes/logo.png}" class="login-logo" alt="Pixay"/>
 <div class="container d-flex align-items-center justify-content-center vh-50">
-    <div class="card" style="width: 500px;">
+    <div class="card">
         <div class="card-body">
             <h3 class="card-title text-center mb-4 login-title">Iniciar sesión</h3>
-
+            <!-- Mensaje de registro completado -->
+            <div th:if="${param.registrado}" class="alert alert-success border-0 shadow-sm mb-4">
+                ¡Registro completado! Ya puedes iniciar sesión.
+            </div>
             <!-- Error message -->
             <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
                 Nombre de usuario o contraseña invalido(s).
             </div>
-
             <!-- Logout message -->
             <div th:if="${param.logout}" class="alert alert-success text-center" role="alert">
                 Cierre de sesión exitoso.

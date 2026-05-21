@@ -5,10 +5,10 @@ INSERT INTO roles (id, name) VALUES (2, 'ROLE_ARTIST');
 -- 2. USUARIOS
 -- Contraseñas cifradas con BCrypt:
 -- 'admin123' -> $2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK
-INSERT INTO users (id, username, password, email, role_id, created_at) VALUES (1, 'admin', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'admin@pixay.com', 1,current_timestamp);
-INSERT INTO users (id, username, password, email, role_id, created_at) VALUES (2, 'juan', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'juan@pixay.com', 2,current_timestamp);
-INSERT INTO users (id, username, password, email, role_id, created_at) VALUES (3, 'maria', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'maria@pixay.com', 2,current_timestamp);
-INSERT INTO users (id, username, password, email, role_id, created_at) VALUES (4, 'julia', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK','julia@correo.com', 2,current_timestamp);
+INSERT INTO users (username, password, email, role_id, created_at) VALUES ('admin', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'admin@pixay.com', 1,current_timestamp);
+INSERT INTO users (username, password, email, role_id, created_at) VALUES ('juan', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'juan@pixay.com', 2,current_timestamp);
+INSERT INTO users (username, password, email, role_id, created_at) VALUES ('maria', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK', 'maria@pixay.com', 2,current_timestamp);
+INSERT INTO users (username, password, email, role_id, created_at) VALUES ('julia', '$2a$10$5Ovs1H/hoT48uwRdiAMiL.gnZISqmhtXuou7eLvNem0OfyQSAUsQK','julia@correo.com', 2,current_timestamp);
 
 -- 3. CATEGORÍAS (Asegúrate de que la entidad se llame Category y la tabla categories)
 INSERT INTO categories (id, name) VALUES (1, 'Fotografía');
