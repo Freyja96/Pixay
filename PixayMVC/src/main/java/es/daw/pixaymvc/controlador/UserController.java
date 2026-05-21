@@ -61,6 +61,7 @@ public class UserController {
             return "pantallas/login";
         }
     }
+<<<<<<< HEAD
     @GetMapping("/mi-perfil/editar-perfil")
     public String editarPerfil(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -141,4 +142,31 @@ public class UserController {
     }
 
 
+=======
+
+    @GetMapping("/registro")
+    public String mostrarRegistro() {
+        return "pantallas/registro";
+    }
+
+    @PostMapping("/registro")
+    public String procesarRegistro(@RequestParam String username,
+                                   @RequestParam String email,
+                                   @RequestParam String password,
+                                   @RequestParam String repassword,
+                                   Model model) {
+        if (!password.equals(repassword)) {
+            model.addAttribute("error", "Las contraseñas no coinciden");
+            return "pantallas/registro";
+        }
+
+        try {
+            apiAuthService.registro(username, email, password);
+            return "redirect:/login?registrado=true";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al registrar: " + e.getMessage());
+            return "pantallas/registro";
+        }
+    }
+>>>>>>> main
 }

@@ -4,6 +4,7 @@ import es.daw.pixaymvc.dto.response.*;
 import es.daw.pixaymvc.service.ImageService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ImageController {
@@ -348,6 +350,15 @@ public class ImageController {
 
         ImageResponse imagen = imageService.getImageById(id, token);
 
+        List<CommentResponse> comentarios = webClientAPI.get()
+                .uri("imagenes/" + id + "/comentarios")
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CommentResponse>>() {})
+                .block();
+
+        model.addAttribute("imagen", imagen);
+        model.addAttribute("comentarios", comentarios);
+
         UserProfileResponse autor = webClientAPI.get()
                 .uri("usuarios/" + imagen.userId())
                 .retrieve()
@@ -460,5 +471,22 @@ public class ImageController {
 
         model.addAttribute("categoriesObjects", categories);
         model.addAttribute("subcategoriesObjects", subcategories);
+    }
+    @PostMapping("/imagen/{id}/comentario")
+    @ResponseBody
+    public ResponseEntity<?> guardarComentarioProxy(@PathVariable Long id,
+                                                    @RequestBody Map<String, String> body,
+                                                    HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return ResponseEntity.status(401).build();
+
+        // El MVC le envía el mensaje a la API (8081)
+        return webClientAPI.post()
+                .uri("imagenes/" + id + "/comentarios")
+                .header("Authorization", "Bearer " + token)
+                .bodyValue(body)
+                .retrieve()
+                .toBodilessEntity()
+                .block();
     }
 }

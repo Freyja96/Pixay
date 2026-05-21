@@ -2,7 +2,10 @@ package es.daw.pixayapi.controller;
 
 import es.daw.pixayapi.dto.AuthRequest;
 import es.daw.pixayapi.dto.AuthResponse;
+import es.daw.pixayapi.dto.request.RegisterRequest;
+import es.daw.pixayapi.entity.Role;
 import es.daw.pixayapi.entity.User;
+import es.daw.pixayapi.repository.RoleRepository;
 import es.daw.pixayapi.repository.UserRepository;
 import es.daw.pixayapi.security.JwtService;
 import es.daw.pixayapi.service.UserService;
@@ -27,16 +30,28 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService; // <--- Inyectamos tu nuevo servicio
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        try {
-            userService.registrarUsuario(user);
-            return ResponseEntity.ok("Usuario registrado con éxito");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al registrar: " + e.getMessage());
+    @PostMapping("/registro")
+    public ResponseEntity<?> registro(@RequestBody RegisterRequest request) {
+        // Buscamos si el usuario ya existe
+        if (userRepository.existsByUsername(request.username())) {
+            return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso");
         }
+
+        User newUser = new User();
+        newUser.setUsername(request.username());
+        newUser.setEmail(request.email());
+        newUser.setPassword(request.password());
+
+        Role artistRole = roleRepository.findById(2L).orElseThrow(() -> new RuntimeException("Error: Rol no encontrado."));
+        newUser.setRole(artistRole);
+
+        userService.registrarUsuario(newUser);
+        return ResponseEntity.ok("Usuario registrado con éxito");
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
         //  HASH CORRECTO para admin123
