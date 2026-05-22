@@ -26,7 +26,23 @@ public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
     private final ImageRepository imageRepository;
+    /**
+     * Muestra las imágenes de todos los usuarios.
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping// <-- página de INICIO
+    public ResponseEntity<Slice<ImageResponse>> getAllImages(//<-- para todas las imágenes de todos los usuarios
+                                                             @RequestParam(defaultValue = "0") int page,
+                                                             @RequestParam(defaultValue = "12") int size
+    ){
+        Slice<Image> slice = imageService.getAllImagesPaged(page, size);
+        Slice<ImageResponse> responseSlice = slice
+                .map(this::convertToResponse);
 
+        return ResponseEntity.ok(responseSlice);
+    }
     /**
      * Sube una imagen al servidor.
      * @param content
@@ -106,23 +122,6 @@ public class ImageController {
 
         Slice<Image> slice = imageService.getImagesByUser(user, page, size);
         Slice<ImageResponse> responseSlice = slice.map(this::convertToResponse);
-
-        return ResponseEntity.ok(responseSlice);
-    }
-    /**
-     * Muestra las imágenes de todos los usuarios.
-     * @param page
-     * @param size
-     * @return
-     */
-    @GetMapping// <-- página de INICIO
-    public ResponseEntity<Slice<ImageResponse>> getAllImages(//<-- para todas las imágenes de todos los usuarios
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size
-    ){
-        Slice<Image> slice = imageService.getAllImagesPaged(page, size);
-        Slice<ImageResponse> responseSlice = slice
-                .map(this::convertToResponse);
 
         return ResponseEntity.ok(responseSlice);
     }

@@ -53,6 +53,23 @@ public class ImageController {
 
         return "pantallas/inicio";
     }
+    /**
+     * Devuelve datos en formato JSON de las imágenes que se han subido.
+     * @param page
+     * @param size
+     * @param session
+     * @return
+     */
+    @GetMapping("/imagenes")
+    @ResponseBody
+    public CustomSlice<ImageResponse> getImagenesScroll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size,
+            HttpSession session) {
+
+        String token = (String) session.getAttribute("token");
+        return imageService.getAllImages(page, size, token);
+    }
 
     /**
      * mostrar el formulario de subida de imagen
@@ -108,25 +125,6 @@ public class ImageController {
             redirectAttributes.addFlashAttribute("error", "Error al conectar con la API: " + e.getMessage());
             return "redirect:/subir-imagen";
         }
-    }
-
-    /**
-     * Devuelve datos en formato JSON de las imágenes que se han subido.
-     * @param page
-     * @param size
-     * @param session
-     * @return
-     */
-    @GetMapping("/imagenes")
-    @ResponseBody
-    public CustomSlice<ImageResponse> getImagenesScroll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
-            HttpSession session) {
-
-        String token = (String) session.getAttribute("token");
-
-        return imageService.getAllImages(page, size, token);
     }
 
     /**
@@ -448,7 +446,9 @@ public class ImageController {
             @RequestParam int page, HttpSession session) {
         String token = (String) session.getAttribute("token");
 
-        String path = (query != null && !query.isEmpty()) ? "imagenes/buscar" : "imagenes";
+        String path = (query != null || categoryId != null || subcategoryId != null)
+                ? "imagenes/buscar"
+                : "imagenes";
 
         return webClientAPI.get()
                 .uri(uriBuilder -> {
