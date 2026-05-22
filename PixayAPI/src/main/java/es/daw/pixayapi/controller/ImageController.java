@@ -2,7 +2,9 @@ package es.daw.pixayapi.controller;
 
 import es.daw.pixayapi.dto.response.ImageResponse;
 import es.daw.pixayapi.entity.Image;
+import es.daw.pixayapi.entity.ImageReaction;
 import es.daw.pixayapi.entity.User;
+import es.daw.pixayapi.repository.ImageReactionRepository;
 import es.daw.pixayapi.repository.ImageRepository;
 import es.daw.pixayapi.service.ImageService;
 import es.daw.pixayapi.service.UserService;
@@ -19,6 +21,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/imagenes")
 @RequiredArgsConstructor
@@ -26,6 +30,7 @@ public class ImageController {
     private final ImageService imageService;
     private final UserService userService;
     private final ImageRepository imageRepository;
+    private final ImageReactionRepository imageReactionRepository;
     /**
      * Muestra las imágenes de todos los usuarios.
      * @param page
@@ -206,5 +211,26 @@ public class ImageController {
                 entity.getCategory().getName(),
                 entity.getSubcategory() != null ? entity.getSubcategory().getName() : "Sin subcategoría" //puede ser nula
         );
+    }
+    @PostMapping("/{id}/react")
+    public ResponseEntity<?> reactToImage(@PathVariable Long id, @RequestBody Map<String, String> body, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Image image = imageRepository.findById(id).orElseThrow();
+        String type = body.get("reactionType");
+
+        var existing = imageReactionRepository.findByUserAndImage(user, image);
+        if (existing.isPresent()) {
+            if (existing.get().getReactionType().equals(type)) {
+                imageReactionRepository.delete(existing.get());
+                return ResponseEntity.ok("Reacción quitada");
+            }
+            existing.get().setReactionType(type);
+            imageReactionRepository.save(existing.get());
+        } else {
+            ImageReaction ir = new ImageReaction();
+            ir.setUser(user); ir.setImage(image); ir.setReactionType(type);
+            imageReactionRepository.save(ir);
+        }
+        return ResponseEntity.ok("Reacción guardada");
     }
 }

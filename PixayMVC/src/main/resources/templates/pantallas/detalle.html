@@ -83,120 +83,97 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // 1. Configuración inicial
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
     const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/logo.png';
 
-    const chatContainer = document.getElementById('chat-messages');
     const input = document.getElementById('chat-input');
-    const emojiPicker = document.getElementById('emoji-picker');
-    const btnEmoji = document.getElementById('btn-emoji');
-
-    // 2. Mapeo de Emojis (Asegúrate de que el data-code del HTML coincida con estas claves)
+    const chatContainer = document.getElementById('chat-messages');
     const emojiMap = {
-        ':cowboy:':     /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
-        ':gema:':       /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '',
-        ':rosa:':       /*[[@{/imagenes/emojis/rosa-gato.png}]]*/   '',
-        ':enfado:':     /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '',
-        ':risa:':       /*[[@{/imagenes/emojis/risa-gato.png}]]*/   '',
-        ':triste:':     /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '',
-        ':like:':       /*[[@{/imagenes/emojis/like-gato.png}]]*/ '',
-        ':dislike:':    /*[[@{/imagenes/emojis/dislike-gato.png}]]*/ '',
+        ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
+        ':gema:':   /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '',
+        ':rosa:':   /*[[@{/imagenes/emojis/rosa-gato.png}]]*/   '',
+        ':enfado:': /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '',
+        ':risa:':   /*[[@{/imagenes/emojis/risa-gato.png}]]*/   '',
+        ':triste:': /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '',
+        ':like:':   /*[[@{/imagenes/emojis/like-gato.png}]]*/   '',
+        ':dislike:':/*[[@{/imagenes/emojis/dislike-gato.png}]]*/ '',
     };
 
-    // 3. Funciones de ayuda
+    // --- FUNCIONALIDAD: GUARDAR ---
+    document.querySelector('.bi-bookmark').onclick = async function() {
+        this.classList.toggle('bi-bookmark');
+        this.classList.toggle('bi-bookmark-fill');
+        await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
+    };
+
+    // --- FUNCIONALIDAD: REACCIONES ---
+    const reactBtn = document.querySelector('.bi-emoji-smile');
+    const reactMenu = document.createElement('div');
+    reactMenu.className = 'reaction-popup shadow';
+    reactMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML; // Reutilizamos los gatos
+    document.body.appendChild(reactMenu);
+
+    reactBtn.onclick = (e) => {
+        e.stopPropagation();
+        reactMenu.style.display = 'block';
+        reactMenu.style.left = e.pageX + 'px';
+        reactMenu.style.top = (e.pageY - 60) + 'px';
+    };
+
+    reactMenu.querySelectorAll('.emoji-item').forEach(img => {
+        img.onclick = async () => {
+            const type = img.getAttribute('data-code');
+            await fetch(`/imagen/${imageId}/react`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ reactionType: type })
+            });
+            reactMenu.style.display = 'none';
+        };
+    });
+
+    // --- FUNCIONALIDAD: CHAT (Limpio de respuestas) ---
     function parseEmojis(text) {
-        if (!text) return "";
-        let parsedText = text;
+        let parsed = text;
         Object.keys(emojiMap).forEach(code => {
-            const imgHtml = `<img src="${emojiMap[code]}" class="emoji-in-text" style="width:22px; height:22px; vertical-align:middle;">`;
-            parsedText = parsedText.split(code).join(imgHtml);
+            parsed = parsed.split(code).join(`<img src="${emojiMap[code]}" class="emoji-in-text" style="width:22px;">`);
         });
-        return parsedText;
+        return parsed;
     }
 
     function appendMessage(data) {
-        // Aceptamos tanto .contenido (socket) como .content (base de datos)
         const textoReal = data.contenido || data.content;
         if(!textoReal) return;
-
         const isMe = data.username === username;
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
-
-        const avatarUrl = data.avatar || '/imagenes/logo.png';
-        const avatarHtml = isMe ? '' : `<img src="${avatarUrl}" class="chat-avatar">`;
-
-        row.innerHTML = `
-            ${avatarHtml}
-            <div class="bubble-container">
-                <span class="msg-user-name">${isMe ? 'Tú' : data.username}</span>
-                <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div>
-            </div>
-        `;
+        const avatar = isMe ? '' : `<img src="${data.avatar || '/imagenes/sin-foto-perfil.png'}" class="chat-avatar">`;
+        row.innerHTML = `${avatar}<div class="bubble-container"><span class="msg-user-name">${isMe ? 'Tú' : data.username}</span><div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div></div>`;
         chatContainer.appendChild(row);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // 4. Lógica de inicio y eventos
     socket.emit('joinImageRoom', imageId);
     socket.on('mensajeRecibido', (data) => appendMessage(data));
 
-    // Cargar mensajes previos (IMPORTANTE: Después de definir appendMessage)
     const mensajesIniciales = /*[[${comentarios}]]*/ [];
-    if (mensajesIniciales) {
-        mensajesIniciales.forEach(msg => appendMessage(msg));
-    }
+    mensajesIniciales.forEach(msg => appendMessage(msg));
 
-    // 5. ENVIAR MENSAJE
     document.getElementById('btn-send').onclick = async () => {
         const text = input.value.trim();
         if (!text) return;
-
-        const payload = {
-            idProducto: imageId,
-            username: username,
-            avatar: userAvatar,
-            contenido: text
-        };
-
-        // Enviamos al socket para tiempo real
-        socket.emit('nuevoMensaje', payload);
-
-        // Limpiamos la barra INMEDIATAMENTE para mejorar la experiencia
+        socket.emit('nuevoMensaje', { idProducto: imageId, username: username, avatar: userAvatar, contenido: text });
         input.value = '';
-
-        // Guardamos en BD a través del controlador MVC (puente)
-        try {
-            await fetch(`/imagen/${imageId}/comentario`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: text })
-            });
-        } catch (e) {
-            console.error("Error guardando el mensaje:", e);
-        }
+        await fetch(`/imagen/${imageId}/comentario`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ content: text })
+        });
     };
 
-    // 6. MENÚ DE EMOJIS
-    btnEmoji.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const display = window.getComputedStyle(emojiPicker).display;
-        emojiPicker.style.display = (display === 'none') ? 'block' : 'none';
-    });
-
-    document.querySelectorAll('.emoji-item').forEach(img => {
-        img.onclick = (e) => {
-            e.stopPropagation();
-            input.value += ` ${img.getAttribute('data-code')} `;
-            input.focus();
-        };
-    });
-
-    document.addEventListener('click', () => { emojiPicker.style.display = 'none'; });
-    input.onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('btn-send').click(); };
+    document.addEventListener('click', () => { reactMenu.style.display = 'none'; });
     /*]]>*/
 </script>
 </body>

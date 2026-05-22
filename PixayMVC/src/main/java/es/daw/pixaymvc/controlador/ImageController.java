@@ -494,4 +494,19 @@ public class ImageController {
                 .toBodilessEntity()
                 .block();
     }
+    @PostMapping("/imagen/{id}/save")
+    @ResponseBody
+    public ResponseEntity<?> proxySave(@PathVariable Long id, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return ResponseEntity.status(401).build();
+        return webClientAPI.post().uri("imagenes/" + id + "/save").header("Authorization", "Bearer " + token).retrieve().toBodilessEntity().block();
+    }
+
+    @PostMapping("/imagen/{id}/react")
+    @ResponseBody
+    public ResponseEntity<?> proxyReact(@PathVariable Long id, @RequestBody Map<String, String> body, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return ResponseEntity.status(401).build();
+        return webClientAPI.post().uri("imagenes/" + id + "/react").header("Authorization", "Bearer " + token).bodyValue(body).retrieve().toBodilessEntity().block();
+    }
 }
