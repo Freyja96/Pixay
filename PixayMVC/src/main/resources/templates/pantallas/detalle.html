@@ -267,7 +267,7 @@
     document.querySelectorAll('#emoji-picker .emoji-item').forEach(img => {
         img.onclick = (e) => {
             e.stopPropagation();
-            chatInput.value += ` ${img.getAttribute('data-code')} `;
+            chatInput.value += `${img.getAttribute('data-code')} `;
             chatInput.focus();
         };
     });

@@ -1,16 +1,21 @@
 package es.daw.pixaymvc.controlador;
 
+import es.daw.pixaymvc.dto.RegisterRequest;
 import es.daw.pixaymvc.dto.UserProfileUpdateRequest;
 import es.daw.pixaymvc.dto.response.UserProfileResponse; // Asegúrate de importar tu Record
 import es.daw.pixaymvc.service.ApiAuthService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -144,26 +149,40 @@ public class UserController {
 
     // REGISTRO ---------------------------------------------------------------------------------------------
     @GetMapping("/registro")
-    public String mostrarRegistro() {
+    public String mostrarRegistro(Model model) {
+        model.addAttribute("registro", new RegisterRequest("", "", ""));
         return "pantallas/registro";
     }
-
     @PostMapping("/registro")
-    public String procesarRegistro(@RequestParam String username,
-                                   @RequestParam String email,
-                                   @RequestParam String password,
+    public String procesarRegistro(@Valid @ModelAttribute("registro") RegisterRequest regRequest,
+                                   BindingResult result,
                                    @RequestParam String repassword,
                                    Model model) {
-        if (!password.equals(repassword)) {
-            model.addAttribute("error", "Las contraseñas no coinciden");
+
+        // Creamos una lista para acumular todos los errores
+        List<String> listaErrores = new java.util.ArrayList<>();
+
+
+        if (result.hasErrors()) {
+            result.getFieldErrors().forEach(f -> listaErrores.add(f.getDefaultMessage()));
+        }
+
+
+        if (!regRequest.password().equals(repassword)) {
+            listaErrores.add("Las contraseñas no coinciden");
+        }
+
+
+        if (!listaErrores.isEmpty()) {
+            model.addAttribute("listaErrores", listaErrores);
             return "pantallas/registro";
         }
 
         try {
-            apiAuthService.registro(username, email, password);
+            apiAuthService.registro(regRequest.username(), regRequest.email(), regRequest.password());
             return "redirect:/login?registrado=true";
         } catch (Exception e) {
-            model.addAttribute("error", "Error al registrar: " + e.getMessage());
+            model.addAttribute("listaErrores", List.of("El usuario o email ya existen"));
             return "pantallas/registro";
         }
     }

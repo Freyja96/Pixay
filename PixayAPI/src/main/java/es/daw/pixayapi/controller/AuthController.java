@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class AuthController {
     private final RoleRepository roleRepository;
 
     @PostMapping("/registro")
-    public ResponseEntity<?> registro(@RequestBody RegisterRequest request) {
+    public ResponseEntity<?> registro(@Valid @RequestBody RegisterRequest request) {
         if (userRepository.existsByUsername(request.username())) {
             return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso");
         }
