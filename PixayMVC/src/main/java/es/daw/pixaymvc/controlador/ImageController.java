@@ -147,7 +147,7 @@ public class ImageController {
 
         System.out.println("DEBUB mis-imagenes: username= " + profile.username());
         System.out.println("DEBUB mis-imagenes: desciption=" + profile.description());
-        System.out.println("DEBUB mis-imagenes: perfilPrivado=" + profile.privateProfile());
+        System.out.println("DEBUB mis-imagenes: perfilPublico=" + profile.publicProfile());
 
 
         CustomSlice<ImageResponse> slice = webClientAPI.get()
