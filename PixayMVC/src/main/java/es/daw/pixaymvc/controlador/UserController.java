@@ -79,10 +79,10 @@ public class UserController {
 
 
             model.addAttribute("usuario", profile);
-            System.out.println("DEBUG: Profile loaded, returning template");
+            System.out.println("DEBUG: GET: username= " + profile.username() + ", description= " + profile.description());
 
 
-        } catch (WebClientResponseException e) {
+        } catch (Exception e) {
             System.out.println("DEBUG: Exception caught: " + e.getMessage());
             e.printStackTrace();
             return "redirect:/login";
@@ -92,32 +92,29 @@ public class UserController {
     }
     @PostMapping("/mi-perfil/editar-perfil")
     public String guardarCambios(HttpSession session,
-                                 Model model,
                                  @RequestParam String email,
                                  @RequestParam(required = false) String description,
                                  @RequestParam(required = false) String password,
                                  @RequestParam(required = false) String password2,
                                  RedirectAttributes redirectAttributes) {
-
         String token = (String) session.getAttribute("token");
         if (token == null) return "redirect:/login";
-
-        if (password != null && (!password.isEmpty() || !password.isBlank())) {
-            if (password2 == null || password2.isEmpty() || password2.isBlank()) {
-                redirectAttributes.addFlashAttribute("error", "Las contraseñas no pueden estar vacías");
-            }
-            if (password.equals(password2)) {
-                redirectAttributes.addFlashAttribute("message", "Las contraseñas se han actualizado con éxito");
-                return "redirect:/mi-perfil/editar-perfil";
-
-            }
-        }
 
         UserProfileUpdateRequest updateRequest = new UserProfileUpdateRequest();
         updateRequest.setEmail(email);
         updateRequest.setDescription(description);
 
-        if (password != null && !password.isBlank()) {
+        if (password != null && (!password.isEmpty() || !password.isBlank())) {
+            if (password2 == null || password2.isEmpty() || password2.isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no pueden estar vacías");
+                return "redirect:/mi-perfil/editar-perfil";
+            }
+            if (!password.equals(password2)) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
+                return "redirect:/mi-perfil/editar-perfil";
+
+            }
+
             updateRequest.setPassword(password);
         }
 
@@ -132,6 +129,7 @@ public class UserController {
                     .toBodilessEntity()
                     .block();
 
+            redirectAttributes.addFlashAttribute("message", "Perfil actualizado con éxito");
 
         } catch (WebClientResponseException e) {
             System.out.println("DEBUG: API error: " + e.getStatusCode() +e.getMessage()

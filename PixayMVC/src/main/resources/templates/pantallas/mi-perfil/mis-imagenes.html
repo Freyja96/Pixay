@@ -35,7 +35,7 @@
                         <h2 class="fw-bold text-navy mb-0" th:text="${usuario.username}">Nombre Usuario</h2>
                         <div th:if="${session.usuarioIdLogueado != null && usuario.id == session.usuarioIdLogueado}">
                             <button class="btn btn-primary px-4 py-2" style="border-radius: 8px;">
-                                <a th:href="@{/mi-perfil/mis-imagenes}" style="text-decoration: none; color: white">Editar perfil</a>
+                                <a th:href="@{/mi-perfil/editar-perfil}" style="text-decoration: none; color: white">Editar perfil</a>
                             </button>
                         </div>
                     </div>

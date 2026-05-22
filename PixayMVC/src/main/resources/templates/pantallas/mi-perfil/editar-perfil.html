@@ -26,7 +26,6 @@
 
     <form th:action="@{/mi-perfil/editar-perfil}" th:object="${usuario}" method="POST">
 
-
         <div class="form-group">
             <label for="email">Correo electrónico</label>
             <input type="email" id="email" name="email" th:value="${usuario.email}" required />
