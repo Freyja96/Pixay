@@ -5,6 +5,7 @@
     <title>Pixay - Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/registro.css}">
 
 </head>
@@ -33,14 +34,16 @@
                     <input type="text" id="email" th:field="*{email}" class="form-control" placeholder="Email">
                 </div>
                 <!-- Contraseña -->
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label class="form-label">Contraseña</label>
-                    <input type="password" th:field="*{password}" class="form-control"placeholder="Contraseña">
+                    <input type="password" id="password"  th:field="*{password}" class="form-control" placeholder="Contraseña">
+                    <i class="bi bi-eye-slash eye-toggle" id="togglePassword"></i>
                 </div>
                 <!-- Repetir contraseña -->
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label for="repassword" class="form-label">Repetir contraseña</label>
                     <input type="password" id="repassword" name="repassword" class="form-control" placeholder="Repetir contraseña">
+                    <i class="bi bi-eye-slash eye-toggle" id="toggleRepassword"></i>
                 </div>
                 <!-- Registro -->
                 <div class="d-flex justify-content-center mt-3">
@@ -60,5 +63,23 @@
         </div>
     </div>
 </div>
+<script>
+    function setupPasswordToggle(toggleId, inputId) {
+        const toggle = document.querySelector(toggleId);
+        const input = document.querySelector(inputId);
+
+        toggle.addEventListener('click', function () {
+
+            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+            input.setAttribute('type', type);
+
+            this.classList.toggle('bi-eye');
+            this.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    setupPasswordToggle('#togglePassword', '#password');
+    setupPasswordToggle('#toggleRepassword', '#repassword');
+</script>
 </body>
 </html>

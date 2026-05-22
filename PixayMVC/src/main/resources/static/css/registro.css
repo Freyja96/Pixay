@@ -1,21 +1,3 @@
-:root {
-    /* Colores corporativos de Pixay */
-    --WHITE-BACKCOLOR: #F7F7F7;
-    --DARK-BACKCOLOR: #001D33;
-    --PRIMARY-BLUE: #019CF8;
-    --SECONDARY-ORANGE: #ff8c00;
-    --LIGHT-BLUE: #73B9ED;
-    --LIGHT-ORANGE: #F6A964;
-    --DARK-CASE: #33484B;
-    --LIGHT-CASE: #D1DEE8;
-    --LIGHT-GRAY: #33484B40;
-
-    /* Espaciados y medidas constantes */
-    --BORDER-RADIUS-LG: 15px;
-}
-* {
-    font-family: Poppins, sans-serif;
-}
 body {
     background-color: var(--DARK-BACKCOLOR);
 }
@@ -82,4 +64,30 @@ body {
 }
 .orange-text {
     color: var(--SECONDARY-ORANGE);
+}
+.form-label::after {
+    content: " *";
+    color: var(--SECONDARY-ORANGE);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.eye-toggle {
+    position: absolute;
+    right: 15px;
+    top: 38px; /* Ajusta esto según el tamaño de tu label */
+    cursor: pointer;
+    color: #666;
+    z-index: 10;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+}
+
+.eye-toggle:hover {
+    color: var(--SECONDARY-ORANGE); /* Color naranja al pasar el ratón */
+}
+
+/* Evitar que el texto largo se tape con el icono */
+.form-control {
+    padding-right: 45px;
 }
