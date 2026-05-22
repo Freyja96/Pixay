@@ -19,5 +19,5 @@ public class ImageReaction {
     @JoinColumn(name = "image_id", nullable = false)
     private Image image;
 
-    private String reactionType;
+    private Integer reactionType;
 }

@@ -31,8 +31,10 @@ public class ImageController {
     private final UserService userService;
     private final ImageRepository imageRepository;
     private final ImageReactionRepository imageReactionRepository;
+
     /**
      * Muestra las imágenes de todos los usuarios.
+     *
      * @param page
      * @param size
      * @return
@@ -41,15 +43,17 @@ public class ImageController {
     public ResponseEntity<Slice<ImageResponse>> getAllImages(//<-- para todas las imágenes de todos los usuarios
                                                              @RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "12") int size
-    ){
+    ) {
         Slice<Image> slice = imageService.getAllImagesPaged(page, size);
         Slice<ImageResponse> responseSlice = slice
                 .map(this::convertToResponse);
 
         return ResponseEntity.ok(responseSlice);
     }
+
     /**
      * Sube una imagen al servidor.
+     *
      * @param content
      * @param title
      * @param category_id
@@ -66,7 +70,7 @@ public class ImageController {
             @RequestParam("category_id") String category_id,
             @RequestParam(value = "subcategory_id", required = false) String subcategory_id,
             @AuthenticationPrincipal UserDetails userDetails // Obtenemos el usuario del token
-    ){
+    ) {
         if (userDetails == null) {
             System.out.println("ERROR: El usuario llega como NULL. El Token no se ha validado correctamente.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -86,6 +90,7 @@ public class ImageController {
     /**
      * /**
      * Muestra las imágenes del usuario actual.
+     *
      * @param user
      * @param page
      * @param size
@@ -97,7 +102,7 @@ public class ImageController {
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size
-            ){ //<-- para las imágenes del usuario actual
+    ) { //<-- para las imágenes del usuario actual
         Slice<Image> slice = imageService.getImagesByUser(user, page, size);
 
         Slice<ImageResponse> responseSlice = slice
@@ -105,13 +110,16 @@ public class ImageController {
 
         return ResponseEntity.ok(responseSlice);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ImageResponse> getImageById(@PathVariable Long id) {
         Image image = imageService.getImageById(id);
         return ResponseEntity.ok(convertToResponse(image));
     }
+
     /**
      * Muestra las imágenes del usuario por ID
+     *
      * @param id
      * @param page
      * @param size
@@ -122,7 +130,7 @@ public class ImageController {
             @PathVariable Long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size
-    ){
+    ) {
         User user = userService.findById(id);
 
         Slice<Image> slice = imageService.getImagesByUser(user, page, size);
@@ -133,6 +141,7 @@ public class ImageController {
 
     /**
      * Mostrar las imágenes guardadas por el usuario actual.
+     *
      * @param userDetails
      * @param page
      * @param size
@@ -152,6 +161,7 @@ public class ImageController {
 
     /**
      * Imágenes guardadas del usuario por ID.
+     *
      * @param id
      * @param page
      * @param size
@@ -181,12 +191,14 @@ public class ImageController {
         String q = (query == null) ? "" : query;
         // Lógica de filtros (Prioridad: Subcategoría > Categoría > Texto)
         if (subcategoryId != null) {
-            if (!q.isEmpty()) return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndSubcategory_Id(q, subcategoryId, pageable).map(this::convertToResponse));
+            if (!q.isEmpty())
+                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndSubcategory_Id(q, subcategoryId, pageable).map(this::convertToResponse));
             return ResponseEntity.ok(imageRepository.findBySubcategory_Id(subcategoryId, pageable).map(this::convertToResponse));
         }
 
         if (categoryId != null) {
-            if (!q.isEmpty()) return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndCategory_Id(q, categoryId, pageable).map(this::convertToResponse));
+            if (!q.isEmpty())
+                return ResponseEntity.ok(imageRepository.findByTitleContainingIgnoreCaseAndCategory_Id(q, categoryId, pageable).map(this::convertToResponse));
             return ResponseEntity.ok(imageRepository.findByCategory_Id(categoryId, pageable).map(this::convertToResponse));
         }
 
@@ -199,6 +211,7 @@ public class ImageController {
 
     /**
      * Convierte una imagen en una respuesta.
+     *
      * @param entity
      * @return
      */
@@ -212,11 +225,12 @@ public class ImageController {
                 entity.getSubcategory() != null ? entity.getSubcategory().getName() : "Sin subcategoría" //puede ser nula
         );
     }
+
     @PostMapping("/{id}/react")
-    public ResponseEntity<?> reactToImage(@PathVariable Long id, @RequestBody Map<String, String> body, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> reactToImage(@PathVariable Long id, @RequestBody Map<String, Object> body, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userService.findByUsername(userDetails.getUsername());
         Image image = imageRepository.findById(id).orElseThrow();
-        String type = body.get("reactionType");
+        Integer type = Integer.parseInt(body.get("reactionType").toString());
 
         var existing = imageReactionRepository.findByUserAndImage(user, image);
         if (existing.isPresent()) {
@@ -228,7 +242,9 @@ public class ImageController {
             imageReactionRepository.save(existing.get());
         } else {
             ImageReaction ir = new ImageReaction();
-            ir.setUser(user); ir.setImage(image); ir.setReactionType(type);
+            ir.setUser(user);
+            ir.setImage(image);
+            ir.setReactionType(type);
             imageReactionRepository.save(ir);
         }
         return ResponseEntity.ok("Reacción guardada");

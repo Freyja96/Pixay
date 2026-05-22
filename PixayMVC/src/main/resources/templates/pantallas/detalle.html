@@ -108,11 +108,21 @@
         await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
     };
 
+    const reactionToId = {
+        ':cowboy:': 1,
+        ':gema:':   2,
+        ':rosa:':   3,
+        ':enfado:': 4,
+        ':risa:':   5,
+        ':triste:': 6,
+        ':like:':   7,
+        ':dislike:': 8
+    };
     // --- FUNCIONALIDAD: REACCIONES ---
     const reactBtn = document.querySelector('.bi-emoji-smile');
     const reactMenu = document.createElement('div');
     reactMenu.className = 'reaction-popup shadow';
-    reactMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML; // Reutilizamos los gatos
+    reactMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML;
     document.body.appendChild(reactMenu);
 
     reactBtn.onclick = (e) => {
@@ -122,13 +132,16 @@
         reactMenu.style.top = (e.pageY - 60) + 'px';
     };
 
+
     reactMenu.querySelectorAll('.emoji-item').forEach(img => {
         img.onclick = async () => {
-            const type = img.getAttribute('data-code');
+            const emojiCode = img.getAttribute('data-code');
+            const numericId = reactionToId[emojiCode]; //traduce emoji a id
+
             await fetch(`/imagen/${imageId}/react`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ reactionType: type })
+                body: JSON.stringify({ reactionType: numericId }) // Envia id
             });
             reactMenu.style.display = 'none';
         };
