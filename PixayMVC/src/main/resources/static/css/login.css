@@ -1,0 +1,50 @@
+
+body {
+    background-color: var(--DARK-BACKCOLOR);
+}
+
+.login-title{
+    color: var(--PRIMARY-BLUE);
+    font-weight: bold;
+}
+.login-logo {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+.card {
+    background-color: var(--DARK-BACKCOLOR);
+    width: 500px;
+}
+.card-body {
+    background-color: var(--DARK-BACKCOLOR);
+}
+.card-title {
+    color: var(--PRIMARY-BLUE);
+}
+.form-label {
+    color: var(--LIGHT-CASE);
+}
+.form-control {
+    background-color: #002844;
+    color: var(--LIGHT-CASE);
+}
+.form-control::placeholder {
+    color: #666;
+}
+.btn-primary {
+    background-color: var(--PRIMARY-BLUE);
+    border-color: var(--PRIMARY-BLUE);
+}
+.text-muted {
+    color: var(--LIGHT-CASE) !important;
+}
+.login-button {
+    width: 220px;
+    height: 60px
+}
+.orange-text {
+    color: var(--SECONDARY-ORANGE);
+}

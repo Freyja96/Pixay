@@ -82,3 +82,13 @@ CREATE TABLE IF NOT EXISTS image_comments (
       FOREIGN KEY (user_id) REFERENCES users(id),
       FOREIGN KEY (image_id) REFERENCES users_images(id)
 );
+CREATE TABLE IF NOT EXISTS image_reactions (
+                                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                               user_id BIGINT NOT NULL,
+                                               image_id BIGINT NOT NULL,
+                                               reaction_type VARCHAR(20) NOT NULL, -- código del emoji
+
+                                               FOREIGN KEY (user_id) REFERENCES users(id),
+                                               FOREIGN KEY (image_id) REFERENCES users_images(id),
+                                               CONSTRAINT unique_user_image_reaction UNIQUE(user_id, image_id)
+);

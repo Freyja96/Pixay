@@ -18,7 +18,7 @@
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
             <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
                  class="author-img" alt="Avatar"></a>
-            <span class="author-name" th:text="${autor.username}">Paula</span>
+            <span class="author-name" th:text="${autor.username}">Usuario</span>
         </div>
 
         <p class="image-title fw-bold" th:text="${imagen.title}"></p>
@@ -31,6 +31,7 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
+            <i class="bi bi-emoji-smile" title="Reaccionar"></i>
             <i class="bi bi-bookmark" title="Guardar"></i>
             <!-- Descargar -->
 
@@ -38,8 +39,7 @@
                th:download="${imagen.title} + '.jpg'" style="color: inherit;">
                 <i class="bi bi-arrow-down" title="Descargar"></i>
             </a>
-            <i class="bi bi-emoji-smile" title="Reaccionar"></i>
-            <i class="bi bi-reply" title="Responder"></i>
+
         </div>
 
         <!-- SECCIÓN 5: CHAT -->
