@@ -17,14 +17,15 @@
 <body>
 <div th:insert="~{fragments/cabecera}"></div>
 <div class="form-container">
+
+    <!-- Para mostrar errores en pantalla -->
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
     <h2>Editar Perfil</h2>
 
     <form th:action="@{/mi-perfil/editar-perfil}" th:object="${usuario}" method="POST">
 
-        <div class="form-group">
-            <label for="username">Nombre de usuario</label>
-            <input type="text" id="username" name="username" th:value="${usuario.username}" required />
-        </div>
 
         <div class="form-group">
             <label for="email">Correo electrónico</label>

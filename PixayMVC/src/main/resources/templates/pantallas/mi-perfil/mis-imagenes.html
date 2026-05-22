@@ -19,6 +19,14 @@
 <div th:insert="~{/fragments/cabecera}"></div>
 <!--CUERPO-->
 <div class="container mt-5">
+    <div th:if="${message}" class=" pt-3alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${message}">Mensaje de éxito</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}">Mensaje de error</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <!--MIGA DE PAN-->
     <h6 class="text-orange fw-bold mb-4">Mi perfil</h6>
     <!--DATOS DEL USUARIO-->
@@ -48,7 +56,10 @@
                             <span th:text="${usuario.followingCount}">0</span> Seguidos
                         </button>
                     </div>
-
+                    <small class="text-muted">
+                        <span th:if="${usuario.privateProfile}">🔒 Perfil privado</span>
+                        <span th:unless="${usuario.privateProfile}">🔓 Perfil público</span>
+                    </small>
                     <p class="text-muted" style="max-width: 800px; line-height: 1.6;" 
                     th:text="${usuario.description != null ? usuario.description : 'Este usuario aún no tiene biografía.'}">
                         Descripción del usuario...

@@ -1,5 +1,6 @@
 package es.daw.pixaymvc.dto.response;
 
+
 public record UserProfileResponse(
         Long id,
         String username,
@@ -7,7 +8,19 @@ public record UserProfileResponse(
         byte[] profilePicture,
         String description,
         int followersCount,
-        int followingCount
+        int followingCount,
+
+        // Visibilidad de Perfil
+        boolean privateProfile,
+        boolean SearchPrivacy,
+
+        // Permisos
+        boolean commentsPrivacy,
+        boolean permitirDescargas,
+
+        String fotoAjustes
+
+
 ) {
     // pintar foto de perfil
     public String getFotoBase64() {

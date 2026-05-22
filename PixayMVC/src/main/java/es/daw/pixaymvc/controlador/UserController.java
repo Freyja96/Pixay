@@ -61,7 +61,8 @@ public class UserController {
             return "pantallas/login";
         }
     }
-<<<<<<< HEAD
+
+    // EDITAR PERFIL ----------------------------------------------------------------------------------------
     @GetMapping("/mi-perfil/editar-perfil")
     public String editarPerfil(HttpSession session, Model model) {
         String token = (String) session.getAttribute("token");
@@ -92,7 +93,6 @@ public class UserController {
     @PostMapping("/mi-perfil/editar-perfil")
     public String guardarCambios(HttpSession session,
                                  Model model,
-                                 @RequestParam String username,
                                  @RequestParam String email,
                                  @RequestParam(required = false) String description,
                                  @RequestParam(required = false) String password,
@@ -102,48 +102,49 @@ public class UserController {
         String token = (String) session.getAttribute("token");
         if (token == null) return "redirect:/login";
 
-        try {
-            UserProfileUpdateRequest updateRequest = new UserProfileUpdateRequest();
-            updateRequest.setUsername(username);
-            updateRequest.setEmail(email);
-            updateRequest.setDescription(description);
-            updateRequest.setPassword(password);
-
-            if (password != null && !password.isEmpty() && password2!= null && !password2.isEmpty()) {
-                if (password.equals(password2)) {
-                    updateRequest.setPassword(password);
-                } else {
-                    redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
-                    return "pantallas/mi-perfil/editar-perfil";
-                }
-
-                webClientAPI.patch()
-                        .uri("usuarios/me")
-                        .headers(h -> h.setBearerAuth(token))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(updateRequest)
-                        .retrieve()
-                        .toBodilessEntity()
-                        .block();
-
-                redirectAttributes.addFlashAttribute("message", "¡Perfil actualizado!");
-                System.out.println("DEBUG: Perfil actualizado");
-                return "redirect:/mi-perfil/mis-imagenes";
+        if (password != null && (!password.isEmpty() || !password.isBlank())) {
+            if (password2 == null || password2.isEmpty() || password2.isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no pueden estar vacías");
             }
+            if (password.equals(password2)) {
+                redirectAttributes.addFlashAttribute("message", "Las contraseñas se han actualizado con éxito");
+                return "redirect:/mi-perfil/editar-perfil";
 
-        } catch (WebClientResponseException e) {
-            System.out.println("DEBUG: Exception caught: " + e.getMessage());
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "Error al guardar los cambios");
-            return "pantallas/mi-perfil/editar-perfil";
+            }
         }
 
+        UserProfileUpdateRequest updateRequest = new UserProfileUpdateRequest();
+        updateRequest.setEmail(email);
+        updateRequest.setDescription(description);
+
+        if (password != null && !password.isBlank()) {
+            updateRequest.setPassword(password);
+        }
+
+        try {
+
+            webClientAPI.patch()
+                    .uri("usuarios/me")
+                    .headers(h -> h.setBearerAuth(token))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(updateRequest)
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+
+
+        } catch (WebClientResponseException e) {
+            System.out.println("DEBUG: API error: " + e.getStatusCode() +e.getMessage()
+                    + e.getResponseBodyAsString() );
+            redirectAttributes.addFlashAttribute("error", "Error al guardar los cambios");
+            return "redirect:/mi-perfil/editar-perfil";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Perfil actualizado con éxito");
         return "redirect:/mi-perfil/mis-imagenes";
     }
 
-
-=======
-
+    // REGISTRO ---------------------------------------------------------------------------------------------
     @GetMapping("/registro")
     public String mostrarRegistro() {
         return "pantallas/registro";
@@ -168,5 +169,5 @@ public class UserController {
             return "pantallas/registro";
         }
     }
->>>>>>> main
+
 }
