@@ -31,15 +31,19 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
-            <i class="bi bi-emoji-smile" title="Reaccionar"></i>
-            <i class="bi bi-bookmark" title="Guardar"></i>
-            <!-- Descargar -->
+            <!-- Reacción con ID para cambiar el icono visualmente -->
+            <i id="main-react-icon" class="bi bi-emoji-smile" title="Reaccionar"></i>
+
+            <!-- Guardado dinámico -->
+            <i id="main-save-icon"
+               th:class="${isSaved} ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"
+               th:style="${isSaved} ? 'color: var(--PRIMARY-BLUE)' : ''"
+               title="Guardar"></i>
 
             <a th:href="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                th:download="${imagen.title} + '.jpg'" style="color: inherit;">
                 <i class="bi bi-arrow-down" title="Descargar"></i>
             </a>
-
         </div>
 
         <!-- SECCIÓN 5: CHAT -->
@@ -83,13 +87,24 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     /*<![CDATA[*/
+    // --- 1. CONFIGURACIÓN E IDENTIDAD ---
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
-    const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/logo.png';
+    const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/sin-foto-perfil.png';
 
-    const input = document.getElementById('chat-input');
+    // Elementos del DOM
     const chatContainer = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const btnSend = document.getElementById('btn-send');
+    const btnEmojiInput = document.getElementById('btn-emoji'); // Carita negra del input
+    const emojiPicker = document.getElementById('emoji-picker'); // Menú de emojis del input
+    const saveIcon = document.querySelector('.icon-bar .bi-bookmark, .icon-bar .bi-bookmark-fill');
+    const mainReactBtn = document.querySelector('.icon-bar .bi-emoji-smile'); // Carita de la barra principal
+
+    // --- 2. MAPEOS DE EMOJIS ---
+
+    // Mapeo general para el traductor de texto
     const emojiMap = {
         ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
         ':gema:':   /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '',
@@ -101,92 +116,176 @@
         ':dislike:':/*[[@{/imagenes/emojis/dislike-gato.png}]]*/ '',
     };
 
-    // --- FUNCIONALIDAD: GUARDAR ---
-    document.querySelector('.bi-bookmark').onclick = async function() {
-        this.classList.toggle('bi-bookmark');
-        this.classList.toggle('bi-bookmark-fill');
-        await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
+    // Traducción de Código de Texto -> ID Numérico (Para la DB)
+    const emojiToId = {
+        ':cowboy:': 1, ':gema:': 2, ':rosa:': 3, ':enfado:': 4,
+        ':risa:': 5, ':triste:': 6, ':like:': 7, ':dislike:': 8
     };
 
-    const reactionToId = {
-        ':cowboy:': 1,
-        ':gema:':   2,
-        ':rosa:':   3,
-        ':enfado:': 4,
-        ':risa:':   5,
-        ':triste:': 6,
-        ':like:':   7,
-        ':dislike:': 8
-    };
-    // --- FUNCIONALIDAD: REACCIONES ---
-    const reactBtn = document.querySelector('.bi-emoji-smile');
-    const reactMenu = document.createElement('div');
-    reactMenu.className = 'reaction-popup shadow';
-    reactMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML;
-    document.body.appendChild(reactMenu);
-
-    reactBtn.onclick = (e) => {
-        e.stopPropagation();
-        reactMenu.style.display = 'block';
-        reactMenu.style.left = e.pageX + 'px';
-        reactMenu.style.top = (e.pageY - 60) + 'px';
+    // Traducción de ID Numérico -> Ruta de Imagen (Para carga inicial)
+    const idToPath = {
+        1: /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
+        2: /*[[@{/imagenes/emojis/gema-gato.png}]]*/ '',
+        3: /*[[@{/imagenes/emojis/rosa-gato.png}]]*/ '',
+        4: /*[[@{/imagenes/emojis/enfado-gato.png}]]*/ '',
+        5: /*[[@{/imagenes/emojis/risa-gato.png}]]*/ '',
+        6: /*[[@{/imagenes/emojis/triste-gato.png}]]*/ '',
+        7: /*[[@{/imagenes/emojis/like-gato.png}]]*/ '',
+        8: /*[[@{/imagenes/emojis/dislike-gato.png}]]*/ ''
     };
 
+    // --- 3. FUNCIONES DE APOYO ---
 
-    reactMenu.querySelectorAll('.emoji-item').forEach(img => {
-        img.onclick = async () => {
-            const emojiCode = img.getAttribute('data-code');
-            const numericId = reactionToId[emojiCode]; //traduce emoji a id
-
-            await fetch(`/imagen/${imageId}/react`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ reactionType: numericId }) // Envia id
-            });
-            reactMenu.style.display = 'none';
-        };
-    });
-
-    // --- FUNCIONALIDAD: CHAT (Limpio de respuestas) ---
     function parseEmojis(text) {
-        let parsed = text;
+        if (!text) return "";
+        let parsedText = text;
         Object.keys(emojiMap).forEach(code => {
-            parsed = parsed.split(code).join(`<img src="${emojiMap[code]}" class="emoji-in-text" style="width:22px;">`);
+            const imgHtml = `<img src="${emojiMap[code]}" class="emoji-in-text" style="width:22px; height:22px; vertical-align:middle;">`;
+            parsedText = parsedText.split(code).join(imgHtml);
         });
-        return parsed;
+        return parsedText;
     }
 
     function appendMessage(data) {
         const textoReal = data.contenido || data.content;
         if(!textoReal) return;
+
         const isMe = data.username === username;
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
-        const avatar = isMe ? '' : `<img src="${data.avatar || '/imagenes/sin-foto-perfil.png'}" class="chat-avatar">`;
-        row.innerHTML = `${avatar}<div class="bubble-container"><span class="msg-user-name">${isMe ? 'Tú' : data.username}</span><div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div></div>`;
+
+        const avatarUrl = data.avatar || '/imagenes/sin-foto-perfil.png';
+        const avatarHtml = isMe ? '' : `<img src="${avatarUrl}" class="chat-avatar">`;
+
+        row.innerHTML = `
+            ${avatarHtml}
+            <div class="bubble-container">
+                <span class="msg-user-name">${isMe ? 'Tú' : data.username}</span>
+                <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div>
+            </div>
+        `;
         chatContainer.appendChild(row);
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
+    // --- 4. LÓGICA DE INTERACCIÓN (GUARDAR Y REACCIONAR) ---
+
+    // Guardar Publicación
+    if (saveIcon) {
+        saveIcon.onclick = async function() {
+            try {
+                const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
+                if (response.ok) {
+                    const nowSaved = await response.json(); // Esperamos que la API devuelva true/false
+                    this.className = nowSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark';
+                    this.style.color = nowSaved ? 'var(--PRIMARY-BLUE)' : '#000';
+                }
+            } catch (e) { console.error("Error al guardar:", e); }
+        };
+    }
+
+    // Menú de Reacciones Flotante (Barra principal)
+    const reactionMenu = document.createElement('div');
+    reactionMenu.className = 'reaction-popup shadow';
+    reactionMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML;
+    document.body.appendChild(reactionMenu);
+
+    if (mainReactBtn) {
+        mainReactBtn.onclick = (e) => {
+            e.stopPropagation();
+            reactionMenu.style.display = 'block';
+            reactionMenu.style.left = e.pageX + 'px';
+            reactionMenu.style.top = (e.pageY - 65) + 'px';
+        };
+    }
+
+    // Al elegir reacción del menú flotante
+    reactionMenu.querySelectorAll('.emoji-item').forEach(img => {
+        img.onclick = async () => {
+            const emojiCode = img.getAttribute('data-code');
+            const numericId = emojiToId[emojiCode];
+
+            try {
+                const response = await fetch(`/imagen/${imageId}/react`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ reactionType: numericId })
+                });
+
+                if (response.ok) {
+                    // Feedback visual: sustituir carita por el gato elegido
+                    mainReactBtn.innerHTML = `<img src="${idToPath[numericId]}" style="width:30px; height:30px; vertical-align:top; margin-top:-3px;">`;
+                    mainReactBtn.className = "cursor-pointer"; // Quitamos bi-emoji-smile
+                }
+            } catch (e) { console.error("Error al reaccionar:", e); }
+
+            reactionMenu.style.display = 'none';
+        };
+    });
+
+    // --- 5. LÓGICA DEL CHAT ---
+
     socket.emit('joinImageRoom', imageId);
     socket.on('mensajeRecibido', (data) => appendMessage(data));
 
+    // Cargar historial
     const mensajesIniciales = /*[[${comentarios}]]*/ [];
-    mensajesIniciales.forEach(msg => appendMessage(msg));
+    if (mensajesIniciales) {
+        mensajesIniciales.forEach(msg => appendMessage(msg));
+    }
 
-    document.getElementById('btn-send').onclick = async () => {
-        const text = input.value.trim();
+    // Enviar mensaje
+    btnSend.onclick = async () => {
+        const text = chatInput.value.trim();
         if (!text) return;
-        socket.emit('nuevoMensaje', { idProducto: imageId, username: username, avatar: userAvatar, contenido: text });
-        input.value = '';
-        await fetch(`/imagen/${imageId}/comentario`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ content: text })
-        });
+
+        const payload = { idProducto: imageId, username: username, avatar: userAvatar, contenido: text };
+        socket.emit('nuevoMensaje', payload);
+        chatInput.value = '';
+
+        try {
+            await fetch(`/imagen/${imageId}/comentario`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: text })
+            });
+        } catch (e) { console.error("Error guardando el mensaje:", e); }
     };
 
-    document.addEventListener('click', () => { reactMenu.style.display = 'none'; });
+    // --- 6. GESTIÓN DE MENÚS Y EMOJIS DEL INPUT ---
+
+    // Abrir menú de emojis del input (carita negra)
+    btnEmojiInput.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const display = window.getComputedStyle(emojiPicker).display;
+        emojiPicker.style.display = (display === 'none') ? 'block' : 'none';
+    });
+
+    // Insertar emoji en input (Sin cerrar)
+    document.querySelectorAll('#emoji-picker .emoji-item').forEach(img => {
+        img.onclick = (e) => {
+            e.stopPropagation();
+            chatInput.value += ` ${img.getAttribute('data-code')} `;
+            chatInput.focus();
+        };
+    });
+
+    // Cierre global de menús al clicar fuera
+    document.addEventListener('click', () => {
+        emojiPicker.style.display = 'none';
+        reactionMenu.style.display = 'none';
+    });
+
+    // Enviar con Enter
+    chatInput.onkeypress = (e) => { if (e.key === 'Enter') btnSend.click(); };
+
+    // --- 7. CARGA DE ESTADO INICIAL (REACCIÓN) ---
+    const initialReaction = /*[[${currentReaction}]]*/ 0;
+    if (initialReaction > 0) {
+        mainReactBtn.innerHTML = `<img src="${idToPath[initialReaction]}" style="width:30px;">`;
+        mainReactBtn.className = "cursor-pointer";
+    }
+
     /*]]>*/
 </script>
 </body>

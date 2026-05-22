@@ -3,11 +3,14 @@ package es.daw.pixayapi.controller;
 import es.daw.pixayapi.dto.response.ImageResponse;
 import es.daw.pixayapi.entity.Image;
 import es.daw.pixayapi.entity.ImageReaction;
+import es.daw.pixayapi.entity.SavedImage;
 import es.daw.pixayapi.entity.User;
 import es.daw.pixayapi.repository.ImageReactionRepository;
 import es.daw.pixayapi.repository.ImageRepository;
+import es.daw.pixayapi.repository.SavedImageRepository;
 import es.daw.pixayapi.service.ImageService;
 import es.daw.pixayapi.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +34,7 @@ public class ImageController {
     private final UserService userService;
     private final ImageRepository imageRepository;
     private final ImageReactionRepository imageReactionRepository;
-
+    private final SavedImageRepository savedImageRepository;
     /**
      * Muestra las imágenes de todos los usuarios.
      *
@@ -248,5 +251,38 @@ public class ImageController {
             imageReactionRepository.save(ir);
         }
         return ResponseEntity.ok("Reacción guardada");
+    }
+    @PostMapping("/{id}/save")
+    @Transactional
+    public ResponseEntity<?> toggleSaveImage(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Image image = imageRepository.findById(id).orElseThrow();
+
+        var savedOpt = savedImageRepository.findByUserAndImage(user, image);
+        if (savedOpt.isPresent()) {
+            savedImageRepository.delete(savedOpt.get());
+            return ResponseEntity.ok(false); // Devuelve false si ya no está guardado
+        } else {
+            SavedImage si = new SavedImage();
+            si.setUser(user);
+            si.setImage(image);
+            savedImageRepository.save(si);
+            return ResponseEntity.ok(true); // Devuelve true si se ha guardado
+        }
+    }
+
+    // Endpoint para que el detalle sepa si la imagen está guardada al cargar
+    @GetMapping("/{id}/status")
+    public ResponseEntity<Map<String, Object>> getImageStatus(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Image image = imageRepository.findById(id).orElseThrow();
+
+        boolean isSaved = savedImageRepository.findByUserAndImage(user, image).isPresent();
+        var reaction = imageReactionRepository.findByUserAndImage(user, image);
+
+        return ResponseEntity.ok(Map.of(
+                "isSaved", isSaved,
+                "reactionType", reaction.isPresent() ? reaction.get().getReactionType() : 0
+        ));
     }
 }

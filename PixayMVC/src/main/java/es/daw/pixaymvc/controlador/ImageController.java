@@ -376,6 +376,18 @@ public class ImageController {
         model.addAttribute("selectedSubcategoryId", null);
         model.addAttribute("selectedCategoryName", "Todas las categorías");
 
+        if (token != null) {
+            Map<String, Object> status = webClientAPI.get()
+                    .uri("imagenes/" + id + "/status")
+                    .header("Authorization", "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .block();
+
+            model.addAttribute("isSaved", status.get("isSaved"));
+            model.addAttribute("currentReaction", status.get("reactionType"));
+        }
+
         return "pantallas/detalle";
     }
 
