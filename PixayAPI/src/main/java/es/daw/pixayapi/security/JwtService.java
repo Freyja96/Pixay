@@ -22,31 +22,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JwtService {
 
-    // LO QUE HACEMOS NOSOTROS = En lugar de usar una clave fija en application.properties, genera una nueva clave de forma dinámica.
-    // Si usas SECRET_KEY generado dinámicamente en cada arranque, no podrás validar tokens emitidos en otra ejecución.
-    //private final SecretKey SECRET_KEY = generateSecureKey();
-
-    // Si lo cargo desde application.properties ... problemas de seguridad en producción
-//    @Value("${jwt.secret}")
-//    private String secret;
-
     @Value("${JWT_SECRET}")
     private String secret;
 
     @Value("${JWT_EXPIRATION}")
     private int expiration;
-
-
-    /**
-     * Genera una clave nueva, aleatoria y segura en tiempo de ejecución.
-     * Ideal para pruebas o ejemplos donde NO necesitas persistencia del token entre reinicios del servidor.
-     * Cada vez que reinicias la app, se genera una nueva clave.
-     * Esto hace que los tokens emitidos antes del reinicio ya no sean válidos, porque la firma ya no coincide.
-     * @return
-     */
-//    private SecretKey generateSecureKey() {
-//        return Jwts.SIG.HS256.key().build(); // Genera una clave segura aleatoria de 256 bits
-//    }
 
     /**
      * Devuelve la clave secreta usada para firmar y validar tokens.
@@ -79,9 +59,6 @@ public class JwtService {
                 .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                //.expiration(new Date(System.currentTimeMillis() +
-                // 1000 * 60 * 60)) // 1 hora
-                // |->ms  |->s |->min
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * expiration))
                 .signWith(getSigningKey(), Jwts.SIG.HS256)
                 .compact();
@@ -92,14 +69,6 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    /*
-        Un claim son piezas de información sobre un usuario que se encuentran empaquetadas y firmadas con un token de seguridad
-        Métod0 genérico para extraer datos del token:
-            - extractClaim() permite extraer cualquier dato del token, como:
-            - getSubject() → username
-            - getExpiration() → fecha de expiración
-            - get("roles") → roles del usuario
-     */
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -149,7 +118,4 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
     }
-
-
 }
-

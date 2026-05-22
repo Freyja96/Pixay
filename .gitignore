@@ -12,3 +12,5 @@ Ideas/
 # Archivos temporales del sistema
 .DS_Store
 Thumbs.db
+
+.env
