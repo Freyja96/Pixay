@@ -18,9 +18,17 @@
 <div th:insert="~{fragments/cabecera}"></div>
 <div class="form-container">
 
-    <!-- Para mostrar errores en pantalla -->
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <!-- Para mostrar errores y alertas en pantalla -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 
     <h2>Editar Perfil</h2>
 
@@ -29,12 +37,12 @@
 
         <div class="form-group">
             <label for="email">Correo electrónico</label>
-            <input type="email" id="email" name="email" th:value="${usuario.email}" required />
+            <input type="email" id="email" name="email" th:value="${usuario.email}" />
         </div>
 
         <div class="form-group">
-            <label for="bio">Biografía</label>
-            <textarea id="bio" name="bio" th:text="${usuario.description}" placeholder="Cuéntanos algo sobre ti..."></textarea>
+            <label for="description">Biografía</label>
+            <textarea id="description" name="description" th:text="${usuario.description}" placeholder="Cuéntanos algo sobre ti..."></textarea>
         </div>
 
         <div class="form-group">

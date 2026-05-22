@@ -102,23 +102,25 @@ public class UserController {
         String token = (String) session.getAttribute("token");
         if (token == null) return "redirect:/login";
 
-        if (password != null && (!password.isEmpty() || !password.isBlank())) {
-            if (password2 == null || password2.isEmpty() || password2.isBlank()) {
-                redirectAttributes.addFlashAttribute("error", "Las contraseñas no pueden estar vacías");
-            }
-            if (password.equals(password2)) {
-                redirectAttributes.addFlashAttribute("message", "Las contraseñas se han actualizado con éxito");
-                return "redirect:/mi-perfil/editar-perfil";
-
-            }
-        }
-
         UserProfileUpdateRequest updateRequest = new UserProfileUpdateRequest();
         updateRequest.setEmail(email);
         updateRequest.setDescription(description);
 
-        if (password != null && !password.isBlank()) {
+        boolean wantsToChangePassword = password != null && !password.isBlank();
+
+        if (wantsToChangePassword) {
+            if (password2 == null || password2.isEmpty() || password2.isBlank()) {
+                redirectAttributes.addFlashAttribute("error", "Debes repetir la contraseña");
+            }
+
+            if (!password.equals(password2)) {
+                redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
+                return "redirect:/mi-perfil/editar-perfil";
+            }
+            // Si todo esta bien actualizar la contraseña
+
             updateRequest.setPassword(password);
+            redirectAttributes.addFlashAttribute("message", "Contraseña actualizada con éxito");
         }
 
         try {
@@ -132,6 +134,7 @@ public class UserController {
                     .toBodilessEntity()
                     .block();
 
+            System.out.println("DEBUG: email=" + updateRequest.getEmail() + ", description=" + updateRequest.getDescription() + ", password=" + updateRequest.getPassword());
 
         } catch (WebClientResponseException e) {
             System.out.println("DEBUG: API error: " + e.getStatusCode() +e.getMessage()

@@ -11,7 +11,7 @@ public record UserProfileResponse(
         int followingCount,
 
         // Visibilidad de Perfil
-        boolean privateProfile,
+        boolean publicProfile,
         boolean SearchPrivacy,
 
         // Permisos
