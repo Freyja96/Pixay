@@ -8,7 +8,19 @@ public record UserProfileResponse(
         String description,
         int followersCount,
         int followingCount,
-        boolean isFollowing
+        boolean isFollowing,
+
+        // Visibilidad de Perfil
+        boolean privateProfile,
+        boolean SearchPrivacy,
+
+        // Permisos
+        boolean commentsPrivacy,
+        boolean permitirDescargas,
+
+        String fotoAjustes
+
+
 ) {
     // pintar foto de perfil
     public String getFotoBase64() {

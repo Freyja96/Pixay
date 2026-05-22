@@ -31,4 +31,8 @@ public class UserService {
         user.setPassword(passwordHasheada);
         userRepository.save(user);
     }
+
+    public void save(User user) {
+        userRepository.save(user);
+    }
 }

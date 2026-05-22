@@ -33,9 +33,7 @@ public class User implements UserDetails {
     private String email;
 
 //role_id BIGINT NOT NULL,
-    // Relación bidireccional. Usuario es el lado propietario, porque tiene la tabla intermedia
-    // fetch = FetchType.EAGER indica que los roles se cargan siempre junto con el usuario,
-    // lo cual es necesario porque Spring Security los necesita inmediatamente para construir las autoridades.
+    // Relación bidireccional.
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
@@ -52,6 +50,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images;
+
+
+    // CAMPOS PARA AJUSTES Y PERMISOS
+
+    @Column(nullable = false)
+
 
     // --------------------- 5 MÉTODOS DE LA INTERFACE UserDetails -----------------
     // Devuelve los roles convertidos en objetos GrantedAuthority

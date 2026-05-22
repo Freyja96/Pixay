@@ -145,6 +145,11 @@ public class ImageController {
                 .bodyToMono(UserProfileResponse.class)
                 .block();
 
+        System.out.println("DEBUB mis-imagenes: username= " + profile.username());
+        System.out.println("DEBUB mis-imagenes: desciption=" + profile.description());
+        System.out.println("DEBUB mis-imagenes: perfilPrivado=" + profile.privateProfile());
+
+
         CustomSlice<ImageResponse> slice = webClientAPI.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("imagenes/usuario/" + profile.id())

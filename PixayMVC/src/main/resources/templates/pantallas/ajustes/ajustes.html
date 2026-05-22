@@ -1,191 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Ajustes</title>
-    <link rel="stylesheet" th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
     <link rel="stylesheet" th:href="@{/css/ajustes.css}">
 </head>
 <body class="container-md fondo">
-    <header class="bg-dark">
-        <div class="container px-5 w-100">
-            <h1 class="text-light">Cabecera de ejemplo</h1>
+<div th:insert="~{fragments/cabecera}"></div>
+<div class="container py-5 align-self-center">
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div>
+                <img th:src="@{/imagenes/fotoAjustes.png}" class="img-fluid w-70" alt="Imagen Ajustes">
+            </div>
         </div>
-    </header>
-    <div class="container py-5 align-self-center">
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <div>
-                    <img th:src="@{/imagenes/fotoAjustes.png}" class="img-fluid w-70" alt="Imagen Ajustes">
-                </div>
-            </div>
-            <div class="col-md-6 mt-5 pt-3">
-                <div class="pt-2">
-                    <button
-                            type="button"
-                            class="row border rounded cajas pt-2 btn col-12"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#seccionVisible"
-                            aria-expanded="false"
-                            aria-controls="seccionVisibile">
-                        <h2 class="titulos col-md-10 d-inline-flex">Visibilidad de Perfil</h2>
-                        <div class="col  pt-1 d-inline-flex">
-                            <svg class="espaciadoFlecha " xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg) ;"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
-                        </div>
+        <div class="col-md-6 mt-5 pt-3">
 
-                    </button>
-                    <div class="collapse cajas p-3 border rounded" id="seccionVisible">
-                        <p>Gestiona el nivel de visibilidad que quieres que tenga tu cuenta </p>
-                        <h3>
-                            Perfil Privado
-                        </h3>
-                        <p>
-                            Solo las personas a las que des permiso podrán ver tu perfil, pins, tableros, seguidores y lista de seguidos. Haz clic para
-                            <a> aprender más </a>
-                        </p>
-                        <h3>
-                            Privacidad de búsquedas
-                        </h3>
-                        <p>
-                            Esconde tu perfil y tableros de los motores de búsqueda (ej:Google...). Haz clic para
-                            <a> aprender más </a>
-                        </p>
+            <!-- VISIBILIDAD DE PERFIL -->
+            <div class="pt-2">
+                <button type="button"
+                        class="row border rounded cajas pt-2 btn col-12"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#seccionVisible"
+                        aria-expanded="false"
+                        aria-controls="seccionVisibile">
+                    <h2 class="titulos col-md-10 d-inline-flex">Visibilidad de Perfil</h2>
+                    <div class="col pt-1 d-inline-flex">
+                        <svg class="espaciadoFlecha" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg);"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
                     </div>
-                </div>
-                <div class="pt-2">
-                    <button
-                            type="button"
-                            class="row border rounded cajas pt-2 btn col-12"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#linkPixay"
-                            aria-expanded="false"
-                            aria-controls="linkPixay">
-                        <h2 class="titulos col-md-10 d-inline-flex">Link a Pixay</h2>
-                        <div class="col  pt-1 d-inline-flex">
-                            <svg class="espaciadoFlecha " xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg) ;"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
-                        </div>
+                </button>
+                <div class="collapse cajas p-3 border rounded" id="seccionVisible">
+                    <p>Gestiona el nivel de visibilidad que quieres que tenga tu cuenta</p>
 
-                    </button>
-                    <div class="collapse cajas p-3 border rounded" id="linkPixay">
-                        <h3>
-                            Une tus otras redes sociales
-                        </h3>
-                        <p>Conecta tu usuario de Pixay con tus otras redes sociales para crear pins de manera automática a través de todas tus redes</p>
-                        <button class="btn-naranja border-0 rounded">Unir</button>
-                    </div>
-                </div>
-                <div class="pt-2">
-                    <button
-                            type="button"
-                            class="row border rounded cajas pt-2 btn col-12"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#permisos"
-                            aria-expanded="false"
-                            aria-controls="permisos">
-                        <h2 class="titulos col-md-10 d-inline-flex">Permisos y Actividad</h2>
-                        <div class="col  pt-1 d-inline-flex">
-                            <svg class="espaciadoFlecha " xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg) ;"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
-                        </div>
-
-                    </button>
-                    <div class="collapse cajas p-3 border rounded" id="permisos">
-                        <h3>
-                            Permitir comentarios sobre tus pins
-                        </h3>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24"
-                             viewBox="0 0 24 24"
-                             style="fill: rgba(244, 130, 1, 1);">
-                            <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8
-                            18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0
-                            9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z">
-                            </path>
-                        </svg>
-                        <p>
-                            Los comentarios estarán habilitados para tus próximas y pins actualmente creados
-                        </p>
-                        <h3>
-                            Recibir mensajes de todos
-                        </h3>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24"
-                             viewBox="0 0 24 24"
-                             style="fill: rgba(51, 72, 75, 0.44);">
-                            <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8
-                            18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627
-                            0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z">
-                            </path>
-                        </svg>
-                        <p>
-                            Decide quién te puede mandar un mensaje (tus amigos o todos tus seguidores)
-                        </p>
-                        <h3>
-                            Mostrar productos similares
-                        </h3>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24"
-                             viewBox="0 0 24 24"
-                             style="fill: rgba(244, 130, 1, 1);">
-                            <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8
-                            18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0
-                            9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z">
-
-                            </path>
-                        </svg>
-                        <p>
-                            Los demás usuarios podrán buscar productos similares a tus pines utilizando la busqueda visual
-                        </p>
-                        <h3>
-                            Permitir Descargas
-                        </h3>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24"
-                             viewBox="0 0 24 24"
-                             style="fill: rgba(51, 72, 75, 0.44);">
-                            <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8
-                            18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627
-                            0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z">
-                            </path>
-                        </svg>
-                        <p>
-                            Permitir la descarga de tus vídeo pins (9:16 ratio) y compartirlos en otras plataformas
-                        </p>
-                    </div>
-                </div>
-                <div class="pt-2">
-                    <button
-                            type="button"
-                            class="row border rounded cajas pt-2 btn col-12"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#informes"
-                            aria-expanded="false"
-                            aria-controls="informes">
-                        <h2 class="titulos col-md-10 d-inline-flex">Informes & centro de Seguridad</h2>
-                        <div class="col  pt-1 d-inline-flex">
-                            <svg class="espaciadoFlecha " xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg) ;"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
-                        </div>
-
-                    </button>
-                    <div class="collapse cajas p-3 border rounded" id="informes">
-                        <h2>Pin Guardado</h2>
+                    <!-- Perfil Privado Toggle -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <img alt="imagenes del usuario">
+                            <h3 class="h6 mb-1">Perfil Privado</h3>
+                            <p class="small text-muted mb-0">Solo las personas a las que des permiso podrán ver tu perfil, pins, tableros, seguidores y lista de seguidos.</p>
                         </div>
+                        <form th:action="@{/ajustes/visibilidad/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="perfilPrivado">
+                            <input type="hidden" name="estadoActual" th:value="${visibilidad.perfilPrivado}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <!-- ON: orange -->
+                                <svg th:if="${visibilidad.perfilPrivado}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <!-- OFF: gray -->
+                                <svg th:unless="${visibilidad.perfilPrivado}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Privacidad de búsquedas Toggle -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h4>Estado</h4>
-                            <p>Distribución Limitada</p>
-                            <h4>Tipo de Contenido</h4>
-                            <p>Adulto</p>
-                            <h4>Ultimo Avance</h4>
-                            <p>9 Nov 2025</p>
+                            <h3 class="h6 mb-1">Privacidad de búsquedas</h3>
+                            <p class="small text-muted mb-0">Esconde tu perfil y tableros de los motores de búsqueda (ej: Google...).</p>
                         </div>
+                        <form th:action="@{/ajustes/visibilidad/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="privacidadBusquedas">
+                            <input type="hidden" name="estadoActual" th:value="${visibilidad.privacidadBusquedas}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <svg th:if="${visibilidad.privacidadBusquedas}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <svg th:unless="${visibilidad.privacidadBusquedas}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
+
+            <!-- LINK A PIXAY -->
+            <div class="pt-2">
+                <button type="button"
+                        class="row border rounded cajas pt-2 btn col-12"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#linkPixay"
+                        aria-expanded="false"
+                        aria-controls="linkPixay">
+                    <h2 class="titulos col-md-10 d-inline-flex">Link a Pixay</h2>
+                    <div class="col pt-1 d-inline-flex">
+                        <svg class="espaciadoFlecha" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg);"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                    </div>
+                </button>
+                <div class="collapse cajas p-3 border rounded" id="linkPixay">
+                    <h3>Une tus otras redes sociales</h3>
+                    <p>Conecta tu usuario de Pixay con tus otras redes sociales para crear pins de manera automática a través de todas tus redes</p>
+                    <form th:action="@{/ajustes/redes/conectar}" method="post">
+                        <button type="submit" class="btn-naranja border-0 rounded">Unir</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PERMISOS Y ACTIVIDAD -->
+            <div class="pt-2">
+                <button type="button"
+                        class="row border rounded cajas pt-2 btn col-12"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#permisos"
+                        aria-expanded="false"
+                        aria-controls="permisos">
+                    <h2 class="titulos col-md-10 d-inline-flex">Permisos y Actividad</h2>
+                    <div class="col pt-1 d-inline-flex">
+                        <svg class="espaciadoFlecha" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg);"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                    </div>
+                </button>
+                <div class="collapse cajas p-3 border rounded" id="permisos">
+
+                    <!-- Permitir comentarios -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="h6 mb-1">Permitir comentarios sobre tus pins</h3>
+                            <p class="small text-muted mb-0">Los comentarios estarán habilitados para tus próximos y pins actualmente creados</p>
+                        </div>
+                        <form th:action="@{/ajustes/permisos/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="comentariosHabilitados">
+                            <input type="hidden" name="estadoActual" th:value="${permisos.comentariosHabilitados}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <svg th:if="${permisos.comentariosHabilitados}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <svg th:unless="${permisos.comentariosHabilitados}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Recibir mensajes de todos -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="h6 mb-1">Recibir mensajes de todos</h3>
+                            <p class="small text-muted mb-0">Decide quién te puede mandar un mensaje (tus amigos o todos tus seguidores)</p>
+                        </div>
+                        <form th:action="@{/ajustes/permisos/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="recibirMensajesDeTodos">
+                            <input type="hidden" name="estadoActual" th:value="${permisos.recibirMensajesDeTodos}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <svg th:if="${permisos.recibirMensajesDeTodos}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <svg th:unless="${permisos.recibirMensajesDeTodos}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Mostrar productos similares -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="h6 mb-1">Mostrar productos similares</h3>
+                            <p class="small text-muted mb-0">Los demás usuarios podrán buscar productos similares a tus pines utilizando la búsqueda visual</p>
+                        </div>
+                        <form th:action="@{/ajustes/permisos/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="mostrarProductosSimilares">
+                            <input type="hidden" name="estadoActual" th:value="${permisos.mostrarProductosSimilares}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <svg th:if="${permisos.mostrarProductosSimilares}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8c3.309 0 6-2.691 6-6s-2.691-6-6-6zm0 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <svg th:unless="${permisos.mostrarProductosSimilares}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Permitir Descargas -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h3 class="h6 mb-1">Permitir Descargas</h3>
+                            <p class="small text-muted mb-0">Permitir la descarga de tus vídeo pins (9:16 ratio) y compartirlos en otras plataformas</p>
+                        </div>
+                        <form th:action="@{/ajustes/permisos/toggle}" method="post" class="m-0">
+                            <input type="hidden" name="campo" value="permitirDescargas">
+                            <input type="hidden" name="estadoActual" th:value="${permisos.permitirDescargas}">
+                            <button type="submit" class="btn btn-link p-0 m-0 border-0 bg-transparent">
+                                <svg th:if="${permisos.permitirDescargas}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(244, 130, 1, 1);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                                <svg th:unless="${permisos.permitirDescargas}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(51, 72, 75, 0.44);">
+                                    <path d="M16 6H8c-3.296 0-5.982 2.682-6 5.986v.042A6.01 6.01 0 0 0 8 18h8a6.01 6.01 0 0 0 6-5.994v-.018C21.985 8.685 19.297 6 16 6zm-8 9c-1.627 0-3-1.373-3-3s1.373-3 3-3 3 1.373 3 3-1.373 3-3 3z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INFORMES & CENTRO DE SEGURIDAD -->
+            <div class="pt-2">
+                <button type="button"
+                        class="row border rounded cajas pt-2 btn col-12"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#informes"
+                        aria-expanded="false"
+                        aria-controls="informes">
+                    <h2 class="titulos col-md-10 d-inline-flex">Informes & centro de Seguridad</h2>
+                    <div class="col pt-1 d-inline-flex">
+                        <svg class="espaciadoFlecha" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 0.65);transform:rotate(-90deg);"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                    </div>
+                </button>
+                <div class="collapse cajas p-3 border rounded" id="informes">
+                    <h2 class="h5 mb-3">Pins Guardados / Reportados</h2>
+
+                    <div th:if="${informes == null or informes.isEmpty()}" class="alert alert-light border">
+                        No tienes pins en revisión ni reportados.
+                    </div>
+
+                    <div th:each="informe : ${informes}" class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img th:src="${informe.imagenUrl}" class="img-fluid rounded-start" alt="Imagen del pin">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h4 class="card-title h6">Estado</h4>
+                                    <p class="card-text" th:text="${informe.estado}">Distribución Limitada</p>
+
+                                    <h4 class="card-title h6">Tipo de Contenido</h4>
+                                    <p class="card-text" th:text="${informe.tipoContenido}">Adulto</p>
+
+                                    <h4 class="card-title h6">Último Avance</h4>
+                                    <p class="card-text" th:text="${#dates.format(informe.ultimoAvance, 'dd MMM yyyy')}">9 Nov 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-
-    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js}"></script>
+</div>
+<div th:if="${session.usuarioIdLogueado != null && usuario.id == session.usuarioIdLogueado}"
+     th:insert="~{/fragments/footer}"> </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
