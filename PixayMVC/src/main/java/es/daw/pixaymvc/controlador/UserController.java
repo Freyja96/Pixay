@@ -87,7 +87,7 @@ public class UserController {
             System.out.println("DEBUG: GET: username= " + profile.username() + ", description= " + profile.description());
 
 
-        } catch (Exception e) {
+        } catch (WebClientResponseException e) {
             System.out.println("DEBUG: Exception caught: " + e.getMessage());
             e.printStackTrace();
             return "redirect:/login";
@@ -109,18 +109,21 @@ public class UserController {
         updateRequest.setEmail(email);
         updateRequest.setDescription(description);
 
-        if (password != null && (!password.isEmpty() || !password.isBlank())) {
+        boolean wantsToChangePassword = password != null && !password.isBlank();
+
+        if (wantsToChangePassword) {
             if (password2 == null || password2.isEmpty() || password2.isBlank()) {
-                redirectAttributes.addFlashAttribute("error", "Las contraseñas no pueden estar vacías");
-                return "redirect:/mi-perfil/editar-perfil";
+                redirectAttributes.addFlashAttribute("error", "Debes repetir la contraseña");
             }
+
             if (!password.equals(password2)) {
                 redirectAttributes.addFlashAttribute("error", "Las contraseñas no coinciden");
                 return "redirect:/mi-perfil/editar-perfil";
-
             }
+            // Si todo esta bien actualizar la contraseña
 
             updateRequest.setPassword(password);
+            redirectAttributes.addFlashAttribute("message", "Contraseña actualizada con éxito");
         }
 
         try {
@@ -134,6 +137,7 @@ public class UserController {
                     .toBodilessEntity()
                     .block();
 
+            System.out.println("DEBUG: email=" + updateRequest.getEmail() + ", description=" + updateRequest.getDescription() + ", password=" + updateRequest.getPassword());
             redirectAttributes.addFlashAttribute("message", "Perfil actualizado con éxito");
 
         } catch (WebClientResponseException e) {
