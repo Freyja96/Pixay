@@ -66,7 +66,7 @@ public class UserController {
         User user = userService.findByUsername(userDetails.getUsername());
         boolean userNameChanged =  dto.getUsername() !=  null && !dto.getUsername().equals(user.getUsername());
 
-        if (dto.getUsername() != null ) user.setUsername(dto.getUsername());
+
         if (dto.getEmail() != null ) user.setEmail(dto.getEmail());
         if (dto.getDescription() != null ) user.setDescription(dto.getDescription());
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
