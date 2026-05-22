@@ -7,7 +7,8 @@ public record UserProfileResponse(
         byte[] profilePicture,
         String description,
         int followersCount,
-        int followingCount
+        int followingCount,
+        boolean isFollowing
 ) {
     // pintar foto de perfil
     public String getFotoBase64() {

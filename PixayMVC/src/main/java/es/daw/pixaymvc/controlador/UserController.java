@@ -83,5 +83,18 @@ public class UserController {
         }
     }
 
+    @PostMapping("/usuario/{id}/seguir")
+    public String seguirUsuario(@PathVariable Long id, HttpSession session) {
+        String token = (String) session.getAttribute("token");
+        if (token == null) return "redirect:/login";
 
+        webClientAPI.post()
+                .uri("usuarios/" + id + "/seguir")
+                .headers(h -> h.setBearerAuth(token))
+                .retrieve()
+                .toBodilessEntity()
+                .block();
+
+        return "redirect:/usuario/" + id;
+    }
 }
