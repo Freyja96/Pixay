@@ -387,7 +387,19 @@ public class ImageController {
             model.addAttribute("isSaved", status.get("isSaved"));
             model.addAttribute("currentReaction", status.get("reactionType"));
         }
-
+        Map<String, Object> status = Map.of("isSaved", false, "reactionType", 0);
+        if (token != null) {
+            try {
+                status = webClientAPI.get()
+                        .uri("imagenes/" + id + "/status")
+                        .header("Authorization", "Bearer " + token)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                        .block();
+            } catch (Exception e) { /* fallback por defecto */ }
+        }
+        model.addAttribute("isSaved", status.get("isSaved"));
+        model.addAttribute("currentReaction", status.get("reactionType"));
         return "pantallas/detalle";
     }
 

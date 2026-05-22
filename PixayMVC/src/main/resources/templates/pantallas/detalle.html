@@ -31,10 +31,8 @@
 
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
-            <!-- Reacción con ID para cambiar el icono visualmente -->
             <i id="main-react-icon" class="bi bi-emoji-smile" title="Reaccionar"></i>
 
-            <!-- Guardado dinámico -->
             <i id="main-save-icon"
                th:class="${isSaved} ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"
                th:style="${isSaved} ? 'color: var(--PRIMARY-BLUE)' : ''"
@@ -173,14 +171,18 @@
     // Guardar Publicación
     if (saveIcon) {
         saveIcon.onclick = async function() {
-            try {
-                const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
-                if (response.ok) {
-                    const nowSaved = await response.json(); // Esperamos que la API devuelva true/false
-                    this.className = nowSaved ? 'bi bi-bookmark-fill' : 'bi bi-bookmark';
-                    this.style.color = nowSaved ? 'var(--PRIMARY-BLUE)' : '#000';
+            const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
+            if (response.ok) {
+                // Forzamos el cambio visual manual para asegurar que se vea
+                const currentlySaved = this.classList.contains('bi-bookmark-fill');
+                if (currentlySaved) {
+                    this.classList.replace('bi-bookmark-fill', 'bi-bookmark');
+                    this.style.color = '#000';
+                } else {
+                    this.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+                    this.style.color = 'var(--PRIMARY-BLUE)';
                 }
-            } catch (e) { console.error("Error al guardar:", e); }
+            }
         };
     }
 
@@ -214,8 +216,8 @@
 
                 if (response.ok) {
                     // Feedback visual: sustituir carita por el gato elegido
-                    mainReactBtn.innerHTML = `<img src="${idToPath[numericId]}" style="width:30px; height:30px; vertical-align:top; margin-top:-3px;">`;
-                    mainReactBtn.className = "cursor-pointer"; // Quitamos bi-emoji-smile
+                    mainReactBtn.innerHTML = `<img src="${idToPath[numericId]}" style="width:30px; height:30px; vertical-align:top;">`;
+                    mainReactBtn.classList.remove('bi', 'bi-emoji-smile'); // Limpiamos la clase del icono
                 }
             } catch (e) { console.error("Error al reaccionar:", e); }
 
