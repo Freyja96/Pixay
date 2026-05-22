@@ -25,17 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
-    //necesito el repositorio:
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserService userService; // <--- Inyectamos tu nuevo servicio
+    private final UserService userService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     @PostMapping("/registro")
     public ResponseEntity<?> registro(@RequestBody RegisterRequest request) {
-        // Buscamos si el usuario ya existe
         if (userRepository.existsByUsername(request.username())) {
             return ResponseEntity.badRequest().body("El nombre de usuario ya está en uso");
         }
@@ -54,10 +51,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request){
-        //  HASH CORRECTO para admin123
         System.out.println("HASH GENERADO PARA 'admin123': " + new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("admin123"));
         try {
-            // LOG DE SEGURIDAD
             System.out.println("Intentando autenticar a: " + request.getUsername());
 
             Authentication authentication = authenticationManager.authenticate(

@@ -25,14 +25,17 @@ public class ApiAuthService {
         try {
             ApiLoginResponse response = webClientAuth
                     .post()
-                    .uri("/login")
+                    .uri("login")
                     .bodyValue(request)
                     .retrieve()
+                    .onStatus(HttpStatusCode::isError, errorResponse -> {
+                        System.out.println("Error de la API en Login: " + errorResponse.statusCode());
+                        return errorResponse.bodyToMono(String.class).map(Exception::new);
+                    })
                     .bodyToMono(ApiLoginResponse.class)
                     .block();
 
             if (response != null && response.getToken() != null) {
-                // ¡IMPORTANTE! Guardamos el token en el componente de sesión
                 apiSessionToken.setApiToken(response.getToken());
                 return response.getToken();
             }
@@ -43,7 +46,7 @@ public class ApiAuthService {
     }
     public void registro(String username, String email, String password) throws Exception {
         webClientAuth.post()
-                .uri("/registro")
+                .uri("registro")
                 .bodyValue(new RegisterRequest(username, email, password))
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, response ->
