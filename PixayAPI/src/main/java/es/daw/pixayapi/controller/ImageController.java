@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -236,22 +237,38 @@ public class ImageController {
         Integer type = Integer.parseInt(body.get("reactionType").toString());
 
         var existing = imageReactionRepository.findByUserAndImage(user, image);
+        String action;
+
         if (existing.isPresent()) {
             if (existing.get().getReactionType().equals(type)) {
                 imageReactionRepository.delete(existing.get());
-                return ResponseEntity.ok("Reacción quitada");
+                action = "removed";
+            } else {
+                existing.get().setReactionType(type);
+                imageReactionRepository.save(existing.get());
+                action = "switched";
             }
-            existing.get().setReactionType(type);
-            imageReactionRepository.save(existing.get());
         } else {
             ImageReaction ir = new ImageReaction();
             ir.setUser(user);
             ir.setImage(image);
             ir.setReactionType(type);
             imageReactionRepository.save(ir);
+            action = "added";
         }
-        return ResponseEntity.ok("Reacción guardada");
+        // Devolvemos un mapa con la acción para que el JS sepa qué hacer con los contadores
+        return ResponseEntity.ok(Map.of("action", action));
     }
+    @GetMapping("/{id}/reactions/count")
+    public ResponseEntity<Map<Integer, Long>> getReactionCounts(@PathVariable Long id) {
+        List<Object[]> results = imageReactionRepository.countReactionsByImageId(id);
+        Map<Integer, Long> counts = new java.util.HashMap<>();
+        for (Object[] result : results) {
+            counts.put((Integer) result[0], (Long) result[1]);
+        }
+        return ResponseEntity.ok(counts);
+    }
+
     @PostMapping("/{id}/save")
     @Transactional
     public ResponseEntity<?> toggleSaveImage(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
