@@ -147,6 +147,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     // --- 1. CONFIGURACIÓN E IDENTIDAD ---
+    const currentUserId = /*[[${session.userId}]]*/ 0;
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
@@ -209,17 +210,26 @@
         const textoReal = data.contenido || data.content;
         if(!textoReal) return;
 
+        const msgUserId = data.userId || data.authorId;
+        const profileLink = `/usuario/${msgUserId}`;
+
         const isMe = data.username === username;
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
 
         const avatarUrl = data.avatar || '/imagenes/sin-foto-perfil.png';
-        const avatarHtml = isMe ? '' : `<img src="${avatarUrl}" class="chat-avatar">`;
+
+        const avatarHtml = isMe ? '' : `
+            <a href="${profileLink}" class="chat-profile-link">
+                <img src="${avatarUrl}" class="chat-avatar">
+            </a>`;
 
         row.innerHTML = `
             ${avatarHtml}
             <div class="bubble-container">
-                <span class="msg-user-name">${isMe ? 'Tú' : data.username}</span>
+                <a href="${profileLink}" class="chat-profile-link">
+                    <span class="msg-user-name">${isMe ? 'Tú' : data.username}</span>
+                </a>
                 <div class="msg-bubble ${isMe ? 'msg-me' : 'msg-other'}">${parseEmojis(textoReal)}</div>
             </div>
         `;
@@ -310,10 +320,18 @@
     // Enviar mensaje
     btnSend.onclick = async () => {
         if (btnSend.disabled) return;
+
         const text = chatInput.value.trim();
         if (!text) return;
 
-        const payload = { idProducto: imageId, username: username, avatar: userAvatar, contenido: text };
+        const payload = {
+            idProducto: imageId,
+            username: username,
+            avatar: userAvatar,
+            contenido: text,
+            userId: currentUserId
+        };
+
         socket.emit('nuevoMensaje', payload);
         chatInput.value = '';
 

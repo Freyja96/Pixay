@@ -26,6 +26,7 @@ public class CommentController {
         List<Comment> comments = commentRepository.findByImageIdOrderByCreatedAtAsc(imageId);
         List<CommentResponse> response = comments.stream()
                 .map(c -> new CommentResponse(
+                        c.getUser().getId(),
                         c.getUser().getUsername(),
                         c.getUser().getProfilePicture() != null ? "/api/usuarios/" + c.getUser().getId() + "/avatar" : "",
                         c.getContent(),

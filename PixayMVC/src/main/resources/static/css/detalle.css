@@ -304,3 +304,20 @@
     transform: none !important;
     color: var(--LIGHT-GRAY) !important;
 }
+
+chat-profile-link {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+}
+
+.chat-profile-link:hover {
+    opacity: 0.8;
+    font-weight: bold;
+}
+
+
+.chat-msg-row a {
+    display: flex;
+    align-items: center;
+}
