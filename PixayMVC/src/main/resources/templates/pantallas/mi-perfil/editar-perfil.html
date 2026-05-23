@@ -57,7 +57,7 @@
 
         <button type="submit" class="btn-submit">Guardar Cambios</button>
 
-        <a th:href="@{/mi-perfil}" class="cancel-link">Cancelar</a>
+        <a th:href="@{/mi-perfil/mis-imagenes}" class="cancel-link">Cancelar</a>
     </form>
 
     <div th:if="${session.usuarioIdLogueado != null && usuario.id == session.usuarioIdLogueado}"
