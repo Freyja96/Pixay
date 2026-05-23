@@ -147,7 +147,7 @@ public class ImageController {
 
         System.out.println("DEBUB mis-imagenes: username= " + profile.username());
         System.out.println("DEBUB mis-imagenes: desciption=" + profile.description());
-        System.out.println("DEBUB mis-imagenes: perfilPrivado=" + profile.privateProfile());
+        System.out.println("DEBUB mis-imagenes: perfilPublico=" + profile.publicProfile());
 
 
         CustomSlice<ImageResponse> slice = webClientAPI.get()
@@ -352,6 +352,7 @@ public class ImageController {
         String token = (String) session.getAttribute("token");
 
         ImageResponse imagen = imageService.getImageById(id, token);
+        model.addAttribute("imagen", imagen);
 
         List<CommentResponse> comentarios = webClientAPI.get()
                 .uri("imagenes/" + id + "/comentarios")
@@ -359,7 +360,7 @@ public class ImageController {
                 .bodyToMono(new ParameterizedTypeReference<List<CommentResponse>>() {})
                 .block();
 
-        model.addAttribute("imagen", imagen);
+
         model.addAttribute("comentarios", comentarios);
 
         UserProfileResponse autor = webClientAPI.get()
@@ -367,39 +368,49 @@ public class ImageController {
                 .retrieve()
                 .bodyToMono(UserProfileResponse.class)
                 .block();
-
-        model.addAttribute("imagen", imagen);
         model.addAttribute("autor", autor);
 
+        // --- 4. NUEVO: Obtener conteo de reacciones desde la API ---
+        try {
+            // Asumiendo que tu API tiene un endpoint que devuelve un Mapa como { "2": 5, "7": 10... }
+            Map<String, Integer> counts = webClientAPI.get()
+                    .uri("imagenes/" + id + "/reactions/count")
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Integer>>() {})
+                    .block();
+            model.addAttribute("counts", counts);
+        } catch (Exception e) {
+            // Si falla o no existe el endpoint, enviamos un mapa vacío para que no rompa la vista
+            model.addAttribute("counts", Map.of());
+        }
+
+        // 5. Configuración de búsqueda/sidebar
         model.addAttribute("query", "");
         model.addAttribute("selectedCategoryId", null);
         model.addAttribute("selectedSubcategoryId", null);
         model.addAttribute("selectedCategoryName", "Todas las categorías");
 
-        if (token != null) {
-            Map<String, Object> status = webClientAPI.get()
-                    .uri("imagenes/" + id + "/status")
-                    .header("Authorization", "Bearer " + token)
-                    .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
-                    .block();
-
-            model.addAttribute("isSaved", status.get("isSaved"));
-            model.addAttribute("currentReaction", status.get("reactionType"));
-        }
-        Map<String, Object> status = Map.of("isSaved", false, "reactionType", 0);
+        // 6. Estado de usuario (Si está guardada y reacción actual del usuario)
         if (token != null) {
             try {
-                status = webClientAPI.get()
+                Map<String, Object> status = webClientAPI.get()
                         .uri("imagenes/" + id + "/status")
                         .header("Authorization", "Bearer " + token)
                         .retrieve()
                         .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
                         .block();
-            } catch (Exception e) { /* fallback por defecto */ }
+
+                model.addAttribute("isSaved", status.get("isSaved"));
+                model.addAttribute("currentReaction", status.get("reactionType"));
+            } catch (Exception e) {
+                model.addAttribute("isSaved", false);
+                model.addAttribute("currentReaction", 0);
+            }
+        } else {
+            model.addAttribute("isSaved", false);
+            model.addAttribute("currentReaction", 0);
         }
-        model.addAttribute("isSaved", status.get("isSaved"));
-        model.addAttribute("currentReaction", status.get("reactionType"));
+
         return "pantallas/detalle";
     }
 

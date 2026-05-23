@@ -1,4 +1,3 @@
-
 body {
     background-color: var(--DARK-BACKCOLOR);
 }
@@ -47,4 +46,24 @@ body {
 }
 .orange-text {
     color: var(--SECONDARY-ORANGE);
+}
+
+.eye-toggle {
+    position: absolute;
+    right: 15px;
+    top: 38px;
+    cursor: pointer;
+    color: var(--LIGHT-CASE);
+    z-index: 10;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+}
+
+.eye-toggle:hover {
+    color: var(--SECONDARY-ORANGE);
+}
+
+
+.form-control {
+    padding-right: 45px;
 }

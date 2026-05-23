@@ -11,7 +11,7 @@ public record UserProfileResponse(
         boolean isFollowing,
 
         // Visibilidad de Perfil
-        boolean privateProfile,
+        boolean publicProfile,
         boolean SearchPrivacy,
 
         // Permisos

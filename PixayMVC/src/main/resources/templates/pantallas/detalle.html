@@ -14,7 +14,7 @@
 <div class="container mt-5 mb-5 pt-5">
     <div class="post-container">
 
-        <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto por ahora-->
+        <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto -->
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
             <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
                  class="author-img" alt="Avatar"></a>
@@ -28,7 +28,57 @@
             <img th:src="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                  class="img-main" th:alt="${imagen.title}">
         </div>
+        <!-- SECCIÓN DE CONTADORES DE REACCIONES (Todas las 8) -->
+        <div class="reaction-stats d-flex flex-wrap gap-2 mt-2">
 
+            <!-- Cowboy (1) -->
+            <div class="reaction-stat-item" id="stat-1" th:style="${counts == null || counts.get('1') == null || counts.get('1') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/cowboy-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('1') != null ? counts.get('1') : 0}">0</span>
+            </div>
+
+            <!-- Gema (2) -->
+            <div class="reaction-stat-item" id="stat-2" th:style="${counts == null || counts.get('2') == null || counts.get('2') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/gema-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('2') != null ? counts.get('2') : 0}">0</span>
+            </div>
+
+            <!-- Rosa (3) -->
+            <div class="reaction-stat-item" id="stat-3" th:style="${counts == null || counts.get('3') == null || counts.get('3') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/rosa-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('3') != null ? counts.get('3') : 0}">0</span>
+            </div>
+
+            <!-- Enfado (4) -->
+            <div class="reaction-stat-item" id="stat-4" th:style="${counts == null || counts.get('4') == null || counts.get('4') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/enfado-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('4') != null ? counts.get('4') : 0}">0</span>
+            </div>
+
+            <!-- Risa (5) -->
+            <div class="reaction-stat-item" id="stat-5" th:style="${counts == null || counts.get('5') == null || counts.get('5') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/risa-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('5') != null ? counts.get('5') : 0}">0</span>
+            </div>
+
+            <!-- Triste (6) -->
+            <div class="reaction-stat-item" id="stat-6" th:style="${counts == null || counts.get('6') == null || counts.get('6') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/triste-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('6') != null ? counts.get('6') : 0}">0</span>
+            </div>
+
+            <!-- Like (7) -->
+            <div class="reaction-stat-item" id="stat-7" th:style="${counts == null || counts.get('7') == null || counts.get('7') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/like-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('7') != null ? counts.get('7') : 0}">0</span>
+            </div>
+
+            <!-- Dislike (8) -->
+            <div class="reaction-stat-item" id="stat-8" th:style="${counts == null || counts.get('8') == null || counts.get('8') == 0 ? 'display:none' : 'display:flex'}">
+                <img th:src="@{/imagenes/emojis/dislike-gato.png}" width="22">
+                <span class="ms-1 fw-bold" th:text="${counts != null && counts.get('8') != null ? counts.get('8') : 0}">0</span>
+            </div>
+        </div>
         <!-- SECCIÓN 4: BARRA DE ICONOS (Debajo de la imagen) -->
         <div class="icon-bar">
             <i id="main-react-icon" class="bi bi-emoji-smile" title="Reaccionar"></i>
@@ -77,7 +127,6 @@
     </div>
 </div>
 
-<div th:insert="~{/fragments/footer}"></div>
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <!-- Bootstrap JS -->
@@ -218,6 +267,16 @@
                     // Feedback visual: sustituir carita por el gato elegido
                     mainReactBtn.innerHTML = `<img src="${idToPath[numericId]}" style="width:30px; height:30px; vertical-align:top;">`;
                     mainReactBtn.classList.remove('bi', 'bi-emoji-smile'); // Limpiamos la clase del icono
+                    const statContainer = document.getElementById(`stat-${numericId}`);
+                    if (statContainer) {
+                        const spanCount = statContainer.querySelector('span');
+                        let currentCount = parseInt(spanCount.innerText);
+                        spanCount.innerText = currentCount + 1;
+
+                        // Opcional: Pequeña animación de salto
+                        statContainer.style.transform = 'scale(1.2)';
+                        setTimeout(() => statContainer.style.transform = 'scale(1)', 200);
+                    }
                 }
             } catch (e) { console.error("Error al reaccionar:", e); }
 
@@ -267,7 +326,7 @@
     document.querySelectorAll('#emoji-picker .emoji-item').forEach(img => {
         img.onclick = (e) => {
             e.stopPropagation();
-            chatInput.value += ` ${img.getAttribute('data-code')} `;
+            chatInput.value += `${img.getAttribute('data-code')} `;
             chatInput.focus();
         };
     });

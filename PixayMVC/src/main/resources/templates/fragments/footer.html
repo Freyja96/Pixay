@@ -6,11 +6,15 @@
         </div>
         <div class="col-12 col-md-4 mb-2 mb-md-0 justify-content-center align-items-center">
             <div class="d-flex justify-content-center align-items-center">
-                <button class="border-0 p-0 d-flex footer-icon" title="Añadir nuevo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
-                        <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"></path>
-                    </svg>
-                </button>
+
+                    <button class="border-0 p-0 d-flex footer-icon" title="Añadir nuevo">
+                        <a class="dropdown-item" th:href="@{/subir-imagen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                                <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"></path>
+                            </svg>
+                        </a>
+                    </button>
+
                 <span class="ms-2 d-md-none text-secondary">Añadir contenido</span>
             </div>
         </div>
