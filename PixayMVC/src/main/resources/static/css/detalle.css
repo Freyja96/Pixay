@@ -293,3 +293,14 @@
     cursor: not-allowed;
     border-color: #eee !important;
 }
+
+.icon-disabled {
+    color: var(--LIGHT-GRAY) !important;
+    cursor: not-allowed !important;
+    pointer-events: all;
+}
+
+.icon-disabled:hover {
+    transform: none !important;
+    color: var(--LIGHT-GRAY) !important;
+}
