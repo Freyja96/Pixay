@@ -35,7 +35,7 @@
             </form>
         </div>
     </div>
-    <div class="col-1 d-flex align-items-center justify-content-center">
+    <div class="col-1 d-flex align-items-center justify-content-center" th:if="${session.username != null}">
         <div class="notification-container">
             <i class="bi bi-bell-fill bell-icon"></i>
             <span class="notification-dot"></span>
@@ -43,7 +43,7 @@
     </div>
     <div class="col-2">
         <div class="container-fluid d-flex justify-contetn-end align-items-center">
-            <div class="dropdown">
+            <div class="dropdown" th:if="${session.username != null}">
                 <a class="navbar-brand d-flex align-items-center gap-2 dropdown-toggle" th:href="@{/mi-perfil/mis-imagenes}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="text-white small" th:text="${session.username}">Usuario</span>
                     <img th:src="${session.avatar != null ? session.avatar : '/imagenes/sin-foto-perfil.png'}"
@@ -57,6 +57,11 @@
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" th:href="@{/logout}">Cerrar sesión</a></li>
                 </ul>
+            </div>
+            <div th:if="${session.username == null}">
+                <a th:href="@{/login}" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold">
+                    <i class="bi bi-person-circle me-1"></i> Iniciar sesión
+                </a>
             </div>
         </div>
     </div>
