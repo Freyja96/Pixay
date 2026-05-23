@@ -305,17 +305,23 @@
     color: var(--LIGHT-GRAY) !important;
 }
 
-chat-profile-link {
-    text-decoration: none;
-    color: inherit;
+.chat-profile-link {
+    text-decoration: none !important;
+    color: inherit !important;
     transition: opacity 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 .chat-profile-link:hover {
     opacity: 0.8;
+    text-decoration: none !important;
     font-weight: bold;
 }
 
+#chat-messages a {
+    text-decoration: none !important;
+}
 
 .chat-msg-row a {
     display: flex;

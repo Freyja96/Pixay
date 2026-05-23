@@ -147,7 +147,7 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     // --- 1. CONFIGURACIÓN E IDENTIDAD ---
-    const currentUserId = /*[[${session.userId}]]*/ 0;
+    const currentUserId = /*[[${session.userId != null ? session.userId : 0}]]*/ 0;
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
@@ -206,24 +206,30 @@
         return parsedText;
     }
 
-    function appendMessage(data) {
+    function appendMessage(data, isFromSocket = false) {
         const textoReal = data.contenido || data.content;
         if(!textoReal) return;
 
-        const msgUserId = data.userId || data.authorId;
-        const profileLink = `/usuario/${msgUserId}`;
+        if (isFromSocket && data.username === username) return;
 
+        let msgUserId = data.userId || data.authorId;
         const isMe = data.username === username;
+
+        if (isMe && (!msgUserId || msgUserId === 0)) {
+            msgUserId = currentUserId;
+        }
+
+        const finalId = msgUserId || 0;
+        const profileLink = `/usuario/${finalId}`;
         const row = document.createElement('div');
         row.className = `chat-msg-row ${isMe ? 'msg-row-me' : 'msg-row-other'}`;
 
-        const avatarUrl = data.avatar || '/imagenes/sin-foto-perfil.png';
+        const avatarUrl = (data.avatar && data.avatar !== "") ? data.avatar : '/imagenes/sin-foto-perfil.png';
 
         const avatarHtml = isMe ? '' : `
-            <a href="${profileLink}" class="chat-profile-link">
-                <img src="${avatarUrl}" class="chat-avatar">
-            </a>`;
-
+        <a href="${profileLink}" class="chat-profile-link">
+            <img src="${avatarUrl}" class="chat-avatar">
+        </a>`;
         row.innerHTML = `
             ${avatarHtml}
             <div class="bubble-container">
@@ -309,7 +315,7 @@
     // --- 5. LÓGICA DEL CHAT ---
 
     socket.emit('joinImageRoom', imageId);
-    socket.on('mensajeRecibido', (data) => appendMessage(data));
+    socket.on('mensajeRecibido', (data) => appendMessage(data, true));
 
     // Cargar historial
     const mensajesIniciales = /*[[${comentarios}]]*/ [];
@@ -333,6 +339,7 @@
         };
 
         socket.emit('nuevoMensaje', payload);
+        appendMessage(payload);
         chatInput.value = '';
 
         try {
