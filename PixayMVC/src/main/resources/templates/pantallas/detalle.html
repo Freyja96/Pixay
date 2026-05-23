@@ -146,7 +146,8 @@
 <!-- JS propio -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // --- 1. CONFIGURACIÓN E IDENTIDAD ---
+
+    // --- 1. Configuración/Identidad ---
     const currentUserId = /*[[${session.userId != null ? session.userId : 0}]]*/ 0;
     let userCurrentReaction = /*[[${currentReaction != null ? currentReaction : 0}]]*/ 0;
     const socket = io('http://localhost:3000');
@@ -154,7 +155,7 @@
     const username = /*[[${session.username}]]*/ 'Anónimo';
     const userAvatar = /*[[${session.avatar}]]*/ '/imagenes/sin-foto-perfil.png';
 
-    // Elementos del DOM
+
     const chatContainer = document.getElementById('chat-messages');
     const chatInput = document.getElementById('chat-input');
     const btnSend = document.getElementById('btn-send');
@@ -163,9 +164,9 @@
     const saveIcon = document.querySelector('.icon-bar .bi-bookmark, .icon-bar .bi-bookmark-fill');
     const mainReactBtn = document.querySelector('.icon-bar .bi-emoji-smile'); // Carita de la barra principal
 
-    // --- 2. MAPEOS DE EMOJIS ---
+    // --- 2. Mapeos de emojis ---
 
-    // Mapeo general para el traductor de texto
+    // Mapeo para el traductor de texto a emoji
     const emojiMap = {
         ':cowboy:': /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
         ':gema:':   /*[[@{/imagenes/emojis/gema-gato.png}]]*/   '',
@@ -177,13 +178,13 @@
         ':dislike:':/*[[@{/imagenes/emojis/dislike-gato.png}]]*/ '',
     };
 
-    // Traducción de Código de Texto -> ID Numérico (Para la DB)
+    // Código de texto -> ID
     const emojiToId = {
         ':cowboy:': 1, ':gema:': 2, ':rosa:': 3, ':enfado:': 4,
         ':risa:': 5, ':triste:': 6, ':like:': 7, ':dislike:': 8
     };
 
-    // Traducción de ID Numérico -> Ruta de Imagen (Para carga inicial)
+    // ID -> Ruta de Imagen (Carga inicial)
     const idToPath = {
         1: /*[[@{/imagenes/emojis/cowboy-gato.png}]]*/ '',
         2: /*[[@{/imagenes/emojis/gema-gato.png}]]*/ '',
@@ -195,7 +196,7 @@
         8: /*[[@{/imagenes/emojis/dislike-gato.png}]]*/ ''
     };
 
-    // --- 3. FUNCIONES DE APOYO ---
+    // --- 3. Funciones de Apoyo ---
 
     function parseEmojis(text) {
         if (!text) return "";
@@ -244,14 +245,14 @@
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // --- 4. LÓGICA DE INTERACCIÓN (GUARDAR Y REACCIONAR) ---
+    // --- 4. Lógicas de Guardar y Reaccionar ---
 
     // Guardar Publicación
     if (saveIcon) {
         saveIcon.onclick = async function() {
             if (this.classList.contains('icon-disabled')) return;
 
-            // 1. Cambio visual instantáneo (antes del fetch)
+            // 1. Cambio visual instantáneo
             const isCurrentlySaved = this.classList.contains('bi-bookmark-fill');
             if (isCurrentlySaved) {
                 this.classList.replace('bi-bookmark-fill', 'bi-bookmark');
@@ -261,7 +262,7 @@
                 this.style.color = 'var(--PRIMARY-BLUE)';
             }
 
-            // 2. Enviar a la API en segundo plano
+            // 2. Envío a la API en segundo plano
             try {
                 const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
                 if (!response.ok) throw new Error();
@@ -279,7 +280,7 @@
         };
     }
 
-    // Menú de Reacciones Flotante (Barra principal)
+    // Menú de reacciones (Barra principal)
     const reactionMenu = document.createElement('div');
     reactionMenu.className = 'reaction-popup shadow';
     reactionMenu.innerHTML = document.querySelector('.emoji-grid').innerHTML;
@@ -321,7 +322,7 @@
                 updateCounter(newReaction, 1);
             }
 
-            // Actualizamos el icono principal inmediatamente
+            // Actualiza el icono principal inmediatamente
             if (simulatedAction === "removed") {
                 mainReactBtn.innerHTML = '';
                 mainReactBtn.className = "bi bi-emoji-smile cursor-pointer";
@@ -341,7 +342,6 @@
                 });
                 if (!response.ok) throw new Error();
             } catch (e) {
-                // Si falla, podrías revertir o simplemente avisar al usuario
                 console.error("Error al sincronizar reacción con el servidor");
                 location.reload(); // Recargar es la forma más fácil de recuperar el estado real en caso de error crítico
             }
@@ -356,13 +356,9 @@
             if (count < 0) count = 0;
             span.innerText = count;
 
-            // Mostrar u ocultar la burbuja si llega a cero
+            // Mostrar u ocultar si llega a cero
             statContainer.style.display = (count > 0) ? 'flex' : 'none';
 
-            if (amount > 0) { // Animación solo si aumenta
-                statContainer.style.transform = 'scale(1.2)';
-                setTimeout(() => statContainer.style.transform = 'scale(1)', 200);
-            }
         }
     }
 
@@ -405,9 +401,9 @@
         } catch (e) { console.error("Error guardando el mensaje:", e); }
     };
 
-    // --- 6. GESTIÓN DE MENÚS Y EMOJIS DEL INPUT ---
+    // --- 6. Gestión de menus + emojis input ---
 
-    // Abrir menú de emojis del input (carita negra)
+    // Abrir menú de emojis del input
     btnEmojiInput.addEventListener('click', (e) => {
         e.stopPropagation();
         const display = window.getComputedStyle(emojiPicker).display;
@@ -423,7 +419,7 @@
         };
     });
 
-    // Cierre global de menús al clicar fuera
+    // Cierre global de menús al hacer click fuera
     document.addEventListener('click', () => {
         emojiPicker.style.display = 'none';
         reactionMenu.style.display = 'none';
@@ -432,7 +428,7 @@
     // Enviar con Enter
     chatInput.onkeypress = (e) => { if (e.key === 'Enter') btnSend.click(); };
 
-    // --- 7. CARGA DE ESTADO INICIAL (REACCIÓN) ---
+    // --- 7. Carga de estado inicial de reacción ---
     const initialReaction = /*[[${currentReaction}]]*/ 0;
     if (initialReaction > 0) {
         mainReactBtn.innerHTML = `<img src="${idToPath[initialReaction]}" style="width:30px;">`;

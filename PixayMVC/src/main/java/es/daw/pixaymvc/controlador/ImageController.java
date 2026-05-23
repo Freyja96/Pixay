@@ -370,9 +370,8 @@ public class ImageController {
                 .block();
         model.addAttribute("autor", autor);
 
-        // --- 4. NUEVO: Obtener conteo de reacciones desde la API ---
+
         try {
-            // Asumiendo que tu API tiene un endpoint que devuelve un Mapa como { "2": 5, "7": 10... }
             Map<String, Integer> counts = webClientAPI.get()
                     .uri("imagenes/" + id + "/reactions/count")
                     .retrieve()
@@ -380,17 +379,16 @@ public class ImageController {
                     .block();
             model.addAttribute("counts", counts);
         } catch (Exception e) {
-            // Si falla o no existe el endpoint, enviamos un mapa vacío para que no rompa la vista
+            // Si falla el endpoint, envia un mapa vacío
             model.addAttribute("counts", Map.of());
         }
 
-        // 5. Configuración de búsqueda/sidebar
+        // Configuración de búsqueda/sidebar
         model.addAttribute("query", "");
         model.addAttribute("selectedCategoryId", null);
         model.addAttribute("selectedSubcategoryId", null);
         model.addAttribute("selectedCategoryName", "Todas las categorías");
 
-        // 6. Estado de usuario (Si está guardada y reacción actual del usuario)
         if (token != null) {
             try {
                 Map<String, Object> status = webClientAPI.get()
