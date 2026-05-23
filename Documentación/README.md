@@ -1,6 +1,6 @@
 # MEMORIA DEL PROYECTO INTERMODULAR: PIXAY
 
-![Logo](logo.png)
+![Logo](img/logo.png)
 
 **Título del proyecto:** Pixay  
 **Autores:** Daniel Salgado, Doris Naomi Mansaray y Cristina Ouellette  
@@ -15,7 +15,7 @@
 ### Breve descripción
 Pixay es una plataforma web diseñada específicamente para la comunidad artística. El objetivo principal es crear un ecosistema dinámico donde artistas de diversas disciplinas (dibujo digital, fotografía, ilustración, etc.) puedan compartir su portfolio, interactuar con otros creadores y encontrar inspiración. La aplicación actúa como un punto de encuentro que combina las capacidades de un banco de imágenes con funciones de red social.
 
-![Vista general](vista-general.png)
+![Vista general](img/vista-general.png)
 
 ### Motivación
 La elección de este proyecto nace de la necesidad de ofrecer un espacio dedicado exclusivamente al arte visual que permita una navegación fluida y una interacción directa. A diferencia de los bancos de imágenes genéricos, Pixay busca fomentar la colaboración y el feedback mediante herramientas sociales integradas como el chat por publicación y el sistema de seguimiento entre artistas.
@@ -23,7 +23,39 @@ La elección de este proyecto nace de la necesidad de ofrecer un espacio dedicad
 ---
 
 ## 2. Análisis y diseño del proyecto
+```mermaid
+graph TD
+    subgraph Cliente_Navegador
+        UI[Vista Thymeleaf + Bootstrap]
+        JS[JavaScript: Masonry + Scroll + Sockets]
+    end
 
+    subgraph Servidor_Frontend_MVC_8080
+        UC[UserController / ImageController]
+        WC[WebClient: Consumidor de API]
+        SF[JwtSessionFilter: Validador de Sesión]
+    end
+
+    subgraph Servidor_Backend_API_8081
+        AC[AuthController / ImageController]
+        SEC[Spring Security + JWT]
+        SRV[ImageService / UserService]
+        REPO[Spring Data JPA Repositories]
+    end
+
+    subgraph Persistencia
+        DB[(H2 Database / Archivo .db)]
+    end
+
+    UI -->|1. Petición HTTP| UC
+    UC -->|2. Petición REST| WC
+    WC -->|3. Token JWT| AC
+    AC -->|4. Validar/Procesar| SEC
+    SEC -->|5. Lógica de Negocio| SRV
+    SRV -->|6. Consultas SQL| REPO
+    REPO -->|7. Datos| DB
+    REPO -.->|8. Respuesta JSON| UI
+```
 ### 2.1. Descripción de la arquitectura web
 La aplicación sigue una **Arquitectura Desacoplada** (Frontend y Backend separados) basada en dos módulos:
 *   **Backend (PixayAPI):** Una API RESTful encargada de la lógica de negocio, persistencia de datos en H2 y seguridad mediante JWT.
@@ -31,7 +63,7 @@ La aplicación sigue una **Arquitectura Desacoplada** (Frontend y Backend separa
 
 ### 2.2. Tecnologías y herramientas utilizadas
 *   **Frontend:** HTML5, CSS3, JavaScript (ES6+), Bootstrap 5, Masonry.js (layout dinámico), Thymeleaf (Fragments).
-*   **Backend:** Java 25, Spring Boot 3.x, Spring Security (JWT), Spring Data JPA.
+*   **Backend:** Nos hemos decidido por Java 25, Spring Boot 3.x, Spring Security (JWT), Spring Data JPA.
 *   **Base de datos:** H2 Database (Persistencia en archivo local `.mv.db`).
 *   **Comunicación:** Spring WebFlux (WebClient), Socket.io (Chat en tiempo real).
 *   **Herramientas:** Git/GitHub, Miro (Planificación), IntelliJ IDEA.
@@ -59,19 +91,19 @@ La aplicación sigue una **Arquitectura Desacoplada** (Frontend y Backend separa
 ![Login](img/busqueda-por-filtro.png)
 ![Registro](img/registro.png)
 *   `/busqueda` : Filtrado avanzado.
-![Búsqueda](img/busqueda-por-filtro.png)
+![Búsqueda](img/busqueda-por-filtros.png)
 *   `/mi-perfil/mis-imagenes` : Gestión de portfolio personal.
 *   `/mi-perfil/guardadas` : Gestión de imágenes guardadas del usuario actual.
 ![Perfil propio](img/perfil-propio.png)
 *   `/mi-perfil/editar-perfil` : Publicación de contenido.
-![Editar perfil](editar-perfil.png)
+![Editar perfil](img/editar-perfil.png)
 *   `/usuario/{id}` : Perfil público de terceros.
 *   `/usuario/{id}/guardadas` : Gestión de imágenes guardadas de terceros.
-![Usuario ajeno](usuario-ajeno.png)
+![Usuario ajeno](img/usuario-ajeno.png)
 *   `/imagen/{id}` : Visualización de obra y chat.
-![Detalle de imagen con chat](detalle.png)
+![Detalle de imagen con chat](img/detalle.png)
 *   `/subir-imagen` : Publicación de contenido.
-![Subir imagen](subir-imagen.png)
+![Subir imagen](img/subir-imagen.png)
 *   `/ajustes` : Ajustes del perfil.
 
 ### 2.6. Organización de la lógica de negocio
@@ -103,18 +135,5 @@ El proyecto ha cumplido los objetivos pedagógicos y técnicos, logrando una pla
 
 ---
 
-## 5. Anexos: Guía de Instalación y Despliegue
-
-### Requisitos previos
-*   Java JDK 25 o superior.
-*   Maven 3.x.
-
-### Configuración
-1.  Clonar repositorio: `git clone https://github.com/Freyja96/Pixay.git`
-2.  Crear archivo `.env` en las raíces de `PixayAPI` y `PixayMVC`.
-3.  Añadir variable: `JWT_SECRET=TuClaveBase64` y `JWT_EXPIRATION=24`.
-
-### Ejecución
-1.  **API (Puerto 8081):** `cd PixayAPI && mvn spring-boot:run`
-2.  **MVC (Puerto 8080):** `cd PixayMVC && mvn spring-boot:run`
-3.  Acceso: `http://localhost:8080`
+## 5. Anexos: 
+* [Guía de Instalación y Despliegue](ANEXO_GUIA_INSTALACION_DESPLIEGUE.md)
