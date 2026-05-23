@@ -16,9 +16,10 @@
 
         <!-- SECCIÓN 1: AUTOR (Avatar y Nombre) (Si no hay foto de perfil se pone logo por defecto -->
         <div class="d-flex align-items-center mb-2" th:if="${autor != null}">
-            <a th:href="@{/usuario/{id}(id=${autor.id})}"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
-                 class="author-img" alt="Avatar"></a>
-            <span class="author-name" th:text="${autor.username}">Usuario</span>
+            <a th:href="@{/usuario/{id}(id=${autor.id})}" class="links"><img th:src="${autor.profilePicture != null ? autor.profilePicture : '/imagenes/sin-foto-perfil.png'}"
+                 class="author-img" alt="Avatar">
+                <span class="author-name" th:text="${autor.username}">Usuario</span>
+            </a>
         </div>
 
         <p class="image-title fw-bold" th:text="${imagen.title}"></p>
@@ -28,7 +29,7 @@
             <img th:src="'data:image/jpeg;base64,' + ${imagen.getContentBase64()}"
                  class="img-main" th:alt="${imagen.title}">
         </div>
-        <!-- SECCIÓN DE CONTADORES DE REACCIONES (Todas las 8) -->
+        <!-- CONTADORES DE REACCIONES-->
         <div class="reaction-stats d-flex flex-wrap gap-2 mt-2">
 
             <!-- Cowboy (1) -->
@@ -115,12 +116,21 @@
                 </div>
             </div>
             <!-- Botón de emoji -->
-            <i class="bi bi-emoji-smile-fill fs-3 me-2 cursor-pointer" id="btn-emoji" style="color: #000;"></i>
+            <i class="bi bi-emoji-smile-fill fs-3 me-2"
+               id="btn-emoji"
+               th:style="${session.username == null} ? 'color: var(--LIGHT-GRAY); cursor: not-allowed;' : 'color: #000; cursor: pointer;'"></i></i>
 
             <div class="input-wrapper">
-                <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="form-control chat-input">
+                <!-- Input: Cambiamos el placeholder y lo deshabilitamos -->
+                <input type="text" id="chat-input"
+                       th:placeholder="${session.username == null} ? 'Inicia sesión para comentar...' : 'Escribe un mensaje...'"
+                       th:disabled="${session.username == null}"
+                       class="form-control chat-input">
             </div>
-            <button class="btn-send-blue" id="btn-send">
+            <button id="btn-send"
+                    th:class="${session.username == null} ? 'btn-send-disabled' : 'btn-send-blue'"
+                    th:disabled="${session.username == null}"
+                    th:title="${session.username == null} ? 'Inicia sesión para comentar' : 'Enviar'">
                 <i class="bi bi-arrow-right-circle-fill"></i>
             </button>
         </div>
@@ -297,6 +307,7 @@
 
     // Enviar mensaje
     btnSend.onclick = async () => {
+        if (btnSend.disabled) return;
         const text = chatInput.value.trim();
         if (!text) return;
 
