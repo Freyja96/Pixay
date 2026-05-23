@@ -120,7 +120,7 @@
             <!-- Botón de emoji -->
             <i class="bi bi-emoji-smile-fill fs-3 me-2"
                id="btn-emoji"
-               th:style="${session.username == null} ? 'color: var(--LIGHT-GRAY); cursor: not-allowed;' : 'color: #000; cursor: pointer;'"></i></i>
+               th:style="${session.username == null} ? 'color: var(--LIGHT-GRAY); cursor: not-allowed;' : 'color: #000; cursor: pointer;'"></i>
 
             <div class="input-wrapper">
                 <!-- Input: Cambiamos el placeholder y lo deshabilitamos -->
@@ -148,6 +148,7 @@
     /*<![CDATA[*/
     // --- 1. CONFIGURACIÓN E IDENTIDAD ---
     const currentUserId = /*[[${session.userId != null ? session.userId : 0}]]*/ 0;
+    let userCurrentReaction = /*[[${currentReaction != null ? currentReaction : 0}]]*/ 0;
     const socket = io('http://localhost:3000');
     const imageId = /*[[${imagen.id}]]*/ 0;
     const username = /*[[${session.username}]]*/ 'Anónimo';
@@ -248,17 +249,32 @@
     // Guardar Publicación
     if (saveIcon) {
         saveIcon.onclick = async function() {
-            const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
-            if (response.ok) {
-                // Forzamos el cambio visual manual para asegurar que se vea
-                const currentlySaved = this.classList.contains('bi-bookmark-fill');
-                if (currentlySaved) {
-                    this.classList.replace('bi-bookmark-fill', 'bi-bookmark');
-                    this.style.color = '#000';
-                } else {
+            if (this.classList.contains('icon-disabled')) return;
+
+            // 1. Cambio visual instantáneo (antes del fetch)
+            const isCurrentlySaved = this.classList.contains('bi-bookmark-fill');
+            if (isCurrentlySaved) {
+                this.classList.replace('bi-bookmark-fill', 'bi-bookmark');
+                this.style.color = '#000';
+            } else {
+                this.classList.replace('bi-bookmark', 'bi-bookmark-fill');
+                this.style.color = 'var(--PRIMARY-BLUE)';
+            }
+
+            // 2. Enviar a la API en segundo plano
+            try {
+                const response = await fetch(`/imagen/${imageId}/save`, { method: 'POST' });
+                if (!response.ok) throw new Error();
+            } catch (e) {
+
+                if (isCurrentlySaved) {
                     this.classList.replace('bi-bookmark', 'bi-bookmark-fill');
                     this.style.color = 'var(--PRIMARY-BLUE)';
+                } else {
+                    this.classList.replace('bi-bookmark-fill', 'bi-bookmark');
+                    this.style.color = '#000';
                 }
+                alert("Error al guardar la imagen");
             }
         };
     }
@@ -281,36 +297,74 @@
     // Al elegir reacción del menú flotante
     reactionMenu.querySelectorAll('.emoji-item').forEach(img => {
         img.onclick = async () => {
+            if (mainReactBtn.classList.contains('icon-disabled')) return;
+
             const emojiCode = img.getAttribute('data-code');
             const numericId = emojiToId[emojiCode];
 
+            const prevReaction = userCurrentReaction;
+            const newReaction = numericId;
+
+            // Determinamos la acción antes de ir a la API
+            let simulatedAction = "";
+            if (prevReaction === 0) simulatedAction = "added";
+            else if (prevReaction === newReaction) simulatedAction = "removed";
+            else simulatedAction = "switched";
+
+            // Actualizamos contadores inmediatamente
+            if (simulatedAction === "added") {
+                updateCounter(newReaction, 1);
+            } else if (simulatedAction === "removed") {
+                updateCounter(newReaction, -1);
+            } else if (simulatedAction === "switched") {
+                updateCounter(prevReaction, -1);
+                updateCounter(newReaction, 1);
+            }
+
+            // Actualizamos el icono principal inmediatamente
+            if (simulatedAction === "removed") {
+                mainReactBtn.innerHTML = '';
+                mainReactBtn.className = "bi bi-emoji-smile cursor-pointer";
+                userCurrentReaction = 0;
+            } else {
+                mainReactBtn.innerHTML = `<img src="${idToPath[newReaction]}" style="width:30px; height:30px; vertical-align:top;">`;
+                mainReactBtn.classList.remove('bi', 'bi-emoji-smile');
+                userCurrentReaction = newReaction;
+            }
+
+            reactionMenu.style.display = 'none';
             try {
                 const response = await fetch(`/imagen/${imageId}/react`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ reactionType: numericId })
                 });
-
-                if (response.ok) {
-                    // Feedback visual: sustituir carita por el gato elegido
-                    mainReactBtn.innerHTML = `<img src="${idToPath[numericId]}" style="width:30px; height:30px; vertical-align:top;">`;
-                    mainReactBtn.classList.remove('bi', 'bi-emoji-smile'); // Limpiamos la clase del icono
-                    const statContainer = document.getElementById(`stat-${numericId}`);
-                    if (statContainer) {
-                        const spanCount = statContainer.querySelector('span');
-                        let currentCount = parseInt(spanCount.innerText);
-                        spanCount.innerText = currentCount + 1;
-
-                        // Opcional: Pequeña animación de salto
-                        statContainer.style.transform = 'scale(1.2)';
-                        setTimeout(() => statContainer.style.transform = 'scale(1)', 200);
-                    }
-                }
-            } catch (e) { console.error("Error al reaccionar:", e); }
-
-            reactionMenu.style.display = 'none';
+                if (!response.ok) throw new Error();
+            } catch (e) {
+                // Si falla, podrías revertir o simplemente avisar al usuario
+                console.error("Error al sincronizar reacción con el servidor");
+                location.reload(); // Recargar es la forma más fácil de recuperar el estado real en caso de error crítico
+            }
         };
     });
+    function updateCounter(id, amount) {
+        if (!id || id === 0) return;
+        const statContainer = document.getElementById(`stat-${id}`);
+        if (statContainer) {
+            const span = statContainer.querySelector('span');
+            let count = parseInt(span.innerText) + amount;
+            if (count < 0) count = 0;
+            span.innerText = count;
+
+            // Mostrar u ocultar la burbuja si llega a cero
+            statContainer.style.display = (count > 0) ? 'flex' : 'none';
+
+            if (amount > 0) { // Animación solo si aumenta
+                statContainer.style.transform = 'scale(1.2)';
+                setTimeout(() => statContainer.style.transform = 'scale(1)', 200);
+            }
+        }
+    }
 
     // --- 5. LÓGICA DEL CHAT ---
 

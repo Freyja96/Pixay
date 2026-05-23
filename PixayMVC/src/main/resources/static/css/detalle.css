@@ -33,12 +33,18 @@
 
 .icon-bar {
     display: flex;
+    align-items: center;
     gap: 20px;
     font-size: 1.8rem;
     padding: 15px 5px;
     border-bottom: 1px solid #eee;
 }
-
+#main-react-icon img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
 .icon-bar i {
     cursor: pointer;
     color: #000;
@@ -143,7 +149,7 @@
 }
 
 .chat-input {
-    width: 100%; /* El input ocupa todo el wrapper */
+    width: 100%;
     background-color: var(--WHITE-BACKCOLOR) !important;
     border: 1px solid #e0e0e0 !important;
     border-radius: 25px !important;
@@ -255,16 +261,16 @@
 }
 
 .reaction-stat-item img {
-    width: 20px !important;    /* Tamaño fijo para que no se estire */
+    width: 20px !important;
     height: 20px !important;
     object-fit: contain;       /* Mantiene la proporción del gato */
-    margin-right: 4px;         /* Separación con el número */
+    margin-right: 4px;
 }
 
 .reaction-stat-item span {
     font-size: 0.9rem;
     color: #1c1e21;
-    line-height: 1;            /* Centra el texto verticalmente */
+    line-height: 1;
 }
 
 .links {
